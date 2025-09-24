@@ -13,7 +13,7 @@ class LikeController extends Controller
     {
         $post = Post::findOrFail($id);
 
-        if ($post->userLikes->contains(Auth::id())) {
+        if ($post->userLikes()->where('user_id', Auth::id())->exists()) {
 
             $post->userLikes()->detach(Auth::id());
 

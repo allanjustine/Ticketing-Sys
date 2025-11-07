@@ -21,4 +21,9 @@ class TicketCategory extends Model
     {
         return $this->hasMany(TicketDetail::class, 'ticket_category_id', 'ticket_category_id');
     }
+
+    public function subCategories()
+    {
+        return $this->hasMany(SubCategory::class, 'ticket_category_id', 'ticket_category_id');
+    }
 }

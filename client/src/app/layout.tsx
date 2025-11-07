@@ -31,7 +31,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased max-h-screen scroll-smooth`}
+        className={`${geistSans.style} ${geistMono.style} antialiased max-h-screen scroll-smooth`}
       >
         <IsRefreshProvider>
           <AuthContextProvider>

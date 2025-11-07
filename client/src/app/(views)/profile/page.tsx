@@ -3,14 +3,12 @@
 import withAuthPage from "@/lib/hoc/with-auth-page";
 import {
   Card,
-  CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { Edit, Building, UserCog, ChartBarStacked } from "lucide-react";
 import nameShortHand from "@/utils/name-short-hand";
 import { useAuth } from "@/context/auth-context";
@@ -21,35 +19,23 @@ import AssignedBranchCas from "./_components/assigned-branch-cas";
 import AssignedCategory from "./_components/assigned-category";
 import Storage from "@/utils/storage";
 import EditProfile from "./_components/edit-profile";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { CreatePost } from "./_components/post-dialogs/create-post";
-import { api } from "@/lib/api";
-import { Skeleton } from "@/components/ui/skeleton";
-import PostList from "./_components/post-lists";
+import PostList from "./_components/post-list";
+import ButtonLoader from "@/components/ui/button-loader";
+import PostLoader from "./_components/post-loader";
+import { useFetchCursor } from "@/hooks/use-fetch-cursor";
 
 function Profile() {
   const { user } = useAuth();
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [isRefresh, setisRefresh] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [posts, setPosts] = useState<any>([]);
-
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const response = await api.get("/posts");
-        if (response.status === 200) {
-          setPosts(response.data.data.data);
-        }
-      } catch (error) {
-        console.error("Error fetching posts:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchPosts();
-  }, [isRefresh]);
+  const {
+    data: posts,
+    isLoading,
+    cursor,
+    setIsRefresh,
+    handleCursor,
+  } = useFetchCursor({ url: "/posts" });
 
   const ROLES_CARD = {
     [ROLE.AREA_MANAGER]: (
@@ -84,11 +70,10 @@ function Profile() {
   const handleEditProfile = () => {
     setIsOpen(true);
   };
-  console.table(posts);
 
   return (
     <div className="min-h-screen bg-gray-50 pb-12">
-      <div className="h-48 bg-gradient-to-r from-blue-400 to-purple-500 w-full"></div>
+      <div className="h-48 bg-linear-to-r from-blue-400 to-purple-500 w-full"></div>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-16">
         <Card className="overflow-hidden">
           <CardHeader className="pb-4">
@@ -99,12 +84,12 @@ function Profile() {
                     src={Storage(user?.user_detail?.profile_pic)}
                     alt={user.full_name}
                   />
-                  <AvatarFallback className="text-2xl bg-gradient-to-r from-blue-500 to-purple-600 text-white">
+                  <AvatarFallback className="text-2xl bg-linear-to-r from-blue-500 to-purple-600 text-white">
                     {nameShortHand(user.full_name)}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex items-center">
-                  <CardTitle className="text-2xl capitalize">
+                  <CardTitle className="text-2xl capitalize font-bold text-gray-700">
                     {user.full_name}
                   </CardTitle>
                 </div>
@@ -123,8 +108,8 @@ function Profile() {
             </div>
 
             <div className="mt-4">
-              <CardDescription className="text-base">
-                {user.username}
+              <CardDescription className="text-blue-400">
+                {`@${user.username}`}
               </CardDescription>
               {user?.user_detail?.user_contact && (
                 <CardDescription className="text-base">
@@ -195,44 +180,44 @@ function Profile() {
           </div>
 
           <div className="lg:col-span-2 w-full space-y-3">
-            <CreatePost setisRefresh={setisRefresh} />
+            <CreatePost setIsRefresh={setIsRefresh} />
+            {cursor?.prev_cursor && (
+              <div className="flex justify-center">
+                <ButtonLoader
+                  type="button"
+                  className="bg-blue-500 hover:bg-blue-600 text-white"
+                  onClick={handleCursor("prev")}
+                  isLoading={isLoading}
+                >
+                  Load new post
+                </ButtonLoader>
+              </div>
+            )}
             {isLoading ? (
-              <Card>
-                <CardHeader className="pb-3">
-                  <div className="flex justify-between">
-                    <div className="flex items-center space-x-2">
-                      <Skeleton className="h-8 w-8 rounded-full"></Skeleton>
-                      <div className="space-y-2">
-                        <Skeleton className="text-sm font-semibold h-5 w-46"></Skeleton>
-                        <Skeleton className="text-xs text-gray-500 h-3 w-36"></Skeleton>
-                      </div>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent className="pb-3">
-                  <div className="space-y-3">
-                    <Skeleton className="w-full h-5"></Skeleton>
-                    <Skeleton className="w-96 h-5"></Skeleton>
-                    <Skeleton className="w-full h-5"></Skeleton>
-                    <Skeleton className="w-1/2 h-5"></Skeleton>
-                    <Skeleton className="w-full h-5"></Skeleton>
-                  </div>
-                  <Separator className="my-3" />
-                  <div className="flex justify-between text-gray-500">
-                    <Skeleton className="h-8 w-full mr-1"></Skeleton>
-                    <Skeleton className="h-8 w-full mr-1"></Skeleton>
-                  </div>
-                </CardContent>
-              </Card>
+              <PostLoader />
             ) : posts?.length > 0 ? (
               posts.map((post: any, index: number) => (
-                <PostList key={index} post={post} setisRefresh={setisRefresh} />
+                <PostList key={index} post={post} setIsRefresh={setIsRefresh} />
               ))
             ) : (
               <p className="text-gray-500 w-full text-center text-xl font-bold mt-10">
                 No posts yet
               </p>
             )}
+            <div className="flex justify-center">
+              {cursor?.next_cursor ? (
+                <ButtonLoader
+                  isLoading={isLoading}
+                  type="button"
+                  className="bg-blue-500 hover:bg-blue-600 text-white"
+                  onClick={handleCursor("next")}
+                >
+                  Load more post
+                </ButtonLoader>
+              ) : (
+                <span className="text-gray-400">All posts loaded</span>
+              )}
+            </div>
           </div>
         </div>
       </div>

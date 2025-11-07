@@ -1,4 +1,4 @@
-import { CONFIG } from "@/config";
+import { CONFIG } from "@/config/config";
 
 export default function Storage(url: string | undefined) {
   return !url?.startsWith("uploads/")

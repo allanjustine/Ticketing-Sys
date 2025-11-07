@@ -17,6 +17,7 @@ import {
 import { api } from "@/lib/api";
 import { ROLE } from "@/constants/roles";
 import echo from "@/lib/echo";
+import { toast } from "sonner";
 
 export const AuthContext = createContext<AuthContextType | undefined>(
   undefined
@@ -46,21 +47,17 @@ export default function AuthContextProvider({
     echo
       .private(`updated-user-${user?.login_id}`)
       .notification((notification: any) => {
-        setUser(notification.data);
+        toast.success("Success", {
+          description: notification.data,
+          position: "top-center",
+          duration: 10000,
+        });
 
-        if (
-          isAdminOrAutomationAdmin.includes(
-            notification.data.user_role.role_name
-          )
-        ) {
-          setIsAdmin(true);
-        } else {
-          setIsAdmin(false);
-        }
+        fetchUserProfile();
       });
 
     return () => {
-      echo.leave(`updated-user-${user?.id}`);
+      echo.leave(`updated-user-${user?.login_id}`);
     };
   }, [echo, user]);
 
@@ -97,7 +94,7 @@ export default function AuthContextProvider({
       setIsAuthenticated(true);
 
       if (
-        isAdminOrAutomationAdmin.includes(response.data.user_role.role_name)
+        isAdminOrAutomationAdmin.includes(response?.data.user_role?.role_name)
       ) {
         setIsAdmin(true);
       }

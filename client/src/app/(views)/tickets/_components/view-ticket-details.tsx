@@ -18,38 +18,51 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { ROLE } from "@/constants/roles";
 import { TICKET_STATUS } from "@/constants/ticket-status";
 import { useAuth } from "@/context/auth-context";
-import { useIsRefresh } from "@/context/is-refresh-context";
-import { api } from "@/lib/api";
 import formattedDateFull from "@/utils/format-date-full";
 import { isImage } from "@/utils/image-format";
 import { isApprovers, isAutomation } from "@/utils/is-approvers";
 import Storage from "@/utils/storage";
+import ticketTypeUpperCase from "@/utils/ticket-type-upper-case";
+import { TooltipArrow } from "@radix-ui/react-tooltip";
 import { Eye, FileSpreadsheet } from "lucide-react";
 import Image from "next/image";
-import { ChangeEvent, useEffect, useState } from "react";
-import { toast } from "sonner";
-import Swal from "sweetalert2";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 
-export function ViewTicketDetails({ data, open, setOpen }: any) {
+export function ViewTicketDetails({
+  data,
+  open,
+  setOpen,
+  setNote,
+  setIsCounted,
+  role,
+  error,
+  isCounted,
+  handleApproveTicket,
+  handleEditTicket,
+  handleReviseTicket,
+}: any) {
   const { user } = useAuth();
-  const role = user?.user_role?.role_name;
   const isYourPendingTicket = user?.login_id === data?.pending_user?.login_id;
   const [openImage, setOpenImage] = useState<boolean>(false);
   const [images, setImages] = useState<string[]>([]);
   const [image, setImage] = useState<string>("");
-  const [note, setNote] = useState<string>("");
-  const [isCounted, setIsCounted] = useState<string>("");
-  const [error, setError] = useState<any>(null);
   const TICKET_REJECTED = data?.status === TICKET_STATUS.REJECTED;
   const AUTOMATION_MANAGER =
     user?.user_role?.role_name === ROLE.AUTOMATION_MANAGER;
-  const { setIsRefresh: refresh } = useIsRefresh();
+  const debounceRef = useRef<NodeJS.Timeout>(null);
+  const [defaultNote, setDefaultNote] = useState<string>("");
 
   useEffect(() => {
-    setNote(
+    if (!open) return;
+    setDefaultNote(
       isAutomation(role)
         ? data?.ticket_detail?.td_note ?? ""
         : data?.ticket_detail?.td_note_bh ?? ""
@@ -62,226 +75,31 @@ export function ViewTicketDetails({ data, open, setOpen }: any) {
     setOpenImage(true);
   };
 
-  const handleReviseTicket = () => {
-    setOpen(false);
-    Swal.fire({
-      title: "Revise Ticket",
-      text: `Are you sure you want to revise this ticket with ticket code of "${data?.ticket_code}"?`,
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, revise it!",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        refresh(true);
-        Swal.fire({
-          title: "Revising...",
-          text: "Please wait while the ticket is being revised...",
-          allowOutsideClick: false,
-          didOpen: () => {
-            Swal.showLoading();
-          },
-        });
-
-        const formData = isAutomation(role)
-          ? {
-              td_note: note,
-            }
-          : {
-              td_note_bh: note,
-            };
-
-        try {
-          const response = await api.patch(
-            `/revise-ticket/${data?.ticket_details_id}/revise`,
-            formData
-          );
-          if (response.status === 200) {
-            setOpen(false);
-            toast.success("Success", {
-              description: response.data.message,
-              position: "bottom-center",
-            });
-            setNote("");
-            setError("");
-            Swal.close();
-          }
-        } catch (error: any) {
-          console.error(error);
-          if (error.response.status === 422) {
-            setError(error.response.data.errors);
-            setOpen(true);
-            Swal.close();
-          } else {
-            Swal.fire({
-              icon: "error",
-              title: "Oops...",
-              text: "Something went wrong revising the ticket!",
-            });
-            setError("");
-          }
-        } finally {
-          refresh(false);
-        }
-      } else {
-        setOpen(true);
-      }
-    });
-  };
-
   const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
-    setNote(value);
+    setDefaultNote(value);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      setNote(value);
+    }, 500);
   };
 
-  const handleEditTicket = () => {
-    setOpen(false);
-    Swal.fire({
-      title: "Mark as edit ticket",
-      text: `Are you sure you want to mark as edit this ticket with ticket code of "${data?.ticket_code}"?`,
-      icon: "info",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, mark as edit it!",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        refresh(true);
-        Swal.fire({
-          title: "Marking as edit...",
-          text: "Please wait while the ticket is being marking as edit...",
-          allowOutsideClick: false,
-          didOpen: () => {
-            Swal.showLoading();
-          },
-        });
-
-        const formData = isAutomation(role)
-          ? {
-              td_note: note,
-              is_counted: isCounted,
-            }
-          : {
-              td_note_bh: note,
-            };
-
-        try {
-          const response = await api.patch(
-            `/mark-as-edited-ticket/${data?.ticket_details_id}/mark-as-edited`,
-            formData
-          );
-          if (response.status === 200) {
-            setOpen(false);
-            toast.success("Success", {
-              description: response.data.message,
-              position: "bottom-center",
-            });
-            setNote("");
-            setError("");
-            setIsCounted("");
-            Swal.close();
-          }
-        } catch (error: any) {
-          console.error(error);
-          if (error.response.status === 422) {
-            setError(error.response.data.errors);
-            setOpen(true);
-            Swal.close();
-          } else {
-            Swal.fire({
-              icon: "error",
-              title: "Oops...",
-              text: "Something went wrong revising the ticket!",
-            });
-            setError("");
-          }
-        } finally {
-          refresh(false);
-        }
-      } else {
-        setOpen(true);
-      }
-    });
+  const handleOpenChange = (value: boolean) => {
+    setNote(defaultNote ?? "");
+    setOpen(value);
   };
 
-  const handleApproveTicket = () => {
-    setOpen(false);
-    Swal.fire({
-      title: "Approve Ticket",
-      text: `Are you sure you want to approve this ticket with ticket code of "${data?.ticket_code}"?`,
-      icon: "info",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, approve it!",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        refresh(true);
-        Swal.fire({
-          title: "Approving...",
-          text: "Please wait while the ticket is being approve...",
-          allowOutsideClick: false,
-          didOpen: () => {
-            Swal.showLoading();
-          },
-        });
-
-        const formData = isAutomation(role)
-          ? {
-              td_note: note,
-            }
-          : {
-              td_note_bh: note,
-            };
-
-        try {
-          const response = await api.patch(
-            `/approve-ticket/${data?.ticket_details_id}/approve`,
-            formData
-          );
-          if (response.status === 200) {
-            setOpen(false);
-            toast.success("Success", {
-              description: response.data.message,
-              position: "bottom-center",
-            });
-            setNote("");
-            setError("");
-            Swal.close();
-          }
-        } catch (error: any) {
-          console.error(error);
-          if (error.response.status === 422) {
-            setError(error.response.data.errors);
-            setOpen(true);
-            Swal.close();
-          } else {
-            Swal.fire({
-              icon: "error",
-              title: "Oops...",
-              text: "Something went wrong approving the ticket!",
-            });
-            setError("");
-          }
-        } finally {
-          refresh(false);
-        }
-      } else {
-        setOpen(true);
-      }
-    });
-  };
-
-  if (!open) return null;
   return (
     <>
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog open={open} onOpenChange={handleOpenChange}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
               <span className="text-gray-700 text-lg">
-                Viewing <span className="font-bold">{data?.ticket_code}</span>{" "}
+                Viewing{" "}
+                <span className="font-bold">{`${ticketTypeUpperCase(
+                  data?.ticket_detail?.ticket_type
+                )} - ${data?.ticket_code}`}</span>{" "}
                 ticket from{" "}
                 <span className="font-bold">
                   {data?.user_login.full_name} - {data?.branch_name}
@@ -307,7 +125,7 @@ export function ViewTicketDetails({ data, open, setOpen }: any) {
                 <div className="text-sm">{data?.ticket_detail?.td_note}</div>
               </div>
             )}
-            {isApprovers(role) && isYourPendingTicket && (
+            {isApprovers(role) && isYourPendingTicket && !TICKET_REJECTED && (
               <>
                 <div className="p-2 border rounded-lg flex flex-col gap-2">
                   <div className="text-gray-600 font-bold text-xl text-center">
@@ -316,13 +134,16 @@ export function ViewTicketDetails({ data, open, setOpen }: any) {
                   <div className="flex flex-col gap-1">
                     <Textarea
                       placeholder="Enter note"
-                      value={note}
+                      className="resize-none"
+                      value={defaultNote}
                       onChange={handleChange}
                     />
 
-                    {(error?.td_note || error?.td_note_bh) && (
+                    {(error?.td_note ?? error?.td_note_bh) && (
                       <small className="text-red-500">
-                        {error?.td_note[0] || error?.td_note_bh[0]}
+                        {error?.td_note
+                          ? error?.td_note[0]
+                          : error?.td_note_bh[0]}
                       </small>
                     )}
                   </div>
@@ -355,23 +176,81 @@ export function ViewTicketDetails({ data, open, setOpen }: any) {
                 )}
               </>
             )}
-            <div className="flex justify-evenly gap-2 items-center border rounded-lg p-2">
+            <div className="grid grid-cols-2 gap-4 border rounded-lg p-2">
               <div className="flex flex-col gap-1">
                 <span className="font-bold text-gray-600">
                   Transaction Date
                 </span>
-                <span className="text-sm">
-                  {formattedDateFull(
-                    data?.ticket_detail?.ticket_transaction_date
-                  )}
-                </span>
+                <Tooltip>
+                  <TooltipTrigger className="text-sm truncate" asChild>
+                    <span>
+                      {formattedDateFull(
+                        data?.ticket_detail?.ticket_transaction_date
+                      )}
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <TooltipArrow />
+
+                    {formattedDateFull(
+                      data?.ticket_detail?.ticket_transaction_date
+                    )}
+                  </TooltipContent>
+                </Tooltip>
               </div>
               <div className="flex flex-col gap-1">
                 <span className="font-bold text-gray-600">Ticket Category</span>
-                <span className="text-sm">
-                  {data?.ticket_detail?.ticket_category?.category_name}
-                </span>
+                <Tooltip>
+                  <TooltipTrigger className="text-sm truncate" asChild>
+                    <span>
+                      {data?.ticket_detail?.ticket_category?.category_name}
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <TooltipArrow />
+
+                    {data?.ticket_detail?.ticket_category?.category_name}
+                  </TooltipContent>
+                </Tooltip>
               </div>
+              {data?.ticket_detail?.sub_category && (
+                <div className="flex flex-col gap-1">
+                  <span className="font-bold text-gray-600">
+                    Ticket Sub Category
+                  </span>
+                  <Tooltip>
+                    <TooltipTrigger className="text-sm truncate" asChild>
+                      <span>
+                        {data?.ticket_detail?.sub_category?.sub_category_name}
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <TooltipArrow />
+
+                      {data?.ticket_detail?.sub_category?.sub_category_name}
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
+              )}
+              {data?.ticket_detail?.td_ref_number && (
+                <div className="flex flex-col gap-1">
+                  <span className="font-bold text-gray-600">
+                    Ticket Reference Number
+                  </span>
+                  <Tooltip>
+                    <TooltipTrigger className="text-sm truncate" asChild>
+                      <span className=" font-bold text-gray-600">
+                        {data?.ticket_detail?.td_ref_number}
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <TooltipArrow />
+
+                      {data?.ticket_detail?.td_ref_number}
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
+              )}
             </div>
             {data?.ticket_detail?.td_support?.length > 0 && (
               <div className="flex flex-col gap-2 border rounded-lg">
@@ -419,7 +298,7 @@ export function ViewTicketDetails({ data, open, setOpen }: any) {
                 </div>
               </div>
             )}
-            <div className="p-2 border rounded-lg flex flex-col gap-2">
+            <div className="p-2 border rounded-lg flex flex-col gap-4">
               <div className="text-gray-600 font-bold text-xl text-center">
                 Other details
               </div>
@@ -427,7 +306,7 @@ export function ViewTicketDetails({ data, open, setOpen }: any) {
                 {data?.approve_head && (
                   <div className="flex flex-col gap-1">
                     <span className="font-bold text-gray-600">Approved By</span>
-                    <span className="text-sm">
+                    <span className="text-xs">
                       {data?.approve_head?.full_name}
                     </span>
                   </div>
@@ -437,7 +316,7 @@ export function ViewTicketDetails({ data, open, setOpen }: any) {
                     <span className="font-bold text-gray-600">
                       Last Approver
                     </span>
-                    <span className="text-sm">
+                    <span className="text-xs">
                       {data?.last_approver?.full_name}
                     </span>
                   </div>
@@ -445,11 +324,61 @@ export function ViewTicketDetails({ data, open, setOpen }: any) {
                 {data?.assigned_person && (
                   <div className="flex flex-col gap-1">
                     <span className="font-bold text-gray-600">Assigned To</span>
-                    <span className="text-sm">
+                    <span className="text-xs">
                       {data?.assigned_person?.full_name}
                     </span>
                   </div>
                 )}
+              </div>
+              <div className="grid grid-cols-3 gap-4">
+                {Array.isArray(data?.ticket_detail?.td_purpose)
+                  ? Array.from(data?.ticket_detail?.td_purpose).length > 0
+                  : data?.ticket_detail?.td_purpose && (
+                      <div className="flex flex-col gap-1">
+                        <span className="font-bold text-gray-600">Purpose</span>
+                        <Tooltip>
+                          <TooltipTrigger className="text-sm truncate" asChild>
+                            <span>{data?.ticket_detail?.td_purpose}</span>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <TooltipArrow />
+                            {data?.ticket_detail?.td_purpose}
+                          </TooltipContent>
+                        </Tooltip>
+                      </div>
+                    )}
+                {Array.isArray(data?.ticket_detail?.td_from)
+                  ? Array.from(data?.ticket_detail?.td_from).length > 0
+                  : data?.ticket_detail?.td_from && (
+                      <div className="flex flex-col gap-1">
+                        <span className="font-bold text-gray-600">From</span>
+                        <Tooltip>
+                          <TooltipTrigger className="text-sm truncate" asChild>
+                            <span>{data?.ticket_detail?.td_from}</span>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <TooltipArrow />
+                            {data?.ticket_detail?.td_from}
+                          </TooltipContent>
+                        </Tooltip>
+                      </div>
+                    )}
+                {Array.isArray(data?.ticket_detail?.td_to)
+                  ? Array.from(data?.ticket_detail?.td_to).length > 0
+                  : data?.ticket_detail?.td_to && (
+                      <div className="flex flex-col gap-1">
+                        <span className="font-bold text-gray-600">To</span>
+                        <Tooltip>
+                          <TooltipTrigger className="text-sm truncate" asChild>
+                            <span>{data?.ticket_detail?.td_to}</span>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <TooltipArrow />
+                            {data?.ticket_detail?.td_to}
+                          </TooltipContent>
+                        </Tooltip>
+                      </div>
+                    )}
               </div>
             </div>
           </div>
@@ -462,7 +391,10 @@ export function ViewTicketDetails({ data, open, setOpen }: any) {
                 <Button
                   type="button"
                   variant={"outline"}
-                  onClick={handleReviseTicket}
+                  onClick={handleReviseTicket(
+                    data?.ticket_code,
+                    data?.ticket_details_id
+                  )}
                   className="bg-red-500 hover:bg-red-600 text-white hover:text-white"
                 >
                   Revise
@@ -471,7 +403,10 @@ export function ViewTicketDetails({ data, open, setOpen }: any) {
                   <Button
                     type="button"
                     variant={"outline"}
-                    onClick={handleEditTicket}
+                    onClick={handleEditTicket(
+                      data?.ticket_code,
+                      data?.ticket_details_id
+                    )}
                     className="bg-blue-500 hover:bg-blue-600 text-white hover:text-white"
                   >
                     Mark as edited
@@ -480,7 +415,10 @@ export function ViewTicketDetails({ data, open, setOpen }: any) {
                   <Button
                     type="button"
                     variant={"outline"}
-                    onClick={handleApproveTicket}
+                    onClick={handleApproveTicket(
+                      data?.ticket_code,
+                      data?.ticket_details_id
+                    )}
                     className="bg-green-500 hover:bg-green-600 text-white hover:text-white"
                   >
                     Approve

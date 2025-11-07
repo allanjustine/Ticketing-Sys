@@ -4,7 +4,14 @@ import DataTableComponent from "@/components/data-table";
 import useFetch from "@/hooks/use-fetch";
 import { TICKETS_COLUMNS } from "../dashboard/_constants/tickets-columns";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeftRight, Eye, Funnel, Pencil, Ticket } from "lucide-react";
+import {
+  ArrowLeftRight,
+  Eye,
+  Funnel,
+  Hand,
+  Pencil,
+  Ticket,
+} from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -29,10 +36,16 @@ import { toast } from "sonner";
 import { Tooltip, TooltipContent } from "@/components/ui/tooltip";
 import { TooltipArrow, TooltipTrigger } from "@radix-ui/react-tooltip";
 import { useIsRefresh } from "@/context/is-refresh-context";
+import { TransferTicketToAutomation } from "./_components/transfer-ticket-to-automation";
+import { Label } from "@/components/ui/label";
+import Swal from "sweetalert2";
+import { isAutomation } from "@/utils/is-approvers";
+import { api } from "@/lib/api";
+import { TICKET_STATUS } from "@/constants/ticket-status";
 
 function Tickets() {
   const { user, isAdmin } = useAuth();
-  const { isRefresh } = useIsRefresh();
+  const { isRefresh, setIsRefresh: refresh } = useIsRefresh();
   const {
     data,
     isLoading,
@@ -59,6 +72,11 @@ function Tickets() {
   );
   const [isOpenDialog, setIsOpenDialog] = useState<boolean>(false);
   const [isOpenView, setIsOpenView] = useState<boolean>(false);
+  const [isOpenToTransfer, setIsOpenToTransfer] = useState<boolean>(false);
+  const [error, setError] = useState<any>(null);
+  const [note, setNote] = useState<string>("");
+  const [isCounted, setIsCounted] = useState<string>("");
+  const role = user?.user_role?.role_name;
 
   useEffect(() => {
     if (!echo || !user) return;
@@ -87,6 +105,10 @@ function Tickets() {
     };
   }, [echo, user, selectedTicketData]);
 
+  const isTurnToApprove = (userId: number | string | null) => {
+    return userId === user?.login_id;
+  };
+
   const TICKET_COLUMNS_ACTIONS = [
     {
       name: "Action",
@@ -99,12 +121,19 @@ function Tickets() {
                 onClick={handleDialogOpen(row, "view")}
                 className="border-none bg-transparent shadow-none hover:scale-105"
               >
-                <Eye className="h-4 w-4 text-green-500 hover:text-green-600" />
+                {isTurnToApprove(row?.pending_user?.login_id) &&
+                row?.status !== TICKET_STATUS.REJECTED ? (
+                  <Hand className="h-4 w-4 text-blue-500 hover:text-blue-600" />
+                ) : (
+                  <Eye className="h-4 w-4 text-green-500 hover:text-green-600" />
+                )}
               </button>
             </TooltipTrigger>
             <TooltipContent>
               <TooltipArrow />
-              View Ticket
+              {isTurnToApprove(row?.pending_user?.login_id)
+                ? "Approve Ticket"
+                : "View Ticket"}
             </TooltipContent>
           </Tooltip>
           <Tooltip>
@@ -133,7 +162,7 @@ function Tickets() {
                 <button
                   type="button"
                   className="border-none bg-transparent shadow-none hover:scale-105"
-                  onClick={handleDialogOpen(row, "delete")}
+                  onClick={handleDialogOpen(row, "transfer")}
                 >
                   <ArrowLeftRight className="h-4 w-4 text-green-500 hover:text-green-600" />
                 </button>
@@ -151,12 +180,228 @@ function Tickets() {
 
   const handleDialogOpen = (data: any, type: string) => () => {
     setSelectedTicketData(data);
-    if (type === "view") {
-      setIsOpenView(true);
-    } else {
-      setIsOpenDialog(true);
+
+    switch (type) {
+      case "edit":
+        setIsOpenDialog(true);
+        break;
+      case "view":
+        setIsOpenView(true);
+        break;
+      case "transfer":
+        setIsOpenToTransfer(true);
+        break;
     }
   };
+
+  const handleEditTicket =
+    (ticketCode: string | number, ticketDetailsId: string | number) => () => {
+      setIsOpenView(false);
+      Swal.fire({
+        title: "Mark as edit ticket",
+        text: `Are you sure you want to mark as edit this ticket with ticket code of "${ticketCode}"?`,
+        icon: "info",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, mark as edit it!",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          refresh(true);
+          Swal.fire({
+            title: "Marking as edit...",
+            text: "Please wait while the ticket is being marking as edit...",
+            allowOutsideClick: false,
+            didOpen: () => {
+              Swal.showLoading();
+            },
+          });
+
+          const formData = isAutomation(role)
+            ? {
+                td_note: note,
+                is_counted: isCounted,
+              }
+            : {
+                td_note_bh: note,
+              };
+
+          try {
+            const response = await api.patch(
+              `/mark-as-edited-ticket/${ticketDetailsId}/mark-as-edited`,
+              formData
+            );
+            if (response.status === 200) {
+              setIsOpenView(false);
+              toast.success("Success", {
+                description: response.data.message,
+                position: "bottom-center",
+              });
+              setNote("");
+              setError(null);
+              setIsCounted("");
+              Swal.close();
+            }
+          } catch (error: any) {
+            console.error(error);
+            if (error.response.status === 422) {
+              setError(error.response.data.errors);
+              Swal.close();
+              setIsOpenView(true);
+            } else {
+              Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "Something went wrong revising the ticket!",
+              });
+              setError(null);
+            }
+          } finally {
+            refresh(false);
+          }
+        } else {
+          setIsOpenView(true);
+        }
+      });
+    };
+
+  const handleApproveTicket =
+    (ticketCode: string | number, ticketDetailsId: string | number) => () => {
+      setIsOpenView(false);
+      Swal.fire({
+        title: "Approve Ticket",
+        text: `Are you sure you want to approve this ticket with ticket code of "${ticketCode}"?`,
+        icon: "info",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, approve it!",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          refresh(true);
+          Swal.fire({
+            title: "Approving...",
+            text: "Please wait while the ticket is being approve...",
+            allowOutsideClick: false,
+            didOpen: () => {
+              Swal.showLoading();
+            },
+          });
+
+          const formData = isAutomation(role)
+            ? {
+                td_note: note,
+              }
+            : {
+                td_note_bh: note,
+              };
+
+          try {
+            const response = await api.patch(
+              `/approve-ticket/${ticketDetailsId}/approve`,
+              formData
+            );
+            if (response.status === 200) {
+              setIsOpenView(false);
+              toast.success("Success", {
+                description: response.data.message,
+                position: "bottom-center",
+              });
+              setNote("");
+              setError(null);
+              Swal.close();
+            }
+          } catch (error: any) {
+            console.error(error);
+            if (error.response.status === 422) {
+              setError(error.response.data.errors);
+              Swal.close();
+              setIsOpenView(true);
+            } else {
+              Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "Something went wrong approving the ticket!",
+              });
+              setError(null);
+            }
+          } finally {
+            refresh(false);
+          }
+        } else {
+          setIsOpenView(true);
+        }
+      });
+    };
+
+  const handleReviseTicket =
+    (ticketCode: string | number, ticketDetailsId: string | number) => () => {
+      setIsOpenView(false);
+      Swal.fire({
+        title: "Revise Ticket",
+        text: `Are you sure you want to revise this ticket with ticket code of "${ticketCode}"?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, revise it!",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          refresh(true);
+          Swal.fire({
+            title: "Revising...",
+            text: "Please wait while the ticket is being revised...",
+            allowOutsideClick: false,
+            didOpen: () => {
+              Swal.showLoading();
+            },
+          });
+
+          const formData = isAutomation(role)
+            ? {
+                td_note: note,
+              }
+            : {
+                td_note_bh: note,
+              };
+
+          try {
+            const response = await api.patch(
+              `/revise-ticket/${ticketDetailsId}/revise`,
+              formData
+            );
+            if (response.status === 200) {
+              setIsOpenView(false);
+              toast.success("Success", {
+                description: response.data.message,
+                position: "bottom-center",
+              });
+              setNote("");
+              setError(null);
+              Swal.close();
+            }
+          } catch (error: any) {
+            console.error(error);
+            if (error.response.status === 422) {
+              setError(error.response.data.errors);
+              Swal.close();
+              setIsOpenView(true);
+            } else {
+              Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "Something went wrong revising the ticket!",
+              });
+              setError(null);
+            }
+          } finally {
+            refresh(false);
+          }
+        } else {
+          setIsOpenView(true);
+        }
+      });
+    };
 
   return (
     <div className="flex flex-col gap-3">
@@ -168,38 +413,73 @@ function Tickets() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="w-full flex gap-2 justify-evenly">
-            <Select
-              onValueChange={handleSelectFilter("status")}
-              value={filterBy.status}
-            >
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Filter by status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectItem value="Filter by status" disabled>
-                    Filter by status
-                  </SelectItem>
-                  <SelectItem value="ALL">ALL</SelectItem>
-                  <SelectItem value="REJECTED">REJECTED</SelectItem>
-                  <SelectItem value="PENDING">PENDING</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-            <SearchInput
-              onChange={handleSearchTerm(1000)}
-              value={filterBy.defaultSearchValue}
-            />
-            <Button
-              type="button"
-              onClick={handleReset}
-              variant="ghost"
-              className="bg-yellow-400 text-white hover:bg-yellow-500 hover:text-white"
-            >
-              Reset
-            </Button>
+          <div className="w-full grid grid-cols-2 lg:grid-cols-3 gap-2">
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="status" className="px-1">
+                Filter by status
+              </Label>
+              <Select
+                onValueChange={handleSelectFilter("status")}
+                value={filterBy.status}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Filter by status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="Filter by status" disabled>
+                      Filter by status
+                    </SelectItem>
+                    <SelectItem value="ALL">ALL</SelectItem>
+                    <SelectItem value="REJECTED">REJECTED</SelectItem>
+                    <SelectItem value="PENDING">PENDING</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="ticket_type" className="px-1">
+                Filter by ticket type
+              </Label>
+              <Select
+                onValueChange={handleSelectFilter("ticket_type")}
+                value={filterBy.ticket_type}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Filter by ticket type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="Filter by ticket type" disabled>
+                      Filter by ticket type
+                    </SelectItem>
+                    <SelectItem value="ALL">ALL</SelectItem>
+                    <SelectItem value="netsuite_ticket">
+                      Netsuite Ticket
+                    </SelectItem>
+                    <SelectItem value="sql_ticket">SQL Ticket</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex flex-col gap-2 col-span-2 lg:col-span-1">
+              <Label htmlFor="search" className="px-1">
+                Search
+              </Label>
+              <SearchInput
+                onChange={handleSearchTerm(1000)}
+                value={filterBy.defaultSearchValue}
+              />
+            </div>
           </div>
+          <Button
+            type="button"
+            onClick={handleReset}
+            variant="ghost"
+            className="bg-yellow-400 text-white hover:bg-yellow-500 hover:text-white mt-2 float-end"
+          >
+            Reset
+          </Button>
         </CardContent>
       </Card>
       <Card className="gap-0">
@@ -236,20 +516,41 @@ function Tickets() {
         </CardContent>
       </Card>
 
-      <EditTicket
-        setIsRefresh={setIsRefresh}
-        ticketData={selectedTicketData}
-        categories={categories}
-        user={user}
-        setIsOpenDialog={setIsOpenDialog}
-        open={isOpenDialog}
-      />
+      {isOpenDialog && (
+        <EditTicket
+          setIsRefresh={setIsRefresh}
+          ticketData={selectedTicketData}
+          categories={categories}
+          user={user}
+          setIsOpenDialog={setIsOpenDialog}
+          open={isOpenDialog}
+        />
+      )}
 
-      <ViewTicketDetails
-        data={selectedTicketData}
-        open={isOpenView}
-        setOpen={setIsOpenView}
-      />
+      {isOpenView && (
+        <ViewTicketDetails
+          data={selectedTicketData}
+          open={isOpenView}
+          setOpen={setIsOpenView}
+          setNote={setNote}
+          setIsCounted={setIsCounted}
+          role={role}
+          note={note}
+          error={error}
+          isCounted={isCounted}
+          handleApproveTicket={handleApproveTicket}
+          handleEditTicket={handleEditTicket}
+          handleReviseTicket={handleReviseTicket}
+        />
+      )}
+
+      {isOpenToTransfer && (
+        <TransferTicketToAutomation
+          data={selectedTicketData}
+          open={isOpenToTransfer}
+          setOpen={setIsOpenToTransfer}
+        />
+      )}
     </div>
   );
 }

@@ -46,4 +46,9 @@ class TicketDetail extends Model
     {
         return $this->hasOne(Ticket::class, 'ticket_details_id', 'ticket_details_id');
     }
+
+    public function subCategory()
+    {
+        return $this->belongsTo(SubCategory::class, 'sub_category_id', 'id');
+    }
 }

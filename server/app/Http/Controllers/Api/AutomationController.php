@@ -37,6 +37,20 @@ class AutomationController extends Controller
         ], 200);
     }
 
+    public function getAllAutomations()
+    {
+        $automations = UserLogin::where(function ($query) {
+            $query->whereRelation('userRole', 'role_name', UserRoles::AUTOMATION)
+                ->orWhereRelation('userRole', 'role_name', UserRoles::AUTOMATION_ADMIN)
+                ->orWhereRelation('userRole', 'role_name', UserRoles::AUTOMATION_MANAGER);
+        })->get();
+
+        return response()->json([
+            'message' => 'All Automations Fetched Successfully',
+            'data'    => $automations
+        ], 200);
+    }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -66,8 +80,14 @@ class AutomationController extends Controller
 
         $userBranches = $user->automationAssignedBranches;
 
+        $data = collect(
+            $userBranches->merge($branches)
+        )
+            ->sortBy('b_code')
+            ->values();
+
         return response()->json([
-            'data' => $userBranches->merge($branches),
+            'data' => $data,
         ]);
     }
 
@@ -105,7 +125,6 @@ class AutomationController extends Controller
         $branch_counts = $user->automationAssignedBranches()->count();
 
         $user->automationAssignedBranches()->detach();
-
 
         return response()->json([
             'message' => "{$branch_counts} branche(s) removed successfully",

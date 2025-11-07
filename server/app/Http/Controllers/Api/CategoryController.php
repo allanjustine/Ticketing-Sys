@@ -19,6 +19,8 @@ class CategoryController extends Controller
     public function index()
     {
         $categories = TicketCategory::query()
+            ->with('subCategories')
+            ->withCount('subCategories')
             ->where('show_hide', 'show')
             ->orderBy('category_shortcut', 'asc')
             ->get();
@@ -53,6 +55,7 @@ class CategoryController extends Controller
         $search = request('search');
 
         $ticketCategories = TicketCategory::with('groupCategory')
+            ->withCount('subCategories')
             ->when(
                 $search,
                 fn($query)

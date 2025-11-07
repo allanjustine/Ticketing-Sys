@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id('login_id');
             $table->foreignId('user_details_id')->constrained('user_details', 'user_details_id')->onDelete('cascade');
             $table->foreignId('user_role_id')->constrained('user_roles', 'user_role_id')->onDelete('cascade');
-            $table->foreignId('blist_id')->constrained('branch_lists', 'blist_id')->onDelete('cascade')->nullable();
+            $table->foreignId('blist_id')->constrained('branch_lists', 'blist_id')->onDelete('cascade');
+            $table->timestamp('email_verified_at')->nullable();
             $table->string('username')->unique();
             $table->string('password');
             $table->timestamps();

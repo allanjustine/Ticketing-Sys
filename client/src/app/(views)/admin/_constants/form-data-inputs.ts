@@ -6,6 +6,10 @@ export const SUPPLIER_DATA = {
   suppliers: "",
 };
 
+export const SUB_CATEGORY_DATA = {
+  sub_category_name: "",
+};
+
 export const CATEGORY_DATA = {
   category_shortcut: "",
   category_name: "",

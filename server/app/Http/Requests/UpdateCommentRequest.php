@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class UpdateCommentRequest extends FormRequest
 {
@@ -23,8 +22,7 @@ class UpdateCommentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'post_id'           => ['required', Rule::exists('posts', 'post_id')],
-            'content'           => ['required', 'max:255', 'min:1']
+            'comment'           => ['required', 'max:500', 'min:1']
         ];
     }
 }

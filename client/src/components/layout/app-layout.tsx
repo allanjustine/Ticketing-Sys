@@ -24,7 +24,9 @@ const AppLayout = ({ children }: { children: ReactNode }) => {
       <AppSidebar />
       <main className="w-full h-screen overflow-hidden">
         <div className="flex flex-col">
-          <div className={`${open ? "p-[13px]" : "p-[6px]"} border-b`}>
+          <div
+            className={`${open ? "p-[13px]" : "p-[6px]"} border-b`}
+          >
             <div className="flex justify-between items-center">
               <div className="flex gap-3 items-center">
                 <SidebarTrigger />

@@ -17,9 +17,10 @@ class PostController extends Controller
     public function index()
     {
         $posts = Post::query()
-            ->with('comments.user', 'user.userDetail', 'userLikes')
+            ->with('user.userDetail', 'userLikes')
+            ->withCount('comments')
             ->orderByDesc('created_at')
-            ->cursorPaginate(10);
+            ->cursorPaginate(20);
 
         return response()->json([
             'message'           => 'Posts fetched successfully',

@@ -3,7 +3,7 @@
 import DataTableComponent from "@/components/data-table";
 import useFetch from "@/hooks/use-fetch";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Eye, File, FileOutput, Funnel, Loader2Icon } from "lucide-react";
+import { Eye, File, FileOutput, Funnel, Loader2Icon, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import withAuthPage from "@/lib/hoc/with-auth-page";
 import { REPORTS_FILTER, SEARCH_FILTER } from "@/constants/filter-by";
@@ -20,6 +20,11 @@ import { formatDate } from "date-fns";
 import { useAuth } from "@/context/auth-context";
 import { toast } from "sonner";
 import { useIsRefresh } from "@/context/is-refresh-context";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 function Reports() {
   const [isLoadingToExport, setIsLoadingToExport] = useState<boolean>(false);
@@ -49,6 +54,7 @@ function Reports() {
   const { data: forFilterData, isLoading: isLoadingForFilter } = useFetch({
     url: "/for-filter-datas",
   });
+  const [isHide, setIsHide] = useState<boolean>(false);
 
   const REPORTS_COLUMNS_ACTIONS = [
     {
@@ -190,15 +196,28 @@ function Reports() {
       });
 
       totals.forEach((total: any) => {
+        const noteText = total?.ticket_category_items
+          ?.map((t: any) => {
+            const subs = t.sub_category_items
+              ?.map(
+                (sub: any) =>
+                  `   - ${sub?.sub_category_name}: ${sub?.sub_category_count}`
+              )
+              .join("\n");
+
+            return `★ ${t?.ticket_category_name}: ${t?.ticket_category_count}\n${subs}`;
+          })
+          .join("\n\n");
+
         exportData.push({
           "Ticket Code": "",
           "Transaction Date": "",
           Category: total?.branch_name,
-          "Reference Number": total?.ticket_count,
+          "Reference Number": `Total Tickets: ${total?.ticket_count}`,
           Purpose: "",
           From: "",
-          To: "",
-          Note: "",
+          To: "Ticket Category & Ticket Subcategory Details: ",
+          Note: noteText,
           Branch: "",
           "Requested By": "",
           "Approve By BM/BS": "",
@@ -330,35 +349,66 @@ function Reports() {
   return (
     <div className="flex flex-col gap-3">
       <Card className="gap-0">
-        <CardHeader>
+        <CardHeader className="flex items-center justify-between">
           <CardTitle className="font-bold text-lg text-gray-600 flex items-center gap-1">
             <Funnel size={18} />
             <span>Filter</span>
           </CardTitle>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                type="button"
+                variant={"ghost"}
+                onClick={() => setIsHide(!isHide)}
+              >
+                <Plus
+                  size={16}
+                  className={`transition-all duration-300 ease-in-out ${
+                    isHide ? "" : "rotate-40"
+                  }`}
+                />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{isHide ? "Show Filter" : "Hide Filter"}</p>
+            </TooltipContent>
+          </Tooltip>
         </CardHeader>
         <CardContent>
           <div className="w-full flex gap-2 flex-col space-y-5">
-            <SelectFilter
-              forFilterData={forFilterData}
-              isLoading={isLoadingForFilter}
-              handleSelectFilter={handleSelectFilter}
-              filterBy={filterBy}
-              handleSearchTerm={handleSearchTerm}
-            />
-            <DateFilter
-              filterBy={filterBy}
-              handleDateFilter={handleDateFilter}
-            />
-            <div className="w-full flex justify-end">
+            {!isHide ? (
+              <>
+                <SelectFilter
+                  forFilterData={forFilterData}
+                  isLoading={isLoadingForFilter}
+                  handleSelectFilter={handleSelectFilter}
+                  filterBy={filterBy}
+                  handleSearchTerm={handleSearchTerm}
+                />
+                <DateFilter
+                  filterBy={filterBy}
+                  handleDateFilter={handleDateFilter}
+                />
+                <div className="w-full flex justify-end">
+                  <Button
+                    type="button"
+                    onClick={handleReset}
+                    variant="ghost"
+                    className="bg-yellow-400 text-white hover:bg-yellow-500 hover:text-white"
+                  >
+                    Reset
+                  </Button>
+                </div>
+              </>
+            ) : (
               <Button
                 type="button"
-                onClick={handleReset}
-                variant="ghost"
-                className="bg-yellow-400 text-white hover:bg-yellow-500 hover:text-white"
+                variant={"link"}
+                onClick={() => setIsHide(!isHide)}
               >
-                Reset
+                <small className="text-blue-500">Show all filter</small>
               </Button>
-            </div>
+            )}
           </div>
         </CardContent>
       </Card>
@@ -410,11 +460,13 @@ function Reports() {
         </CardContent>
       </Card>
 
-      <ViewReportDetails
-        data={selectedData}
-        open={isOpenDrawer}
-        setIsOpen={setIsOpenDrawer}
-      />
+      {isOpenDrawer && (
+        <ViewReportDetails
+          data={selectedData}
+          open={isOpenDrawer}
+          setIsOpen={setIsOpenDrawer}
+        />
+      )}
     </div>
   );
 }

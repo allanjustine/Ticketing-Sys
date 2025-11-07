@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import formatDateAndTime from "@/utils/format-date-and-time";
 import statusColor from "@/utils/ticket-status-color";
+import ticketTypeUpperCase from "@/utils/ticket-type-upper-case";
 import { Ticket } from "lucide-react";
 
 export default function RecentEditedTicketTransactions({
@@ -36,9 +37,24 @@ export default function RecentEditedTicketTransactions({
                     {ticket.ticket_detail.ticket_category.category_name}
                   </p>
                   <p className="flex gap-1 items-center text-xs">
-                    <span className="font-bold text-gray-600">Edited by: </span> <span>{ticket?.edited_by?.full_name}</span>
+                    <span className="font-bold text-gray-600">Edited by: </span>{" "}
+                    <span>{ticket?.edited_by?.full_name}</span>
                   </p>
-                  <p className="text-sm text-gray-500">
+                  <p className="flex gap-1 items-center text-xs">
+                    <span className="font-bold text-gray-600">
+                      Ticket type:{" "}
+                    </span>{" "}
+                    <span
+                      className={`font-bold ${
+                        ticket?.ticket_detail?.tickey_type === "sql_ticket"
+                          ? "text-cyan-500"
+                          : "text-blue-500"
+                      }`}
+                    >
+                      {ticketTypeUpperCase(ticket?.ticket_detail?.ticket_type)}
+                    </span>
+                  </p>
+                  <p className="text-xs text-gray-500">
                     {formatDateAndTime(
                       ticket.ticket_detail.ticket_transaction_date
                     )}

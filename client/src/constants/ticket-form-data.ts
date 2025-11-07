@@ -6,4 +6,10 @@ export const TICKET_FORM_DATA = {
   ticket_support: [],
   ticket_for: "",
   removed_file: [],
+  ticket_type: "netsuite_ticket",
+  purpose: "",
+  from: "",
+  to: "",
+  ticket_sub_category: "",
+  ticket_reference_number: "",
 };

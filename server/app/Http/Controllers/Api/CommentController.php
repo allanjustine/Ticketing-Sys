@@ -12,9 +12,18 @@ use Illuminate\Support\Facades\Auth;
 
 class CommentController extends Controller
 {
-    public function index()
+    public function index($post_id)
     {
-        //
+        $comments = Comment::query()
+            ->with('user.userDetail:user_details_id,profile_pic,fname,lname')
+            ->where('post_id', $post_id)
+            ->latest()
+            ->cursorPaginate(20);
+
+        return response()->json([
+            'message'           => 'Comments fetched successfully',
+            'data'              => $comments
+        ], 200);
     }
 
     /**
@@ -35,7 +44,7 @@ class CommentController extends Controller
         Comment::query()
             ->create([
                 'post_id'           => $request->post_id,
-                'content'           => $request->content,
+                'comment'           => $request->comment,
                 'user_id'           => Auth::id()
             ]);
 
@@ -70,7 +79,7 @@ class CommentController extends Controller
         $comment = Comment::findOrFail($id);
 
         $comment->update([
-            'content'           => $request->content,
+            'comment'           => $request->comment,
         ]);
 
         return response()->json([

@@ -1,7 +1,6 @@
-import formattedDate from "@/utils/format-date";
-
 export const TICKETS_FILTER = {
   status: "ALL",
+  ticket_type: "ALL",
   search: "",
   defaultSearchValue: "",
 };

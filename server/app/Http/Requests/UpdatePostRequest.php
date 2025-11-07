@@ -23,7 +23,7 @@ class UpdatePostRequest extends FormRequest
     {
         return [
             'category'              => ['required', 'string'],
-            'content'               => ['required', 'max:255', 'min:1']
+            'content'               => ['required', 'max:500', 'min:1']
         ];
     }
 }

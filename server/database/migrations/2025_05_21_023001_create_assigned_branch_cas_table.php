@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('assigned_branch_cas', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('login_id')->constrained('user_logins', 'login_id')->onDelete('cascade');
-            $table->foreignId('blist_id')->constrained('branch_lists', 'blist_id')->onDelete('cascade');
+            $table->foreignId('login_id')->nullable()->constrained('user_logins', 'login_id')->onDelete('cascade');
+            $table->foreignId('blist_id')->nullable()->constrained('branch_lists', 'blist_id')->onDelete('cascade');
             $table->timestamps();
         });
     }

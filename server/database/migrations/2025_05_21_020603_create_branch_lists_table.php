@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('branch_lists', function (Blueprint $table) {
             $table->id('blist_id');
-            $table->string('b_code');
-            $table->string('b_name');
+            $table->string('b_code')->nullable();
+            $table->string('b_name')->nullable();
             $table->string('category')->nullable();
             $table->timestamps();
         });

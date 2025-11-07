@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('assigned_categories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('login_id')->constrained('user_logins', 'login_id')->onDelete('cascade');
-            $table->foreignId('group_code')->constrained('group_categories')->onDelete('cascade');
+            $table->foreignId('login_id')->nullable()->constrained('user_logins', 'login_id')->onDelete('cascade');
+            $table->foreignId('group_code')->nullable()->constrained('group_categories')->onDelete('cascade');
             $table->timestamps();
         });
     }

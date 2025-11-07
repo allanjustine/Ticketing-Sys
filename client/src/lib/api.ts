@@ -1,4 +1,4 @@
-import { CONFIG } from "@/config";
+import { CONFIG } from "@/config/config";
 import axios from "axios";
 
 const api = axios.create({
@@ -26,6 +26,12 @@ api.interceptors.response.use(
 const sanctum = axios.create({
   baseURL: CONFIG.SANCTUM_URL,
   withCredentials: true,
+  withXSRFToken: true,
+  headers: {
+    Accept: "application/json",
+    "X-Requested-With": "XMLHttpRequest",
+    "Content-Type": undefined,
+  },
 });
 
 export { api, sanctum };

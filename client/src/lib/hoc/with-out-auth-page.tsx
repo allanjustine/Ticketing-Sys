@@ -1,22 +1,18 @@
 import PreLoader from "@/components/loaders/pre-loader";
 import { useAuth } from "@/context/auth-context";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { redirect } from "next/navigation";
 
 export default function withOutAuthPage(WrappedComponent: any) {
   function WithOutAuthPageComponent(props: any) {
     const { isAuthenticated, user, isLoading } = useAuth();
-    const router = useRouter();
     const isAlreadyAuthenticated = isAuthenticated && user;
 
-    useEffect(() => {
-      if (isLoading) return;
-
-      if (isAlreadyAuthenticated) router.replace("/dashboard");
-    }, [isAlreadyAuthenticated, router, isLoading]);
-
-    if (isLoading || isAlreadyAuthenticated) {
+    if (isLoading) {
       return <PreLoader />;
+    }
+
+    if (isAlreadyAuthenticated) {
+      return redirect("/dashboard");
     }
 
     return <WrappedComponent {...props} />;

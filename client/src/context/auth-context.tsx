@@ -182,6 +182,7 @@ export default function AuthContextProvider({
         setTotalUnreadNotifications,
         totalUnreadNotifications,
         handleUpdateProfile,
+        setIsLoading,
       }}
     >
       {children}

@@ -198,14 +198,17 @@ function Reports() {
       totals.forEach((total: any) => {
         const noteText = total?.ticket_category_items
           ?.map((t: any) => {
-            const subs = t.sub_category_items
-              ?.map(
-                (sub: any) =>
-                  `   - ${sub?.sub_category_name}: ${sub?.sub_category_count}`
-              )
-              .join("\n");
+            const subs =
+              t.sub_category_items?.length > 1
+                ? t.sub_category_items
+                    ?.map(
+                      (sub: any) =>
+                        `\n   - ${sub?.sub_category_name}: ${sub?.sub_category_count}`
+                    )
+                    .join("\n")
+                : "";
 
-            return `★ ${t?.ticket_category_name}: ${t?.ticket_category_count}\n${subs}`;
+            return `★ ${t?.ticket_category_name}: ${t?.ticket_category_count}${subs}`;
           })
           .join("\n\n");
 

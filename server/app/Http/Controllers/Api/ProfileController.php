@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateProfileRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ProfileController extends Controller
 {
@@ -72,9 +73,9 @@ class ProfileController extends Controller
         $path = "";
 
         $updatedData = [
-            'fname'         => $request->first_name,
-            'lname'         => $request->last_name,
-            'user_email'    => $request->email,
+            'fname'         => Str::title($request->first_name),
+            'lname'         => Str::title($request->last_name),
+            'user_email'    => Str::lower($request->email),
             'user_contact'  => $request->contact_number,
         ];
 

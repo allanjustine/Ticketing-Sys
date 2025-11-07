@@ -361,14 +361,17 @@ class ReportsService
                 $allSubCategories = $group->pluck('subCategory')->flatten();
 
                 $groupedSubCategory = $allSubCategories->groupBy('sub_category_name')->map(function ($group) {
+                    if (!$group->first()?->sub_category_name) {
+                        return [];
+                    }
                     return [
-                        'sub_category_name'  => $group->first()->sub_category_name,
+                        'sub_category_name'  => $group->first()?->sub_category_name,
                         'sub_category_count' => $group->count()
                     ];
                 })->values();
 
                 return [
-                    'ticket_category_name'  => $group->first()->ticketCategory->category_name,
+                    'ticket_category_name'  => $group->first()?->ticketCategory?->category_name,
                     'ticket_category_count' => $group->count(),
                     'sub_category_items'    => $groupedSubCategory
                 ];

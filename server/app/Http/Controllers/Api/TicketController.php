@@ -353,25 +353,17 @@ class TicketController extends Controller
     {
         $user = Auth::user();
 
-        if ($user->isBranchHead()) {
-            $validateData = [
-                'td_note_bh'            => ['required', 'max:255', 'min:1']
-            ];
-            $validateDataMessage = [
-                'td_note_bh.required'   => 'Note is required',
-                'td_note_bh.max'        => 'Note must be less than 255 characters',
-                'td_note_bh.min'        => 'Note must be at least 1 character',
-            ];
-        } else {
-            $validateData = [
-                'td_note'               => ['required', 'max:255', 'min:1']
-            ];
-            $validateDataMessage = [
-                'td_note.required'      => 'Note is required',
-                'td_note.max'           => 'Note must be less than 255 characters',
-                'td_note.min'           => 'Note must be at least 1 character',
-            ];
-        }
+        $field = $user->isBranchHead() ? 'td_note_bh' : 'td_note';
+
+        $validateData = [
+            $field            => ['required', 'max:255', 'min:1']
+        ];
+
+        $validateDataMessage = [
+            "{$field}.required"   => 'Note is required',
+            "{$field}.max"        => 'Note must be less than 255 characters',
+            "{$field}.min"        => 'Note must be at least 1 character',
+        ];
 
         $request->validate($validateData, $validateDataMessage);
 

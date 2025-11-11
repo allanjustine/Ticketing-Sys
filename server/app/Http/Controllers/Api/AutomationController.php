@@ -21,9 +21,8 @@ class AutomationController extends Controller
         $automations = UserLogin::with('userRole', 'branch', 'userDetail', 'assignedBranches.branch:blist_id,b_code')
             ->whereRelation(
                 "userRole",
-                fn($query)
-                =>
-                $query->where('role_name', UserRoles::AUTOMATION)
+                "role_name",
+                UserRoles::AUTOMATION
             )
             ->search($search)
             ->paginate($limit);
@@ -40,9 +39,12 @@ class AutomationController extends Controller
     public function getAllAutomations()
     {
         $automations = UserLogin::where(function ($query) {
-            $query->whereRelation('userRole', 'role_name', UserRoles::AUTOMATION)
-                ->orWhereRelation('userRole', 'role_name', UserRoles::AUTOMATION_ADMIN)
-                ->orWhereRelation('userRole', 'role_name', UserRoles::AUTOMATION_MANAGER);
+            $query->whereHas(
+                'userRole',
+                fn($user)
+                =>
+                $user->whereIn('role_name', [UserRoles::AUTOMATION, UserRoles::AUTOMATION_ADMIN, UserRoles::AUTOMATION_MANAGER])
+            );
         })->get();
 
         return response()->json([

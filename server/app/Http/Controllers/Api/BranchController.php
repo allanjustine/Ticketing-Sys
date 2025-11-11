@@ -47,7 +47,7 @@ class BranchController extends Controller
                         'b_contact',
                         'b_email'
                     ], 'LIKE', "%$search%")
-                        ->orWhereRelation(
+                        ->orWhereHas(
                             'branch',
                             fn($sq)
                             =>

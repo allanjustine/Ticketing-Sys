@@ -71,9 +71,9 @@ class CategoryController extends Controller
                 )
                     ->orWhereRelation(
                         'groupCategory',
-                        fn($subQuery)
-                        =>
-                        $subQuery->where('group_code', 'LIKE', "%$search%")
+                        'group_code',
+                        'LIKE',
+                        "%$search%"
                     )
             )
             ->orderByDesc('show_hide')
@@ -105,7 +105,7 @@ class CategoryController extends Controller
     {
         $request->validated();
 
-        $groupCodeId;
+        $groupCodeId = null;
 
         if ($request->group_code === "others") {
             $groupCategory = GroupCategory::query()
@@ -154,7 +154,7 @@ class CategoryController extends Controller
     {
         $request->validated();
 
-        $groupCodeId;
+        $groupCodeId = null;
 
         if ($request->group_code === "others") {
             $groupCategory = GroupCategory::query()

@@ -148,7 +148,7 @@ export default function EditProfile({
                 className="bg-blue-500 hover:bg-blue-600"
                 size={"sm"}
               >
-                Edit profile
+                Upload
               </Button>
               <Input
                 type="file"

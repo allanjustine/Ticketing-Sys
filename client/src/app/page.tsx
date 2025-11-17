@@ -21,10 +21,10 @@ export default function Home() {
             height={300}
           />
           <h1 className="text-4xl font-extrabold text-white">
-            Welcome to SMCT Group of Companies Ticketing
+            Welcome to SMCT Group of Companies Ticketing System
           </h1>
           <p className="text-white text-2xl">
-            The official website for SMCT Group of Companies Ticketing
+            The official website for SMCT Group of Companies Ticketing System
           </p>
           {isLoading ? (
             <div className="px-5 py-3 w-fit bg-blue-500 hover:bg-blue-600 text-white rounded-md font-bold text-sm">

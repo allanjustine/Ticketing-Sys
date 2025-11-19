@@ -7,6 +7,11 @@ export const ACCOUNTINGS_COLUMNS = [
     sortable: false,
   },
   {
+    name: "Role",
+    cell: (row: any) => row?.user_role?.role_name,
+    sortable: false,
+  },
+  {
     name: "Assigned Categories",
     cell: (row: any) => (
       <>

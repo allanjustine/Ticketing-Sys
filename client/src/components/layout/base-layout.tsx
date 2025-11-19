@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode } from "react";
+import { ReactNode, Suspense } from "react";
 import { useAuth } from "@/context/auth-context";
 import AppLayout from "./app-layout";
 import AuthLayout from "./auth-layout";
@@ -16,13 +16,15 @@ export default function BaseLayout({ children }: { children: ReactNode }) {
 
   return (
     <>
-      {isAlreadyAuthenticated && isNotHome ? (
-        <SidebarProvider>
-          <AppLayout>{children}</AppLayout>
-        </SidebarProvider>
-      ) : (
-        <AuthLayout>{children}</AuthLayout>
-      )}
+      <Suspense fallback={"Loading..."}>
+        {isAlreadyAuthenticated && isNotHome ? (
+          <SidebarProvider>
+            <AppLayout>{children}</AppLayout>
+          </SidebarProvider>
+        ) : (
+          <AuthLayout>{children}</AuthLayout>
+        )}
+      </Suspense>
       <Toaster />
     </>
   );

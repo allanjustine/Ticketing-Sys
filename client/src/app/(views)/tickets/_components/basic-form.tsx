@@ -20,7 +20,7 @@ import { isImage } from "@/utils/image-format";
 import Storage from "@/utils/storage";
 import { CalendarIcon, FileSpreadsheet, X } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 
 export default function BasicForm({
   formInput,
@@ -193,7 +193,9 @@ export default function BasicForm({
             onChange={handleInputChange("ticket_reference_number")}
           />
           {errors?.ticket_reference_number && (
-            <small className="text-red-500">{errors?.ticket_reference_number[0]}</small>
+            <small className="text-red-500">
+              {errors?.ticket_reference_number[0]}
+            </small>
           )}
         </div>
       )}
@@ -265,7 +267,7 @@ export default function BasicForm({
                 Remove all
               </Button>
             </div>
-            <div className="flex gap-2 overflow-x-auto w-86 h-32 overflow-y-hidden">
+            <div className="flex gap-2 overflow-x-auto w-90 h-32 overflow-y-hidden">
               {oldFilesLength > 0 &&
                 oldFiles?.map((item: any, index: number) => (
                   <div key={index} className="group relative rounded-md border">

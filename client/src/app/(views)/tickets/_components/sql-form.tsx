@@ -11,7 +11,7 @@ export default function SqlForm({ formInput, errors, handleInputChange }: any) {
         </Label>
         <Textarea
           value={formInput.purpose ?? ""}
-          className="max-h-26 resize-none max-w-86"
+          className="max-h-26 resize-none max-w-89"
           placeholder="Purpose"
           onChange={handleInputChange("purpose")}
         />

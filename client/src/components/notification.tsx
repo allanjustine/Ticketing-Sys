@@ -77,7 +77,7 @@ export default function Notification({
       });
 
     return () => {
-      echo.leave(`private-App.Models.UserLogin.${user?.login_id}`);
+      echo.leave(`App.Models.UserLogin.${user?.login_id}`);
     };
   }, [echo, user]);
 

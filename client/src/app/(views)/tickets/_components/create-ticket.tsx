@@ -217,7 +217,7 @@ export function CreateTicket({ setIsRefresh, categories, user }: any) {
           <Plus className="h-4 w-4" /> Create Ticket
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-md">
         <form className="space-y-5" onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>Create Ticket</DialogTitle>

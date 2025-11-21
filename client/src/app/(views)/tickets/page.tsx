@@ -100,7 +100,7 @@ function Tickets() {
     });
 
     return () => {
-      echo.leave(`private-approver-of-ticket-${user?.login_id}`);
+      echo.leave(`approver-of-ticket-${user?.login_id}`);
       echo.leave("ticket-deleted");
     };
   }, [echo, user, selectedTicketData]);

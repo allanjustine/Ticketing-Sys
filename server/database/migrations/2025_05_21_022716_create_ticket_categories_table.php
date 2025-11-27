@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('ticket_categories', function (Blueprint $table) {
             $table->id('ticket_category_id');
-            $table->string('category_shortcut');
-            $table->string('category_name');
-            $table->foreignId('group_code')->constrained('group_categories')->onDelete('cascade');
-            $table->string('show_hide')->default('show');
+            $table->string('category_shortcut')->nullable();
+            $table->string('category_name')->nullable();
+            $table->foreignId('group_code')->nullable()->constrained('group_categories')->onDelete('cascade');
+            $table->string('show_hide')->nullable()->default('show');
             $table->timestamps();
         });
     }

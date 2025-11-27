@@ -1,9 +1,12 @@
 import { PAGINATION } from "@/constants/pagination";
+import { TICKET_STATUS } from "@/constants/ticket-status";
 import { useIsRefresh } from "@/context/is-refresh-context";
 import { api } from "@/lib/api";
 import { PaginationType } from "@/types/pagination-type";
 import { UseFetchDataType, UseFetchType } from "@/types/use-fetch-type";
 import formattedDate from "@/utils/format-date";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 
 export default function useFetch({
@@ -12,15 +15,24 @@ export default function useFetch({
   filters = false,
   canBeRefreshGlobal = false,
 }: UseFetchDataType): UseFetchType {
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const status = searchParams.get("status") ?? "";
   const [data, setData] = useState<any>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<null | string>(null);
   const [pagination, setPagination] = useState<PaginationType>(PAGINATION);
-  const [filterBy, setFilterBy] = useState<any>(filters);
+  const [filterBy, setFilterBy] = useState<any>({
+    ...filters,
+    status: [TICKET_STATUS.PENDING, TICKET_STATUS.REJECTED].includes(status)
+      ? status
+      : "ALL",
+  });
   const [isFiltered, setIsFiltered] = useState<boolean>(false);
   const [isRefresh, setIsRefresh] = useState<boolean>(false);
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
   const { setIsRefresh: setRefresh } = useIsRefresh();
+  const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -78,8 +90,10 @@ export default function useFetch({
     filterBy.edited_transaction_start_date,
     filterBy.created_end_date,
     filterBy.created_start_date,
+    filterBy.ticket_type,
     isRefresh,
     canBeRefreshGlobal,
+    status,
   ]);
 
   const handleSearchTerm =
@@ -120,6 +134,9 @@ export default function useFetch({
     }));
     setIsLoading(true);
     setIsFiltered(true);
+    if (router && status) {
+      router.replace(pathname);
+    }
   };
 
   const handleDateFilter = (item: string) => (value: any) => {

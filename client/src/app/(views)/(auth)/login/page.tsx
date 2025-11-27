@@ -129,7 +129,7 @@ const Login = () => {
                   )}
                   <div className="flex gap-1 items-center">
                     <Checkbox onCheckedChange={handleShowPassword} />
-                    <span className="text-sm text-gray-600">
+                    <span className="text-sm text-gray-600 select-none">
                       {isShowPassword ? "Hide" : "Show"} password
                     </span>
                   </div>
@@ -148,6 +148,7 @@ const Login = () => {
                   <Link
                     href="/forgot-password"
                     className="text-sm underline-offset-4 hover:underline"
+                    hidden
                   >
                     Forgot your password?
                   </Link>

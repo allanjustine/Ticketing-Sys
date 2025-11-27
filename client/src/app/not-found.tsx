@@ -1,10 +1,13 @@
 "use client";
 
+import PreLoader from "@/components/loaders/pre-loader";
 import { useAuth } from "@/context/auth-context";
 import Link from "next/link";
 
 export default function NotFound() {
   const { isAuthenticated, isLoading } = useAuth();
+
+  if (isLoading) return <PreLoader />;
   return (
     <div className="fixed top-0 bottom-0 left-0 right-0 z-40 flex items-center justify-center bg-white">
       <div className="max-w-md w-full rounded-xl overflow-hidden">

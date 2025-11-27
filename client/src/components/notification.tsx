@@ -43,6 +43,7 @@ export default function Notification({
   const { user, setNotifications, setTotalUnreadNotifications } = useAuth();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isOpenView, setIsOpenView] = useState<boolean>(false);
+  const [, setNote] = useState<string>("");
   const [selectedTicketData, setSelectedTicketData] = useState<null | any>(
     null
   );
@@ -76,7 +77,7 @@ export default function Notification({
       });
 
     return () => {
-      echo.leave(`private-App.Models.UserLogin.${user?.login_id}`);
+      echo.leave(`App.Models.UserLogin.${user?.login_id}`);
     };
   }, [echo, user]);
 
@@ -220,6 +221,7 @@ export default function Notification({
         data={selectedTicketData}
         open={isOpenView}
         setOpen={setIsOpenView}
+        setNote={setNote}
       />
     </div>
   );

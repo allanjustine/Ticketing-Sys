@@ -1,7 +1,6 @@
-import formattedDate from "@/utils/format-date";
-
 export const TICKETS_FILTER = {
   status: "ALL",
+  ticket_type: "ALL",
   search: "",
   defaultSearchValue: "",
 };
@@ -16,6 +15,7 @@ export const REPORTS_FILTER = {
   edited_transaction_end_date: "",
   created_end_date: "",
   created_start_date: "",
+  ticket_type: "ALL",
 };
 
 export const SEARCH_FILTER = {

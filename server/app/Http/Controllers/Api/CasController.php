@@ -22,9 +22,9 @@ class CasController extends Controller
             ->search($search)
             ->whereRelation(
                 "userRole",
-                fn($query)
-                =>
-                $query->where("role_name", UserRoles::CAS)
+                "role_name",
+                UserRoles::CAS,
+
             )
             ->paginate($limit);
 

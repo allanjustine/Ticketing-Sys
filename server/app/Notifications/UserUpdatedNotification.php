@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Models\UserLogin;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
@@ -17,7 +18,7 @@ class UserUpdatedNotification extends Notification implements ShouldQueue, Shoul
     /**
      * Create a new notification instance.
      */
-    public function __construct(protected object $user)
+    public function __construct(protected $user)
     {
         //
     }
@@ -57,8 +58,9 @@ class UserUpdatedNotification extends Notification implements ShouldQueue, Shoul
 
     public function toBroadCast()
     {
+
         return new BroadcastMessage([
-            'data'      => $this->user
+            'data'      => "Hello, {$this->user->full_name} your profile has been updated by the admin"
         ]);
     }
 

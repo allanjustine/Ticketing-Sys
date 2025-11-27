@@ -21,9 +21,8 @@ class AutomationController extends Controller
         $automations = UserLogin::with('userRole', 'branch', 'userDetail', 'assignedBranches.branch:blist_id,b_code')
             ->whereRelation(
                 "userRole",
-                fn($query)
-                =>
-                $query->where('role_name', UserRoles::AUTOMATION)
+                "role_name",
+                UserRoles::AUTOMATION
             )
             ->search($search)
             ->paginate($limit);
@@ -34,6 +33,23 @@ class AutomationController extends Controller
         return response()->json([
             'data'                   => $automations,
             'remaining_branches'     => $remainingBranches
+        ], 200);
+    }
+
+    public function getAllAutomations()
+    {
+        $automations = UserLogin::where(function ($query) {
+            $query->whereHas(
+                'userRole',
+                fn($user)
+                =>
+                $user->whereIn('role_name', [UserRoles::AUTOMATION, UserRoles::AUTOMATION_ADMIN, UserRoles::AUTOMATION_MANAGER])
+            );
+        })->get();
+
+        return response()->json([
+            'message' => 'All Automations Fetched Successfully',
+            'data'    => $automations
         ], 200);
     }
 
@@ -66,8 +82,14 @@ class AutomationController extends Controller
 
         $userBranches = $user->automationAssignedBranches;
 
+        $data = collect(
+            $userBranches->merge($branches)
+        )
+            ->sortBy('b_code')
+            ->values();
+
         return response()->json([
-            'data' => $userBranches->merge($branches),
+            'data' => $data,
         ]);
     }
 
@@ -105,7 +127,6 @@ class AutomationController extends Controller
         $branch_counts = $user->automationAssignedBranches()->count();
 
         $user->automationAssignedBranches()->detach();
-
 
         return response()->json([
             'message' => "{$branch_counts} branche(s) removed successfully",

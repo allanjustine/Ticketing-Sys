@@ -11,6 +11,7 @@ use App\Models\Ticket;
 use App\Models\TicketDetail;
 use App\Models\UserLogin;
 use App\Notifications\TicketNotification;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -85,7 +86,7 @@ class TicketService
     {
         return Ticket::with([
             'ticketDetail.ticketCategory:ticket_category_id,category_name',
-            'ticketDetail:ticket_details_id,ticket_transaction_date,ticket_category_id',
+            'ticketDetail:ticket_details_id,ticket_transaction_date,ticket_category_id,ticket_type',
             'editedBy.userDetail:user_details_id,fname,lname',
         ])
             ->where([
@@ -154,9 +155,50 @@ class TicketService
             )
             ->first();
 
+        $assignedAccountingStaff = UserLogin::query()
+            ->with('assignedCategories.categoryGroupCode.ticketCategories')
+            ->has('assignedCategories')
+            ->whereRelation(
+                'userRole',
+                'role_name',
+                UserRoles::ACCOUNTING_STAFF
+            )
+            ->whereRelation(
+                'assignedCategories.categoryGroupCode.ticketCategories',
+                'ticket_category_id',
+                $request->ticket_category
+            )
+            ->inRandomOrder()
+            ->first();
+
+        $assignedAccountingHead = UserLogin::query()
+            ->has('assignedCategories')
+            ->whereHas(
+                'userRole',
+                fn($accounting)
+                =>
+                $accounting->where('role_name', UserRoles::ACCOUNTING_HEAD)
+            )
+            ->whereRelation(
+                'assignedCategories.categoryGroupCode.ticketCategories',
+                'ticket_category_id',
+                $request->ticket_category
+            )
+            ->inRandomOrder()
+            ->first();
+
+        $transactionDate = Carbon::parse($request->ticket_transaction_date)->startOfDay();
+
+        $oneMonthAgo = Carbon::now()->subMonth()->startOfDay();
+
+        $isLastMonth = $transactionDate->lte($oneMonthAgo);
+
+        $isSql = $request->ticket_type === 'sql_ticket';
+
+        $directToAccounting = $isLastMonth && $isSql && $assignedAccountingStaff;
 
         $data = DB::transaction(
-            function () use ($request, $user, $assignedAutomation, $automationAdmin, $automationManager, $assignedBranchHead) {
+            function () use ($request, $user, $assignedAutomation, $automationAdmin, $automationManager, $assignedBranchHead, $assignedAccountingStaff, $assignedAccountingHead, $directToAccounting) {
                 $paths = [];
                 $file = $request->file('ticket_support');
                 $branch = BranchList::find($request->ticket_for);
@@ -167,11 +209,17 @@ class TicketService
                 }
 
                 $ticketDetail = TicketDetail::create([
+                    'ticket_type'               => $request->ticket_type,
                     'ticket_category_id'        => $request->ticket_category,
+                    'sub_category_id'           => $request->ticket_sub_category,
                     'ticket_transaction_date'   => $request->ticket_transaction_date,
                     'td_support'                => $paths,
                     'date_created'              => now(),
                     'time'                      => now()->format('h:i:s A'),
+                    'td_purpose'                => $request->purpose,
+                    'td_from'                   => $request->from,
+                    'td_to'                     => $request->to,
+                    'td_ref_number'             => $request->ticket_reference_number
                 ]);
 
                 do {
@@ -183,10 +231,12 @@ class TicketService
                 );
 
                 $ticketToBeDisplay = match (true) {
-                    $user->isStaff()        => $assignedBranchHead->login_id,
-                    $user->isBranchHead()   => $automationManager->login_id,
-                    $assignedAutomation     => $assignedAutomation->assignedAutomation->login_id,
-                    default                 => $automationAdmin->login_id
+                    $user->isStaff()                                => $assignedBranchHead->login_id,
+                    $user->isBranchHead() && $directToAccounting    => $assignedAccountingStaff->login_id,
+                    $user->isBranchHead()                           => $automationManager->login_id,
+                    $user->isAccountingStaff()                      => $assignedAccountingHead->login_id,
+                    $assignedAutomation                             => $assignedAutomation->assignedAutomation->login_id,
+                    default                                         => $automationAdmin->login_id
                 };
 
                 $assignedPerson = match (true) {
@@ -229,6 +279,7 @@ class TicketService
         $data = DB::transaction(
             function () use ($request, $id) {
                 $branch = BranchList::find($request->ticket_for);
+
                 $ticketDetail = TicketDetail::findOrFail($id);
 
                 if ($ticketDetail->ticket->status === TicketStatus::EDITED) {
@@ -275,9 +326,15 @@ class TicketService
                 }
 
                 $ticketDetail->update([
+                    'ticket_type'               => $request->ticket_type,
                     'ticket_category_id'        => $request->ticket_category,
+                    'sub_category_id'           => $request->ticket_sub_category,
                     'ticket_transaction_date'   => $request->ticket_transaction_date,
                     'td_support'                => $newPaths,
+                    'td_purpose'                => $request->purpose,
+                    'td_from'                   => $request->from,
+                    'td_to'                     => $request->to,
+                    'td_ref_number'             => $request->ticket_reference_number,
                 ]);
 
                 $ticketDetail->ticket->update(
@@ -304,6 +361,10 @@ class TicketService
     public function deleteTicket($id)
     {
         $ticketDetail = TicketDetail::findOrFail($id);
+
+        if ($ticketDetail->ticket->status === TicketStatus::EDITED) {
+            abort(400, 'You can not delete this ticket because it has been edited');
+        }
 
         DeleteTicketEvent::dispatch($ticketDetail->ticket->ticket_code);
 
@@ -353,90 +414,155 @@ class TicketService
 
     public function approveTicket($id, $request)
     {
-        $ticketDetail = TicketDetail::findOrFail($id);
+        $data = DB::transaction(function () use ($id, $request) {
 
-        $ticketApprovedData = [
-            'last_approver'     => $this->user->login_id,
-        ];
+            $ticketDetail = TicketDetail::findOrFail($id);
 
-        $automationManager = UserLogin::query()
-            ->whereHas(
-                'userRole',
-                fn($query)
-                =>
-                $query->where('role_name', UserRoles::AUTOMATION_MANAGER)
-            )
-            ->first();
-
-        if ($this->user->isBranchHead()) {
-            $requestData = [
-                'td_note_bh'        => $request->td_note_bh,
-                'appTBranchHead'    => now()->format('n/j/Y, h:i:s A')
+            $ticketApprovedData = [
+                'last_approver' => $this->user->login_id,
             ];
-            $ticketApprovedData['approveHead'] = $this->user->login_id;
-            $ticketApprovedData['displayTicket'] = $automationManager->login_id;
-        } else {
-            $requestData = [
-                'td_note'           => $request->td_note,
-            ];
-            $ticketApprovedData['displayTicket'] = $ticketDetail->ticket->assignedPerson->login_id;
-        }
-        $ticketDetail->update($requestData);
 
-        $ticketDetail->ticket->update($ticketApprovedData);
+            $automationManager = UserLogin::query()
+                ->whereHas(
+                    'userRole',
+                    fn($query)
+                    =>
+                    $query->where('role_name', UserRoles::AUTOMATION_MANAGER)
+                )
+                ->first();
 
-        $ticketDetail->ticket->userLogin->notify(new TicketNotification(
-            "Hello, your ticket {$ticketDetail->ticket->ticket_code} has been approved",
-            $ticketDetail->ticket->ticket_code,
-            $this->user->userDetail->profile_pic,
-            $this->user->full_name,
-            $ticketDetail->ticket->userLogin->login_id
-        ));
+            $accountingHead = UserLogin::query()
+                ->where(
+                    fn($query)
+                    =>
+                    $query
+                        ->whereRelation('userRole', 'role_name', UserRoles::ACCOUNTING_HEAD)
+                        ->whereRelation(
+                            'assignedCategories',
+                            fn($category)
+                            =>
+                            $category->where('group_code', $ticketDetail->ticketCategory->group_code)
+                        )
+                )
+                ->inRandomOrder()
+                ->first();
 
-        $ticketDetail->ticket->pendingUser->notify(new TicketNotification(
-            "New ticket from {$ticketDetail->ticket->branch->b_name} - ({$ticketDetail->ticket->branch->b_code})",
-            $ticketDetail->ticket->ticket_code,
-            $this->user->userDetail->profile_pic,
-            $this->user->full_name,
-            $ticketDetail->ticket->pendingUser->login_id
-        ));
+            $accountingStaff = UserLogin::query()
+                ->where(
+                    fn($query)
+                    =>
+                    $query
+                        ->whereRelation('userRole', 'role_name', UserRoles::ACCOUNTING_STAFF)
+                        ->whereRelation(
+                            'assignedCategories',
+                            fn($category)
+                            =>
+                            $category->where('group_code', $ticketDetail->ticketCategory->group_code)
+                        )
+                )
+                ->inRandomOrder()
+                ->first();
 
-        return $ticketDetail;
+            $transactionDate = Carbon::parse($request->ticket_transaction_date)->startOfDay();
+
+            $oneMonthAgo = Carbon::now()->subMonth()->startOfDay();
+
+            $isLastMonth = $transactionDate->lte($oneMonthAgo);
+
+            $isSql = $request->ticket_type === 'sql_ticket';
+
+            $directToAccounting = $isLastMonth && $isSql && $accountingStaff;
+
+            $requestData = [];
+
+            if ($this->user->isBranchHead() && $directToAccounting) {
+                $requestData = [
+                    'td_note_bh' => $request->td_note_bh,
+                ];
+                $ticketApprovedData['approveHead'] = $this->user->login_id;
+                $ticketApprovedData['displayTicket'] = $accountingStaff->login_id;
+                $ticketApprovedData['appTBranchHead'] = now()->format('n/j/Y, h:i:s A');
+            } elseif ($this->user->isBranchHead()) {
+                $requestData = [
+                    'td_note_bh' => $request->td_note_bh,
+                ];
+                $ticketApprovedData['approveHead'] = $this->user->login_id;
+                $ticketApprovedData['displayTicket'] = $automationManager->login_id;
+                $ticketApprovedData['appTBranchHead'] = now()->format('n/j/Y, h:i:s A');
+            } elseif ($this->user->isAccountingStaff()) {
+                $ticketApprovedData['displayTicket'] = $accountingHead->login_id;
+            } elseif ($this->user->isAccountingHead()) {
+                $ticketApprovedData['displayTicket'] = $automationManager->login_id;
+            } else {
+                $requestData = [
+                    'td_note' => $request->td_note,
+                ];
+                $ticketApprovedData['displayTicket'] = $ticketDetail->ticket->assignedPerson->login_id;
+            }
+
+            $ticketDetail->update($requestData);
+
+            $ticketDetail->ticket->update($ticketApprovedData);
+
+            $ticketDetail->ticket->userLogin->notify(new TicketNotification(
+                "Hello, your ticket {$ticketDetail->ticket->ticket_code} has been approved",
+                $ticketDetail->ticket->ticket_code,
+                $this->user->userDetail->profile_pic,
+                $this->user->full_name,
+                $ticketDetail->ticket->userLogin->login_id
+            ));
+
+            $ticketDetail->ticket->pendingUser->notify(new TicketNotification(
+                "New ticket from {$ticketDetail->ticket->branch->b_name} - ({$ticketDetail->ticket->branch->b_code})",
+                $ticketDetail->ticket->ticket_code,
+                $this->user->userDetail->profile_pic,
+                $this->user->full_name,
+                $ticketDetail->ticket->pendingUser->login_id
+            ));
+
+            return $ticketDetail;
+        });
+
+        return $data;
     }
 
     public function markAsEdited($id, $request)
     {
-        $ticketDetail = TicketDetail::findOrFail($id);
+        $data = DB::transaction(function () use ($id, $request) {
+            $ticketDetail = TicketDetail::findOrFail($id);
 
-        $ticketApprovedData = [
-            'last_approver'     => $this->user->login_id,
-        ];
+            $ticketApprovedData = [
+                'last_approver'     => $this->user->login_id,
+            ];
 
-        $requestData = [
-            'td_note'           => $request->td_note,
-            'date_completed'    => now(),
-            'time'              => now()->format('h:i:s A'),
-        ];
+            $requestData = [
+                'td_note'           => $request->td_note,
+                'date_completed'    => now(),
+                'time'              => now()->format('h:i:s A'),
+            ];
 
-        $ticketApprovedData['displayTicket'] = null;
-        $ticketApprovedData['edited_by'] = $this->user->login_id;
-        $ticketApprovedData['status'] = TicketStatus::EDITED;
-        $ticketApprovedData['isCounted'] = $request->is_counted;
-        $ticketApprovedData['appTEdited'] = now()->format('n/j/Y, h:i:s A');
+            $ticketApprovedData['displayTicket'] = null;
+            $ticketApprovedData['edited_by'] = $this->user->login_id;
+            $ticketApprovedData['status'] = TicketStatus::EDITED;
+            $ticketApprovedData['isCounted'] = $request->is_counted;
+            $ticketApprovedData['appTEdited'] = now()->format('n/j/Y, h:i:s A');
 
-        $ticketDetail->update($requestData);
+            $ticketDetail->update($requestData);
 
-        $ticketDetail->ticket->update($ticketApprovedData);
+            $ticketDetail->ticket->update($ticketApprovedData);
 
-        $ticketDetail->ticket->userLogin->notify(new TicketNotification(
-            "Hello, your ticket {$ticketDetail->ticket->ticket_code} has been edited",
-            $ticketDetail->ticket->ticket_code,
-            $this->user->userDetail->profile_pic,
-            $this->user->full_name,
-            $ticketDetail->ticket->userLogin->login_id
-        ));
+            $ticketDetail->ticket->userLogin->notify(new TicketNotification(
+                "Hello, your ticket {$ticketDetail->ticket->ticket_code} has been edited",
+                $ticketDetail->ticket->ticket_code,
+                $this->user->userDetail->profile_pic,
+                $this->user->full_name,
+                $ticketDetail->ticket->userLogin->login_id
+            ));
 
-        return $ticketDetail;
+            return $ticketDetail;
+        });
+
+        return $data;
     }
 
     public function returnToAutomation($ticketCode)

@@ -4,7 +4,7 @@ import DataTableComponent from "@/components/data-table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import useFetch from "@/hooks/use-fetch";
 import withAuthPage from "@/lib/hoc/with-auth-page";
-import { FileStack, PenIcon } from "lucide-react";
+import { FileStack, PenIcon, Plus } from "lucide-react";
 import { TICKET_CATEGORIES_COLUMNS } from "../_constants/ticket-categories-columns";
 import { SEARCH_FILTER } from "@/constants/filter-by";
 import { Switch } from "@/components/ui/switch";
@@ -15,6 +15,13 @@ import { AddCategory } from "../_components/_category-dialogs/add-category";
 import { EditCategory } from "../_components/_category-dialogs/edit-category";
 import { useState } from "react";
 import { DeleteCategory } from "../_components/_category-dialogs/delete-category";
+import Link from "next/link";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { TooltipArrow } from "@radix-ui/react-tooltip";
 
 function Categories() {
   const {
@@ -68,6 +75,19 @@ function Categories() {
             <PenIcon size={18} />
           </button>
           <DeleteCategory setIsRefresh={setIsRefresh} data={row} />
+          <Link
+            href={`/admin/categories/${row?.ticket_category_id}/sub-categories`}
+          >
+            <Tooltip>
+              <TooltipTrigger>
+                <Plus className="text-blue-500 hover:text-blue-500" />
+              </TooltipTrigger>
+              <TooltipContent>
+                <TooltipArrow />
+                Add Sub Categories
+              </TooltipContent>
+            </Tooltip>
+          </Link>
         </div>
       ),
       sortable: false,

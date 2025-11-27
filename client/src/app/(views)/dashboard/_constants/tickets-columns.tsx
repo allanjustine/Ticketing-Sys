@@ -9,6 +9,12 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import nameShortHand from "@/utils/name-short-hand";
 import Storage from "@/utils/storage";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { TooltipArrow } from "@radix-ui/react-tooltip";
 
 export const TICKETS_COLUMNS = [
   {
@@ -25,7 +31,22 @@ export const TICKETS_COLUMNS = [
   },
   {
     name: "Category",
-    cell: (row: any) => row.ticket_detail.ticket_category.category_name,
+    cell: (row: any) => (
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <span>{row.ticket_detail.ticket_category.category_name}</span>
+        </TooltipTrigger>
+        {row.ticket_detail.sub_category && (
+          <TooltipContent>
+            <TooltipArrow />
+            <span className="text-[10px]">
+              <span className="font-bold">Sub Category:</span>{" "}
+              {row?.ticket_detail?.sub_category?.sub_category_name}
+            </span>
+          </TooltipContent>
+        )}
+      </Tooltip>
+    ),
     sortable: false,
     sortField: "ticket_categories.category_name",
   },

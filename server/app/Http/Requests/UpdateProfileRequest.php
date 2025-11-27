@@ -23,8 +23,8 @@ class UpdateProfileRequest extends FormRequest
     {
         return [
             'profile_picture'       => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:1024'],
-            'first_name'            => ['required', 'string', 'min:2', 'max:255'],
-            'last_name'             => ['required', 'string', 'min:2', 'max:255'],
+            'first_name'            => ['required', 'string', 'min:2', 'max:255', 'alpha'],
+            'last_name'             => ['required', 'string', 'min:2', 'max:255', 'alpha'],
             'contact_number'        => ['nullable', 'numeric', 'digits:11'],
             'email'                 => ['required', 'email', 'min:2', 'max:255'],
             'current_password'      => ['nullable', 'string', 'min:6', 'max:255', 'current_password'],

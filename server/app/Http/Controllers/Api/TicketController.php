@@ -8,10 +8,13 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\TicketRequest;
 use App\Http\Requests\UpdateTicketRequest;
 use App\Models\Ticket;
+use App\Models\UserLogin;
+use App\Notifications\TicketNotification;
 use App\Services\ReportsService;
 use App\Services\TicketService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class TicketController extends Controller
 {
@@ -29,6 +32,8 @@ class TicketController extends Controller
         $search = request('search');
 
         $status = request('status');
+
+        $ticket_type = request('ticket_type');
 
         $user = Auth::user();
 
@@ -48,6 +53,7 @@ class TicketController extends Controller
             'userLogin.branch',
             'ticketDetail.ticketCategory',
             'ticketDetail.supplier',
+            'ticketDetail.subCategory',
             'assignedPerson.userDetail',
             'assignedPerson.userRole',
             'assignedPerson.branch',
@@ -69,7 +75,7 @@ class TicketController extends Controller
             'lastApprover.userDetail',
             'lastApprover.userRole',
             'lastApprover.branch',
-            'branch'
+            'branch',
         )
             ->when(
                 $status !== 'ALL',
@@ -78,6 +84,7 @@ class TicketController extends Controller
                 $q->where('status', $status)
             )
             ->search($search)
+            ->when($ticket_type !== 'ALL', fn($query) => $query->whereRelation('ticketDetail', 'ticket_type', $ticket_type))
             ->when($ticket_category, fn($query) => $query->whereHas('ticketDetail', fn($subQuery) => $subQuery->where('ticket_category_id', $ticket_category)))
             ->when($bcode, fn($query) => $query->where('branch_id', $bcode))
             ->when(!$isAdmin, function ($query) use ($userRole, $assignedBranchCas, $assignedAreaManagers, $accountingHeadCodes, $user) {
@@ -96,7 +103,8 @@ class TicketController extends Controller
                             break;
                         case UserRoles::AUTOMATION_MANAGER:
                             $subQuery->whereNot('status', TicketStatus::EDITED)
-                                ->has('pendingUser');
+                                ->where('displayTicket', Auth::id())
+                                ->orWhere('last_approver', Auth::id());
                             break;
                         case UserRoles::BRANCH_HEAD:
                             $subQuery->whereNot('status', TicketStatus::EDITED)
@@ -112,22 +120,34 @@ class TicketController extends Controller
                             break;
                         case UserRoles::ACCOUNTING_HEAD:
                             $subQuery->where('status', TicketStatus::PENDING)
-                                ->whereHas(
-                                    'ticketDetail',
-                                    fn($triQuery)
-                                    =>
-                                    $triQuery->whereHas(
-                                        'ticketCategory',
-                                        fn($ticketQuery)
-                                        =>
-                                        $ticketQuery->whereIn('group_code', $accountingHeadCodes)
-                                    )
-                                );
+                                // ->whereHas(
+                                //     'ticketDetail',
+                                //     fn($triQuery)
+                                //     =>
+                                //     $triQuery->whereHas(
+                                //         'ticketCategory',
+                                //         fn($ticketQuery)
+                                //         =>
+                                //         $ticketQuery->whereIn('group_code', $accountingHeadCodes)
+                                //     )
+                                // );
+                                ->where('displayTicket', Auth::id());
                             break;
                         case UserRoles::ACCOUNTING_STAFF:
                             $subQuery->whereNot('status', TicketStatus::EDITED)
                                 ->where('login_id', Auth::id())
-                                ->orWhereIn('branch_id', $userBranchIds);
+                                // ->orWhereHas(
+                                //     'ticketDetail',
+                                //     fn($triQuery)
+                                //     =>
+                                //     $triQuery->whereHas(
+                                //         'ticketCategory',
+                                //         fn($ticketQuery)
+                                //         =>
+                                //         $ticketQuery->whereIn('group_code', $accountingHeadCodes)
+                                //     )
+                                // );
+                                ->orWhere('displayTicket', Auth::id());
                             break;
                     }
                 });
@@ -161,6 +181,7 @@ class TicketController extends Controller
         $branchCategory = request('branch_type');
         $currentPage = request('page');
         $search = request('search');
+        $ticket_type = request('ticket_type');
 
         $user = Auth::user();
 
@@ -180,7 +201,8 @@ class TicketController extends Controller
             $ticketCategory,
             $branchCategory,
             $currentPage,
-            $search
+            $search,
+            $ticket_type
         );
 
         return response()->json([
@@ -322,25 +344,17 @@ class TicketController extends Controller
     {
         $user = Auth::user();
 
-        if ($user->isBranchHead()) {
-            $validateData = [
-                'td_note_bh'            => ['required', 'max:255', 'min:1']
-            ];
-            $validateDataMessage = [
-                'td_note_bh.required'   => 'Note is required',
-                'td_note_bh.max'        => 'Note must be less than 255 characters',
-                'td_note_bh.min'        => 'Note must be at least 1 character',
-            ];
-        } else {
-            $validateData = [
-                'td_note'               => ['required', 'max:255', 'min:1']
-            ];
-            $validateDataMessage = [
-                'td_note.required'      => 'Note is required',
-                'td_note.max'           => 'Note must be less than 255 characters',
-                'td_note.min'           => 'Note must be at least 1 character',
-            ];
-        }
+        $field = $user->isBranchHead() ? 'td_note_bh' : 'td_note';
+
+        $validateData = [
+            $field => ['required', 'max:255', 'min:1']
+        ];
+
+        $validateDataMessage = [
+            "{$field}.required" => 'Note is required',
+            "{$field}.max"      => 'Note must be less than 255 characters',
+            "{$field}.min"      => 'Note must be at least 1 character',
+        ];
 
         $request->validate($validateData, $validateDataMessage);
 
@@ -355,25 +369,17 @@ class TicketController extends Controller
     {
         $user = Auth::user();
 
-        if ($user->isBranchHead()) {
-            $validateData = [
-                'td_note_bh'            => ['required', 'max:255', 'min:1']
-            ];
-            $validateDataMessage = [
-                'td_note_bh.required'   => 'Note is required',
-                'td_note_bh.max'        => 'Note must be less than 255 characters',
-                'td_note_bh.min'        => 'Note must be at least 1 character',
-            ];
-        } else {
-            $validateData = [
-                'td_note'               => ['required', 'max:255', 'min:1']
-            ];
-            $validateDataMessage = [
-                'td_note.required'      => 'Note is required',
-                'td_note.max'           => 'Note must be less than 255 characters',
-                'td_note.min'           => 'Note must be at least 1 character',
-            ];
-        }
+        $field = $user->isBranchHead() ? 'td_note_bh' : 'td_note';
+
+        $validateData = [
+            $field            => [Rule::requiredIf(!$user->isAccountingHead() && !$user->isAccountingStaff()), 'max:255', 'min:1']
+        ];
+
+        $validateDataMessage = [
+            "{$field}.required"   => 'Note is required',
+            "{$field}.max"        => 'Note must be less than 255 characters',
+            "{$field}.min"        => 'Note must be at least 1 character',
+        ];
 
         $request->validate($validateData, $validateDataMessage);
 
@@ -436,6 +442,43 @@ class TicketController extends Controller
 
         return response()->json([
             'message'           => "Ticket with ticket code of {$ticket_code} note has been changed from {$old_data} to {$new_data} successfully",
+        ], 200);
+    }
+
+    public function transferTicketToAutomation(Request $request, $ticketCode)
+    {
+        $request->validate([
+            'automation'        => ['required']
+        ]);
+
+        $user = UserLogin::findOrFail($request->automation);
+
+        $isAutomation = $user->isAutomation() || $user->isAutomationManager() || $user->isAutomationAdmin();
+
+        if (!$isAutomation) {
+            abort(400, 'The user selected is not an automation');
+        }
+
+        $data = Ticket::where('ticket_code', $ticketCode)->first();
+
+        if ((int) $data->assigned_person === (int) $request->automation) {
+            abort(200, 'Nothing changed');
+        }
+
+        $data->update([
+            'assigned_person'       => $request->automation
+        ]);
+
+        $user->notify(new TicketNotification(
+            "Hello, new ticket {$data->ticket_code} has been assigned to you",
+            $data->ticket_code,
+            $user->userDetail->profile_pic,
+            $user->full_name,
+            $user->login_id
+        ));
+
+        return response()->json([
+            'message'           => "Ticket with ticket code of {$ticketCode} has been transferred to {$data->assignedPerson->full_name} automation successfully",
         ], 200);
     }
 }

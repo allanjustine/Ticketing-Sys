@@ -63,16 +63,6 @@ class ManageUserService
         });
 
         $userData = UserLogin::query()
-            ->with(
-                'userDetail',
-                'userRole',
-                'branch',
-                'assignedCategories.categoryGroupCode',
-                'assignedBranches.branch:blist_id,b_code',
-                'assignedBranchCas.branch:blist_id,b_code',
-                'assignedAreaManagers.branch:blist_id,b_code',
-                'notifications'
-            )
             ->where('user_details_id', $user->user_details_id)
             ->first();
 

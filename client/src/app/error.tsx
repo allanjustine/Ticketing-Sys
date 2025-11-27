@@ -1,8 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/context/auth-context";
-import Link from "next/link";
 
 export default function Error() {
   return (

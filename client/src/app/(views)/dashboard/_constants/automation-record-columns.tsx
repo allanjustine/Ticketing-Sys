@@ -11,15 +11,18 @@ export const AUTOMATION_RECORD_COLUMNS = [
   {
     name: "NAME",
     cell: (row: any) => (
-      <>
+      <div className="flex items-center gap-1">
         <Avatar>
-          <AvatarImage src={Storage(row.profile_picture)} alt={row.full_name} />
+          <AvatarImage
+            src={Storage(row?.profile_picture)}
+            alt={row.full_name}
+          />
           <AvatarFallback className="font-bold text-gray-600">
             {nameShortHand(row.full_name)}
           </AvatarFallback>
         </Avatar>
-        <span className="text-gray-700">{row.full_name}</span>
-      </>
+        <span className="text-gray-600 font-bold text-xs">{row.full_name}</span>
+      </div>
     ),
   },
   {

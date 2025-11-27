@@ -13,18 +13,19 @@ return new class extends Migration
     {
         Schema::create('ticket_details', function (Blueprint $table) {
             $table->id('ticket_details_id');
-            $table->foreignId('ticket_category_id')->constrained('ticket_categories', 'ticket_category_id')->onDelete('cascade')->nullable();
-            $table->string('ticket_transaction_date');
-            $table->string('td_ref_number');
-            $table->string('td_purpose');
-            $table->string('td_from');
-            $table->string('td_to');
-            $table->string('td_note');
+            $table->foreignId('ticket_category_id')->constrained('ticket_categories', 'ticket_category_id')->onDelete('cascade');
+            $table->foreignId('sub_category_id')->constrained('sub_categories', 'id')->onDelete('cascade');
+            $table->string('ticket_transaction_date')->nullable();
+            $table->string('td_ref_number')->nullable();
+            $table->string('td_purpose')->nullable();
+            $table->string('td_from')->nullable();
+            $table->string('td_to')->nullable();
+            $table->string('td_note')->nullable();
             $table->string('td_support')->nullable();
-            $table->foreignId('suppliers')->constrained('suppliers')->onDelete('cascade')->nullable();
-            $table->string('date_created');
-            $table->string('time');
-            $table->string('date_completed');
+            $table->foreignId('suppliers')->constrained('suppliers')->onDelete('cascade');
+            $table->string('date_created')->nullable();
+            $table->string('time')->nullable();
+            $table->string('date_completed')->nullable();
             $table->timestamps();
         });
     }

@@ -157,7 +157,20 @@ export default function BottomCard({ data, totalTickets }: any) {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-6">
+          <div className="space-y-4">
+            <div>
+              <div className="flex justify-between mb-1">
+                <span className="text-sm font-medium">Overall Tickets</span>
+                <span className="text-sm">
+                  {data?.tickets?.overall_tickets}
+                </span>
+              </div>
+              <Progress
+                value={(data?.tickets?.overall_tickets / totalTickets) * 100}
+                className="h-2 bg-green-200"
+                valueColor="bg-green-400"
+              />
+            </div>
             <div>
               <div className="flex justify-between mb-1">
                 <span className="text-sm font-medium">Pending Tickets</span>
@@ -191,8 +204,8 @@ export default function BottomCard({ data, totalTickets }: any) {
               </div>
               <Progress
                 value={(data?.tickets?.tickets_edited / totalTickets) * 100}
-                className="h-2 bg-green-200"
-                valueColor="bg-green-400"
+                className="h-2 bg-blue-200"
+                valueColor="bg-blue-400"
               />
             </div>
           </div>

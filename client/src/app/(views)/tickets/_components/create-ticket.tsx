@@ -8,22 +8,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  AlertCircleIcon,
-  FileSpreadsheet,
-  Loader2,
-  Plus,
-  X,
-} from "lucide-react";
-import { CalendarIcon } from "lucide-react";
-import { Calendar } from "@/components/ui/calendar";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { AlertCircleIcon, Loader2, Plus, X } from "lucide-react";
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import { TICKET_FORM_DATA } from "@/constants/ticket-form-data";
 import { TicketFormDataType } from "@/types/ticket-form-data-type";
@@ -31,16 +16,9 @@ import formattedDateFull from "@/utils/format-date-full";
 import { api } from "@/lib/api";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { toast } from "sonner";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import Image from "next/image";
-import { formatFileSize } from "@/utils/formatFileSize";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import BasicForm from "./basic-form";
+import SqlForm from "./sql-form";
 
 export function CreateTicket({ setIsRefresh, categories, user }: any) {
   const [formInput, setFormInput] =
@@ -59,6 +37,15 @@ export function CreateTicket({ setIsRefresh, categories, user }: any) {
       ticket_for: user?.branches[0]?.blist_id,
     }));
   }, [user]);
+
+  useEffect(() => {
+    if (formInput.ticket_category) {
+      setFormInput((formData: any) => ({
+        ...formData,
+        ticket_sub_category: "",
+      }));
+    }
+  }, [formInput.ticket_category]);
 
   const handleInputChange =
     (title: string) => (e: ChangeEvent<HTMLInputElement>) => {
@@ -100,6 +87,33 @@ export function CreateTicket({ setIsRefresh, categories, user }: any) {
 
       if (formInput?.ticket_for) {
         formData.append("ticket_for", formInput.ticket_for);
+      }
+
+      if (formInput.ticket_type) {
+        formData.append("ticket_type", formInput?.ticket_type);
+      }
+
+      if (formInput?.purpose) {
+        formData.append("purpose", formInput.purpose);
+      }
+
+      if (formInput?.from) {
+        formData.append("from", formInput.from);
+      }
+
+      if (formInput?.to) {
+        formData.append("to", formInput.to);
+      }
+
+      if (formInput?.ticket_sub_category) {
+        formData.append("ticket_sub_category", formInput.ticket_sub_category);
+      }
+
+      if (formInput?.ticket_reference_number) {
+        formData.append(
+          "ticket_reference_number",
+          formInput.ticket_reference_number
+        );
       }
 
       const response = await api.post("/submit-ticket", formData);
@@ -203,228 +217,53 @@ export function CreateTicket({ setIsRefresh, categories, user }: any) {
           <Plus className="h-4 w-4" /> Create Ticket
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-md">
         <form className="space-y-5" onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>Create Ticket</DialogTitle>
           </DialogHeader>
-          <div className="flex flex-col gap-4 max-h-[calc(100vh-200px)] overflow-y-auto">
-            <div className="flex flex-col gap-3">
-              <Label htmlFor="date" className="px-1">
-                Transaction date
-              </Label>
-              <div className="relative flex gap-2">
-                <Input
-                  id="date"
-                  value={formInput.ticket_transaction_date}
-                  placeholder="June 01, 2025"
-                  className="bg-background pr-10"
-                  onChange={handleInputChange("ticket_transaction_date")}
-                />
-                <Popover modal={true}>
-                  <PopoverTrigger asChild>
-                    <Button
-                      id="ticket_transaction_date"
-                      variant="ghost"
-                      className="absolute top-1/2 right-2 size-6 -translate-y-1/2"
-                    >
-                      <CalendarIcon className="size-3.5" />
-                      <span className="sr-only">Transaction date</span>
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent
-                    className="w-auto overflow-hidden p-0"
-                    align="end"
-                    alignOffset={-8}
-                    sideOffset={10}
-                  >
-                    <Calendar
-                      mode="single"
-                      required
-                      selected={new Date(formInput.ticket_transaction_date)}
-                      captionLayout="dropdown"
-                      onSelect={handleDateChange}
-                      disabled={{ after: new Date() }}
-                    />
-                  </PopoverContent>
-                </Popover>
-              </div>
-              {errors?.ticket_transaction_date && (
-                <small className="text-red-500">
-                  {errors?.ticket_transaction_date[0]}
-                </small>
-              )}
-            </div>
-            <div className="flex flex-col gap-3">
-              <Label htmlFor="date" className="px-1">
-                Ticket category
-              </Label>
-              <Select
-                onValueChange={handleChange("ticket_category")}
-                value={String(formInput.ticket_category)}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select ticket category" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem value="Select ticket category" disabled>
-                      Select ticket category
-                    </SelectItem>
-                    {categories?.data?.length === 0 ? (
-                      <SelectItem value="No ticket categories found">
-                        No ticket categories found
-                      </SelectItem>
-                    ) : (
-                      categories?.data?.map(
-                        (ticket_category: any, index: number) => (
-                          <SelectItem
-                            key={index}
-                            value={String(ticket_category.ticket_category_id)}
-                          >
-                            {ticket_category.category_name}
-                          </SelectItem>
-                        )
-                      )
-                    )}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              {errors?.ticket_category && (
-                <small className="text-red-500">
-                  {errors?.ticket_category[0]}
-                </small>
-              )}
-            </div>
-            {user?.branches?.length > 1 && (
-              <div className="flex flex-col gap-3">
-                <Label htmlFor="date" className="px-1">
-                  Ticket For
-                </Label>
-                <Select
-                  onValueChange={handleChange("ticket_for")}
-                  value={String(formInput.ticket_for)}
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select ticket for" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectItem value="Select ticket for" disabled>
-                        Selec ticket for
-                      </SelectItem>
-                      {user?.branches?.length === 0 ? (
-                        <SelectItem value="No branches found">
-                          No branches found
-                        </SelectItem>
-                      ) : (
-                        user?.branches?.map((branch: any, index: number) => (
-                          <SelectItem
-                            key={index}
-                            value={String(branch.blist_id)}
-                          >
-                            {branch.b_name}
-                          </SelectItem>
-                        ))
-                      )}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-            <div className="flex flex-col gap-3">
-              <Label htmlFor="date" className="px-1">
-                Ticket support
-              </Label>
-              <Input
-                type="file"
-                ref={inputRef}
-                multiple
-                onChange={handleFileChange}
-                hidden
+          <Tabs
+            value={formInput.ticket_type}
+            onValueChange={handleChange("ticket_type")}
+          >
+            <TabsList className="w-full">
+              <TabsTrigger value="netsuite_ticket">Netsuite</TabsTrigger>
+              <TabsTrigger value="sql_ticket">SQL</TabsTrigger>
+            </TabsList>
+            <div className="flex flex-col gap-4 max-h-[calc(100vh-400px)] overflow-y-auto p-3">
+              <BasicForm
+                formInput={formInput}
+                handleInputChange={handleInputChange}
+                handleChange={handleChange}
+                handleFileChange={handleFileChange}
+                categories={categories}
+                user={user}
+                handleRemoveSelectedFile={handleRemoveSelectedFile}
+                handleRemoveAllFile={handleRemoveAllFile}
+                inputRef={inputRef}
+                errors={errors}
+                handleDateChange={handleDateChange}
               />
-              <Button
-                type="button"
-                variant={"outline"}
-                className="w-full border-blue-500 hover:border-blue-600 text-blue-500 hover:text-blue-600"
-                onClick={() => inputRef?.current?.click()}
-              >
-                {formInput.ticket_support.length > 0
-                  ? `Uploaded ${formInput.ticket_support.length} file(s)`
-                  : "Upload file"}
-              </Button>
-              {formInput?.ticket_support?.length > 0 && (
-                <>
-                  <div>
-                    <Button
-                      type="button"
-                      size={"sm"}
-                      className="bg-red-500 hover:bg-red-600"
-                      onClick={handleRemoveAllFile}
-                    >
-                      Remove all
-                    </Button>
-                  </div>
-                  <div className="flex gap-2 overflow-x-auto w-96 h-32 overflow-y-hidden">
-                    {formInput.ticket_support.map(
-                      (file: any, index: number) => (
-                        <div
-                          key={index}
-                          className="group relative rounded-md border"
-                        >
-                          <div className="p-2 w-20 h-20 rounded-md">
-                            {file?.type?.startsWith("image") ? (
-                              <Image
-                                src={URL.createObjectURL(file)}
-                                alt={file.name}
-                                width={30}
-                                height={30}
-                                className="w-full h-full object-cover"
-                              />
-                            ) : (
-                              <FileSpreadsheet className="w-full h-full" />
-                            )}
-
-                            <p className="text-xs truncate">{file.name}</p>
-                            <p className="text-xs">
-                              {formatFileSize(file.size)}
-                            </p>
-                          </div>
-                          <div className="w-20 h-full group-hover:block hidden bg-black/60 absolute top-0 rounded-md z-50">
-                            <Button
-                              type="button"
-                              className="w-full p-0 h-full hover:bg-transparent bg-transparent"
-                              onClick={handleRemoveSelectedFile(index)}
-                            >
-                              <X className="w-full h-full" />
-                            </Button>
-                          </div>
-                          {errors[`ticket_support.${index}`] && (
-                            <small className="text-red-100 bg-red-900/80 text-xs absolute top-0 rounded-md h-full p-2 font-bold">
-                              {errors[`ticket_support.${index}`][0]}
-                            </small>
-                          )}
-                        </div>
-                      )
-                    )}
-                  </div>
-                </>
-              )}
-              {errors?.ticket_support && (
-                <small className="text-red-500">
-                  {errors?.ticket_support[0]}
-                </small>
-              )}
+              <TabsContent value="netsuite_ticket"></TabsContent>
+              <TabsContent value="sql_ticket" className="space-y-4">
+                <SqlForm
+                  formInput={formInput}
+                  errors={errors}
+                  handleInputChange={handleInputChange}
+                />
+              </TabsContent>
             </div>
             {error && (
               <div className="w-full">
                 <Alert variant="destructive">
                   <AlertCircleIcon />
-                  <AlertDescription>{error}</AlertDescription>
+                  <AlertDescription className="max-h-30 overflow-y-auto">
+                    {error}
+                  </AlertDescription>
                 </Alert>
               </div>
             )}
-          </div>
+          </Tabs>
           <DialogFooter>
             <DialogClose asChild>
               <Button variant="outline">Close</Button>

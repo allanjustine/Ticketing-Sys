@@ -19,6 +19,8 @@ class CategoryController extends Controller
     public function index()
     {
         $categories = TicketCategory::query()
+            ->with('subCategories')
+            ->withCount('subCategories')
             ->where('show_hide', 'show')
             ->orderBy('category_shortcut', 'asc')
             ->get();
@@ -53,6 +55,7 @@ class CategoryController extends Controller
         $search = request('search');
 
         $ticketCategories = TicketCategory::with('groupCategory')
+            ->withCount('subCategories')
             ->when(
                 $search,
                 fn($query)
@@ -68,9 +71,9 @@ class CategoryController extends Controller
                 )
                     ->orWhereRelation(
                         'groupCategory',
-                        fn($subQuery)
-                        =>
-                        $subQuery->where('group_code', 'LIKE', "%$search%")
+                        'group_code',
+                        'LIKE',
+                        "%$search%"
                     )
             )
             ->orderByDesc('show_hide')
@@ -102,7 +105,7 @@ class CategoryController extends Controller
     {
         $request->validated();
 
-        $groupCodeId;
+        $groupCodeId = null;
 
         if ($request->group_code === "others") {
             $groupCategory = GroupCategory::query()
@@ -151,7 +154,7 @@ class CategoryController extends Controller
     {
         $request->validated();
 
-        $groupCodeId;
+        $groupCodeId = null;
 
         if ($request->group_code === "others") {
             $groupCategory = GroupCategory::query()

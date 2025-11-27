@@ -20,12 +20,11 @@ class AccountingController extends Controller
 
         $accountings = UserLogin::with('userRole', 'branch', 'userDetail', 'assignedCategories.categoryGroupCode')
             ->search($search)
-            ->whereRelation(
+            ->whereHas(
                 "userRole",
                 fn($query)
                 =>
-                $query->where('role_name', UserRoles::ACCOUNTING_HEAD)
-                    ->orWhere('role_name', UserRoles::ACCOUNTING_STAFF)
+                $query->whereIn('role_name', [UserRoles::ACCOUNTING_HEAD, UserRoles::ACCOUNTING_STAFF])
             )
             ->paginate($limit);
 

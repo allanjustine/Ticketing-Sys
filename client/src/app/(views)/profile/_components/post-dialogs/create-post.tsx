@@ -25,9 +25,9 @@ import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
 export function CreatePost({
-  setisRefresh,
+  setIsRefresh,
 }: {
-  setisRefresh: Dispatch<SetStateAction<boolean>>;
+  setIsRefresh: Dispatch<SetStateAction<boolean>>;
 }) {
   const [formInput, setFormInput] =
     useState<PostFormInputType>(POST_FORM_ITEMS);
@@ -37,7 +37,7 @@ export function CreatePost({
 
   const handlePost = async () => {
     setIsLoading(true);
-    setisRefresh(true);
+    setIsRefresh(true);
     try {
       const response = await api.post("/posts", formInput);
 
@@ -57,95 +57,103 @@ export function CreatePost({
       }
     } finally {
       setIsLoading(false);
-      setisRefresh(false);
+      setIsRefresh(false);
     }
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <form>
-        <DialogTrigger asChild>
-          <Textarea
-            placeholder="What's on your mind?"
-            value={formInput.content}
-            className="resize-none shadowm max-h-26"
-            onChange={(e) =>
-              setFormInput((prev) => ({
-                ...prev,
-                content: e.target.value,
-              }))
-            }
-          />
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Creating post...</DialogTitle>
-          </DialogHeader>
-          <div className="grid gap-4">
-            <div className="grid gap-3">
-              <Select
-                onValueChange={(value) =>
-                  setFormInput((prev) => ({ ...prev, category: value }))
-                }
-                value={formInput.category}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="How are you feeling?" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>How are you feeling?</SelectLabel>
-                    <SelectItem value="😵 Feeling dizzy">
-                      😵 Feeling dizzy
-                    </SelectItem>
-                    <SelectItem value="😊 Feeling happy">
-                      😊 Feeling happy
-                    </SelectItem>
-                    <SelectItem value="😢 Feeling sad">
-                      😢 Feeling sad
-                    </SelectItem>
-                    <SelectItem value="😠 Feeling angry">
-                      😠 Feeling angry
-                    </SelectItem>
-                    <SelectItem value="😴 Feeling tired">
-                      😴 Feeling tired
-                    </SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              {errors?.category && (
-                <small className="text-red-500">{errors?.category[0]}</small>
-              )}
-            </div>
-            <div className="grid gap-3">
-              <Textarea
-                placeholder="What's on your mind?"
-                className="resize-none shadow max-h-46"
-                value={formInput.content}
-                onChange={(e) =>
-                  setFormInput((prev) => ({
-                    ...prev,
-                    content: e.target.value,
-                  }))
-                }
-              />
-              {errors?.content && (
-                <small className="text-red-500">{errors?.content[0]}</small>
-              )}
-            </div>
-          </div>
-          <DialogFooter>
-            <Button
-              type="button"
-              onClick={handlePost}
-              disabled={isLoading}
-              className="bg-blue-500 hover:bg-blue-600 w-full"
+      <DialogTrigger asChild>
+        <Textarea
+          placeholder="What's on your mind?"
+          value={formInput.content}
+          className="resize-none shadowm max-h-26"
+          onChange={(e) =>
+            setFormInput((prev) => ({
+              ...prev,
+              content: e.target.value,
+            }))
+          }
+        />
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Create post</DialogTitle>
+        </DialogHeader>
+        <div className="grid gap-4">
+          <div className="grid gap-3">
+            <Select
+              onValueChange={(value) =>
+                setFormInput((prev) => ({ ...prev, category: value }))
+              }
+              value={formInput.category}
             >
-              {isLoading ? <Loader2 className="animate-spin" /> : "Post"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </form>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="How are you feeling?" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>How are you feeling?</SelectLabel>
+                  <SelectItem value="😵 Feeling dizzy">
+                    😵 Feeling dizzy
+                  </SelectItem>
+                  <SelectItem value="😊 Feeling happy">
+                    😊 Feeling happy
+                  </SelectItem>
+                  <SelectItem value="😢 Feeling sad">😢 Feeling sad</SelectItem>
+                  <SelectItem value="😠 Feeling angry">
+                    😠 Feeling angry
+                  </SelectItem>
+                  <SelectItem value="😴 Feeling tired">
+                    😴 Feeling tired
+                  </SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            {errors?.category && (
+              <small className="text-red-500">{errors?.category[0]}</small>
+            )}
+          </div>
+          <div className="grid gap-3">
+            <Textarea
+              placeholder="What's on your mind?"
+              className="resize-none shadow max-h-46"
+              value={formInput.content}
+              onChange={(e) =>
+                setFormInput((prev) => ({
+                  ...prev,
+                  content:
+                    e.target.value.length > 500
+                      ? e.target.value.slice(0, 500)
+                      : e.target.value,
+                }))
+              }
+            />
+            <small
+              className={`${
+                formInput.content.length >= 500
+                  ? "text-red-500"
+                  : "text-gray-400"
+              }`}
+            >
+              {`${formInput.content.length}/500`}
+            </small>
+            {errors?.content && (
+              <small className="text-red-500">{errors?.content[0]}</small>
+            )}
+          </div>
+        </div>
+        <DialogFooter>
+          <Button
+            type="button"
+            onClick={handlePost}
+            disabled={isLoading}
+            className="bg-blue-500 hover:bg-blue-600 w-full"
+          >
+            {isLoading ? <Loader2 className="animate-spin" /> : "Post"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
     </Dialog>
   );
 }

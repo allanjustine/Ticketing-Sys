@@ -151,7 +151,7 @@ class UserLogin extends Authenticatable
     }
 
     #[Scope]
-    protected function search($query, $term)
+    public function search($query, $term)
     {
         $query->when(
             $term,

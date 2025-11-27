@@ -56,6 +56,7 @@ export function ViewReportDetails({ data, open, setIsOpen }: any) {
                 data={selectedTicketData}
                 open={isViewDialogOpen}
                 setOpen={setIsViewDialogOpen}
+                setNote={setNoteValue}
               />
             )}
         </>
@@ -180,29 +181,35 @@ export function ViewReportDetails({ data, open, setIsOpen }: any) {
         </DrawerContent>
       </Drawer>
 
-      <ReturnToAutomation
-        ticketCode={ticketCode}
-        setOpen={setIsReturnOpen}
-        open={isReturnOpen}
-        setIsOpen={setIsOpen}
-      />
+      {isReturnOpen && (
+        <ReturnToAutomation
+          ticketCode={ticketCode}
+          setOpen={setIsReturnOpen}
+          open={isReturnOpen}
+          setIsOpen={setIsOpen}
+        />
+      )}
 
-      <IsForCounted
-        ticketCode={ticketCode}
-        setOpen={setIsForCountedOpen}
-        open={isForCountedOpen}
-        setIsOpen={setIsOpen}
-        type={type}
-      />
+      {isForCountedOpen && (
+        <IsForCounted
+          ticketCode={ticketCode}
+          setOpen={setIsForCountedOpen}
+          open={isForCountedOpen}
+          setIsOpen={setIsOpen}
+          type={type}
+        />
+      )}
 
-      <EditNote
-        ticketCode={ticketCode}
-        setOpen={setIsForEditNote}
-        open={isForEditNote}
-        setIsOpen={setIsOpen}
-        noteValue={noteValue}
-        setNoteValue={setNoteValue}
-      />
+      {isForEditNote && (
+        <EditNote
+          ticketCode={ticketCode}
+          setOpen={setIsForEditNote}
+          open={isForEditNote}
+          setIsOpen={setIsOpen}
+          noteValue={noteValue}
+          setNoteValue={setNoteValue}
+        />
+      )}
     </>
   );
 }

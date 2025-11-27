@@ -22,6 +22,7 @@ use App\Http\Controllers\Api\SupplierController;
 use App\Http\Controllers\Api\TicketController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\SendLoginCodeController;
+use App\Http\Controllers\Api\SubCategoryController;
 use App\Http\Controllers\Api\UserRoleController;
 use App\Models\BranchList;
 use App\Models\GroupCategory;
@@ -58,10 +59,12 @@ Route::middleware([
         Route::get('/get-top-branches', 'getTopBranches');
         Route::get('/get-all-branch-categories', 'getAllBranchCategories');
         Route::get('/get-all-branches-table', 'getAllBranchesTable');
-        Route::get('/admin/branches', 'getAllBranches');
         Route::post('/branches', 'store');
         Route::patch('/branches/{id}/update', 'update');
         Route::delete('/branches/{id}/delete', 'destroy');
+        Route::prefix('admin')->group(function () {
+            Route::get('branches', 'getAllBranches');
+        });
     });
 
     Route::controller(DashboardController::class)->group(function () {
@@ -71,9 +74,11 @@ Route::middleware([
 
     Route::controller(SupplierController::class)->group(function () {
         Route::get('/suppliers', 'index');
-        Route::post('admin/suppliers', 'store');
-        Route::patch('admin/suppliers/{id}/update', 'update');
-        Route::delete('admin/suppliers/{id}/delete', 'destroy');
+        Route::prefix('admin')->group(function () {
+            Route::post('suppliers', 'store');
+            Route::patch('suppliers/{id}/update', 'update');
+            Route::delete('suppliers/{id}/delete', 'destroy');
+        });
     });
 
     Route::controller(TicketController::class)->group(function () {
@@ -90,25 +95,26 @@ Route::middleware([
         Route::patch('/return-to-automation/{ticket_code}/return', 'returnToAutomation');
         Route::patch('/counted-or-not-counted/{ticket_code}/counted-or-not-counted', 'markAsCountedOrNotCounted');
         Route::patch('/edit-note/{ticket_code}/update', 'editNote');
+        Route::patch('/transfer-ticket/{ticket_code}/to-automation', 'transferTicketToAutomation');
     });
 
     Route::controller(CategoryController::class)->group(function () {
         Route::get('/categories', 'index');
-        Route::get('/admin/ticket-categories', 'adminTicketCategories');
         Route::get('/getAssignedCategories', 'assignedCategories');
         Route::get('/getAssignedCategoryGroup/{id}', 'assignedCategoryGroup');
         Route::patch('/ticket-category/{id}/show-hide', 'showHide');
-
         Route::get('/group-categories', function () {
             return response()->json([
                 'message'   => 'Successfully fetched group categories',
                 'data'      => GroupCategory::all()
             ]);
         });
-
-        Route::post('/admin/categories', 'store');
-        Route::patch('/admin/categories/{ticket_category}/update', 'update');
-        Route::delete('/admin/categories/{ticket_category}/delete', 'destroy');
+        Route::prefix('admin')->group(function () {
+            Route::get('ticket-categories', 'adminTicketCategories');
+            Route::post('categories', 'store');
+            Route::patch('categories/{ticket_category}/update', 'update');
+            Route::delete('categories/{ticket_category}/delete', 'destroy');
+        });
     });
 
     Route::controller(UserController::class)->group(function () {
@@ -123,6 +129,7 @@ Route::middleware([
         Route::get('/automation-branches/{user_id}/get-branches', 'show');
         Route::patch('/automation/{user_id}/update', 'update');
         Route::delete('/automation/{user_id}/delete', 'destroy');
+        Route::get('/all-automations', 'getAllAutomations');
     });
 
     Route::controller(AccountingController::class)->group(function () {
@@ -177,16 +184,24 @@ Route::middleware([
     });
 
     Route::controller(CommentController::class)->group(function () {
+        Route::get('/comments/{post_id}/comments', 'index');
         Route::post('/comments', 'store');
         Route::patch('/comments/{id}/update', 'update');
         Route::delete('/comments/{id}/delete', 'destroy');
     });
 
     Route::post('/posts/{id}/like-unline', LikeController::class);
+
+    Route::prefix('admin')->controller(SubCategoryController::class)->group(function () {
+        Route::get('sub-categories/{ticket_category_id}/ticket-category-items', 'index');
+        Route::post('sub-categories', 'store');
+        Route::patch('sub-categories/{id}/update', 'update');
+        Route::delete('sub-categories/{id}/delete', 'destroy');
+    });
 });
 
 // GUEST ROUTES
-Route::middleware("throttle:10,1")->group(function () {
+Route::middleware("throttle:20,1")->group(function () {
     Route::controller(BranchController::class)->group(function () {
         Route::get('/branches', 'index');
     });
@@ -227,7 +242,7 @@ Route::post('/test-data', function (Request $request) {
         'message'   => 'Successfully submitted',
         'datas'     => $datas,
     ], 201);
-})->middleware('throttle:10,1');
+})->middleware('throttle:20,1');
 
 Route::delete('/delete-blist', function (Request $request) {
     BranchList::query()
@@ -236,4 +251,4 @@ Route::delete('/delete-blist', function (Request $request) {
     return response()->json([
         'message'   => 'Successfully deleted',
     ], 201);
-})->middleware('throttle:10,1');
+})->middleware('throttle:20,1');

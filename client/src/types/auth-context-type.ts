@@ -13,7 +13,7 @@ export interface AuthContextType {
   setIsAuthenticated?: () => Dispatch<SetStateAction<boolean>>;
   isLoading: boolean;
   isAdmin: boolean;
-  setIsLoading?: () => Dispatch<SetStateAction<boolean>>;
+  setIsLoading: Dispatch<SetStateAction<boolean>>;
   login: (credentials: CredentialType) => Promise<AxiosResponse<any, any>>;
   logout: () => Promise<void>;
   fetchUserProfile: () => Promise<void>;

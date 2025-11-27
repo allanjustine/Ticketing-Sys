@@ -37,7 +37,6 @@ const Register = () => {
   const [errors, setErrors] = useState<any>(null);
   const [error, setError] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isOpenSelect, setIsOpenSelect] = useState<boolean>(false);
   const router = useRouter();
   const { isLoading: branchIsLoading, data } = useFetch({
     url: "/branches",

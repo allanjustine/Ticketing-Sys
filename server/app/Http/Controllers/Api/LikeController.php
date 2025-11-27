@@ -13,19 +13,10 @@ class LikeController extends Controller
     {
         $post = Post::findOrFail($id);
 
-        if ($post->userLikes->contains(Auth::id())) {
-
-            $post->userLikes()->detach(Auth::id());
-
-            return response()->json([
-                'message'           => "Post unliked successfully",
-            ], 201);
-        }
-
-        $post->userLikes()->attach(Auth::id());
+        $message = $post->toggleLikeUnlike(Auth::id());
 
         return response()->json([
-            'message'           => "Post liked successfully",
+            'message'           => "Post {$message} successfully",
         ], 201);
     }
 }

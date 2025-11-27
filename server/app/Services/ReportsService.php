@@ -25,7 +25,8 @@ class ReportsService
         $ticketCategory,
         $branchCategory,
         $currentPage,
-        $search
+        $search,
+        $ticket_type
     ) {
 
         $assignedBranchCas = $user->assignedBranchCas->pluck('blist_id');
@@ -40,6 +41,7 @@ class ReportsService
             'userLogin.branch',
             'ticketDetail.ticketCategory',
             'ticketDetail.supplier',
+            'ticketDetail.subCategory',
             'assignedPerson.userDetail',
             'assignedPerson.userRole',
             'assignedPerson.branch',
@@ -60,6 +62,12 @@ class ReportsService
             'editedBy.branch',
             'branch'
         )
+            ->when(
+                $ticket_type,
+                fn($query)
+                =>
+                $query->whereRelation('ticketDetail', 'ticket_type', $ticket_type)
+            )
             ->when(
                 $search,
                 fn($query)
@@ -214,7 +222,8 @@ class ReportsService
         $branchCode,
         $ticketCategory,
         $branchCategory,
-        $search
+        $search,
+        $ticket_type
     ) {
 
         $assignedBranchCas = $user->assignedBranchCas->pluck('blist_id');
@@ -229,6 +238,7 @@ class ReportsService
             'userLogin.branch',
             'ticketDetail.ticketCategory',
             'ticketDetail.supplier',
+            'ticketDetail.subCategory',
             'assignedPerson.userDetail',
             'assignedPerson.userRole',
             'assignedPerson.branch',
@@ -249,6 +259,12 @@ class ReportsService
             'editedBy.branch',
             'branch',
         )
+            ->when(
+                $ticket_type,
+                fn($query)
+                =>
+                $query->whereRelation('ticketDetail', 'ticket_type', $ticket_type)
+            )
             ->when(
                 $search,
                 fn($query)
@@ -352,9 +368,33 @@ class ReportsService
             $item->branch->b_code,
         ]))->map(function ($group) {
             $first = $group->first();
+
+            $allTicketDetails = $group->pluck('ticketDetail')->flatten();
+
+            $groupedTicketDetail  = $allTicketDetails->groupBy('ticket_category_id')->map(function ($group) {
+                $allSubCategories = $group->pluck('subCategory')->flatten();
+
+                $groupedSubCategory = $allSubCategories->groupBy('sub_category_name')->map(function ($group) {
+                    if (!$group->first()?->sub_category_name) {
+                        return [];
+                    }
+                    return [
+                        'sub_category_name'  => $group->first()?->sub_category_name,
+                        'sub_category_count' => $group->count()
+                    ];
+                })->values();
+
+                return [
+                    'ticket_category_name'  => $group->first()?->ticketCategory?->category_name,
+                    'ticket_category_count' => $group->count(),
+                    'sub_category_items'    => $groupedSubCategory
+                ];
+            })->values();
+
             return [
-                'branch_name'                   => $first->branch_name,
-                'ticket_count'                  => $group->count(),
+                'branch_name'           => $first->branch_name,
+                'ticket_count'          => $group->count(),
+                'ticket_category_items' => $groupedTicketDetail
             ];
         })
             ->values();

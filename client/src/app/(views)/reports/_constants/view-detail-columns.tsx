@@ -47,6 +47,15 @@ export const VIEW_DETAIL_COMLUMNS = [
     cell: (row: any) => row.ticket_detail.ticket_category.category_name,
   },
   {
+    name: "TICKET SUB CATEGORY",
+    cell: (row: any) => row?.ticket_detail.sub_category?.sub_category_name,
+  },
+  {
+    name: "TICKET TYPE",
+    cell: (row: any) =>
+      row?.ticket_detail?.ticket_type?.replace(/_/g, " ")?.toUpperCase(),
+  },
+  {
     name: "REFERENCE NUMBER",
     cell: (row: any) => row.ticket_detail.td_ref_number,
   },

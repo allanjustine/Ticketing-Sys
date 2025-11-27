@@ -7,6 +7,8 @@ export const isApprovers = (role: string) => {
     ROLE.AUTOMATION_ADMIN,
     ROLE.ADMIN,
     ROLE.BRANCH_HEAD,
+    ROLE.ACCOUNTING_HEAD,
+    ROLE.ACCOUNTING_STAFF,
   ];
   return approverRoles.includes(role);
 };

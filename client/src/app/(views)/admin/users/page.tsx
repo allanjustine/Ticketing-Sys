@@ -34,6 +34,7 @@ function Users() {
     isPaginated: true,
     filters: SEARCH_FILTER,
   });
+
   const { isLoading: branchIsLoading, data: branchData } = useFetch({
     url: "/branches",
   });

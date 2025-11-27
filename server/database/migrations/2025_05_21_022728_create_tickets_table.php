@@ -30,6 +30,7 @@ return new class extends Migration
             $table->integer('notifAUTM')->nullable();
             $table->integer('notifAdmin')->nullable();
             $table->integer('displayTicket')->nullable();
+            $table->integer('last_approver')->nullable();
             $table->foreignId('approveHead')->nullable()->constrained('user_logins', 'login_id')->onDelete('cascade');
             $table->foreignId('approveAcctgStaff')->nullable()->constrained('user_logins', 'login_id')->onDelete('cascade');
             $table->foreignId('approveAcctgSup')->nullable()->constrained('user_logins', 'login_id')->onDelete('cascade');

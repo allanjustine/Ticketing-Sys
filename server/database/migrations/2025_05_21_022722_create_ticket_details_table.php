@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('ticket_category_id')->constrained('ticket_categories', 'ticket_category_id')->onDelete('cascade');
             $table->foreignId('sub_category_id')->constrained('sub_categories', 'id')->onDelete('cascade');
             $table->string('ticket_transaction_date')->nullable();
-            $table->string('ticket_type')->nullable();
+            $table->string('ticket_type')->default('netsuite_ticket')->nullable();
             $table->string('td_ref_number')->nullable();
             $table->string('td_purpose')->nullable();
             $table->string('td_from')->nullable();

@@ -151,7 +151,7 @@ class ReportsService
                             break;
                         case UserRoles::ACCOUNTING_STAFF:
                             $subQuery->where('login_id', Auth::id())
-                                ->orWhereIn('branch_id', $userBranchIds);
+                                ->orWhereHas('ticketDetail', fn($triQuery) => $triQuery->whereHas('ticketCategory', fn($ticketQuery) => $ticketQuery->whereIn('group_code', $accountingHeadCodes)));
                             break;
                     }
                 });
@@ -353,7 +353,7 @@ class ReportsService
                             break;
                         case UserRoles::ACCOUNTING_STAFF:
                             $subQuery->where('login_id', Auth::id())
-                                ->orWhereIn('branch_id', $userBranchIds);
+                                ->orWhereHas('ticketDetail', fn($triQuery) => $triQuery->whereHas('ticketCategory', fn($ticketQuery) => $ticketQuery->whereIn('group_code', $accountingHeadCodes)));
                             break;
                     }
                 });

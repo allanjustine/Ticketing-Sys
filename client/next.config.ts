@@ -3,7 +3,19 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   /* config options here */
   images: {
-    domains: ["api-netsuite.smctgroup.ph", "localhost"],
+    remotePatterns: [
+      {
+        protocol: "http",
+        hostname: "localhost",
+        port: "4001",
+        pathname: "/storage/uploads/**",
+      },
+      {
+        protocol: "https",
+        hostname: "api-netsuite.smctgroup.ph",
+      },
+    ],
+    unoptimized: true,
   },
 };
 

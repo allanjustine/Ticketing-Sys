@@ -78,7 +78,7 @@ export function CreatePost({
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Creating post...</DialogTitle>
+          <DialogTitle>Create post</DialogTitle>
         </DialogHeader>
         <div className="grid gap-4">
           <div className="grid gap-3">

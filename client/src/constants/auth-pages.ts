@@ -1,1 +1,1 @@
-export const AUTH_PAGES = ["/login", "/register"];
+export const AUTH_PAGES = ["/login", "/register", "/"];

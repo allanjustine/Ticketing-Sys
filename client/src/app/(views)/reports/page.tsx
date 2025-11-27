@@ -305,9 +305,10 @@ function Reports() {
       const blob = new Blob([excelBuffer], {
         type: "application/octet-stream",
       });
+
       saveAs(
         blob,
-        `${filterBy.search && `${filterBy.search}-`}${
+        `${filterBy.ticket_type && `${filterBy.ticket_type}-`}${filterBy.search && `${filterBy.search}-`}${
           filterBy?.edited_transaction_start_date &&
           filterBy?.edited_transaction_end_date &&
           `Transaction-Date-${formatDate(

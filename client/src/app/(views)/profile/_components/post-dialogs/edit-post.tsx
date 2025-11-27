@@ -88,7 +88,7 @@ export function EditPost({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Editing post...</DialogTitle>
+          <DialogTitle>Edit post</DialogTitle>
         </DialogHeader>
         <div className="grid gap-4">
           <div className="grid gap-3">

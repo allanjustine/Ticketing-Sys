@@ -18,6 +18,7 @@ import { api } from "@/lib/api";
 import { ROLE } from "@/constants/roles";
 import echo from "@/lib/echo";
 import { toast } from "sonner";
+import { usePathname } from "next/navigation";
 
 export const AuthContext = createContext<AuthContextType | undefined>(
   undefined
@@ -36,10 +37,11 @@ export default function AuthContextProvider({
   const [totalUnreadNotifications, setTotalUnreadNotifications] =
     useState<number>(0);
   const isAdminOrAutomationAdmin = [ROLE.ADMIN, ROLE.AUTOMATION_ADMIN];
+  const pathname = usePathname();
 
   useEffect(() => {
     fetchUserProfile();
-  }, []);
+  }, [pathname]);
 
   useEffect(() => {
     if (!echo || !user) return;

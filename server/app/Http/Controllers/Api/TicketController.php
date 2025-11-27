@@ -14,6 +14,7 @@ use App\Services\ReportsService;
 use App\Services\TicketService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class TicketController extends Controller
 {
@@ -102,7 +103,8 @@ class TicketController extends Controller
                             break;
                         case UserRoles::AUTOMATION_MANAGER:
                             $subQuery->whereNot('status', TicketStatus::EDITED)
-                                ->has('pendingUser');
+                                ->where('displayTicket', Auth::id())
+                                ->orWhere('last_approver', Auth::id());
                             break;
                         case UserRoles::BRANCH_HEAD:
                             $subQuery->whereNot('status', TicketStatus::EDITED)
@@ -118,22 +120,34 @@ class TicketController extends Controller
                             break;
                         case UserRoles::ACCOUNTING_HEAD:
                             $subQuery->where('status', TicketStatus::PENDING)
-                                ->whereHas(
-                                    'ticketDetail',
-                                    fn($triQuery)
-                                    =>
-                                    $triQuery->whereHas(
-                                        'ticketCategory',
-                                        fn($ticketQuery)
-                                        =>
-                                        $ticketQuery->whereIn('group_code', $accountingHeadCodes)
-                                    )
-                                );
+                                // ->whereHas(
+                                //     'ticketDetail',
+                                //     fn($triQuery)
+                                //     =>
+                                //     $triQuery->whereHas(
+                                //         'ticketCategory',
+                                //         fn($ticketQuery)
+                                //         =>
+                                //         $ticketQuery->whereIn('group_code', $accountingHeadCodes)
+                                //     )
+                                // );
+                                ->where('displayTicket', Auth::id());
                             break;
                         case UserRoles::ACCOUNTING_STAFF:
                             $subQuery->whereNot('status', TicketStatus::EDITED)
                                 ->where('login_id', Auth::id())
-                                ->orWhereIn('branch_id', $userBranchIds);
+                                // ->orWhereHas(
+                                //     'ticketDetail',
+                                //     fn($triQuery)
+                                //     =>
+                                //     $triQuery->whereHas(
+                                //         'ticketCategory',
+                                //         fn($ticketQuery)
+                                //         =>
+                                //         $ticketQuery->whereIn('group_code', $accountingHeadCodes)
+                                //     )
+                                // );
+                                ->orWhere('displayTicket', Auth::id());
                             break;
                     }
                 });
@@ -167,6 +181,7 @@ class TicketController extends Controller
         $branchCategory = request('branch_type');
         $currentPage = request('page');
         $search = request('search');
+        $ticket_type = request('ticket_type');
 
         $user = Auth::user();
 
@@ -186,7 +201,8 @@ class TicketController extends Controller
             $ticketCategory,
             $branchCategory,
             $currentPage,
-            $search
+            $search,
+            $ticket_type
         );
 
         return response()->json([
@@ -356,7 +372,7 @@ class TicketController extends Controller
         $field = $user->isBranchHead() ? 'td_note_bh' : 'td_note';
 
         $validateData = [
-            $field            => ['required', 'max:255', 'min:1']
+            $field            => [Rule::requiredIf(!$user->isAccountingHead() && !$user->isAccountingStaff()), 'max:255', 'min:1']
         ];
 
         $validateDataMessage = [

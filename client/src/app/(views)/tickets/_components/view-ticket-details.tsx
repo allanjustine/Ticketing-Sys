@@ -114,7 +114,7 @@ export function ViewTicketDetails({
                 <div className="text-gray-600 font-bold text-xl text-center">
                   Branch head note
                 </div>
-                <div className="text-sm">{data?.ticket_detail?.td_note_bh}</div>
+                <div className="text-sm wrap-break-word">{data?.ticket_detail?.td_note_bh}</div>
               </div>
             )}
             {data?.ticket_detail?.td_note && (
@@ -122,7 +122,7 @@ export function ViewTicketDetails({
                 <div className="text-gray-600 font-bold text-xl text-center">
                   Automation note
                 </div>
-                <div className="text-sm">{data?.ticket_detail?.td_note}</div>
+                <div className="text-sm wrap-break-word">{data?.ticket_detail?.td_note}</div>
               </div>
             )}
             {isApprovers(role) && isYourPendingTicket && !TICKET_REJECTED && (
@@ -432,7 +432,7 @@ export function ViewTicketDetails({
       <Dialog onOpenChange={setOpenImage} open={openImage}>
         <DialogContent
           showCloseButton={false}
-          className="bg-transparent border-none shadow-none sm:!max-w-sm md:!max-w-md lg:!max-w-lg xl:!max-w-xl 2xl:!max-w-2xl !h-fit"
+          className="bg-transparent border-none shadow-none sm:max-w-sm! md:max-w-md! lg:max-w-lg! xl:max-w-xl! 2xl:max-w-2xl! h-fit!"
         >
           <DialogHeader>
             <DialogTitle></DialogTitle>

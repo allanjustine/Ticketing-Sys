@@ -25,7 +25,8 @@ class ReportsService
         $ticketCategory,
         $branchCategory,
         $currentPage,
-        $search
+        $search,
+        $ticket_type
     ) {
 
         $assignedBranchCas = $user->assignedBranchCas->pluck('blist_id');
@@ -61,6 +62,12 @@ class ReportsService
             'editedBy.branch',
             'branch'
         )
+            ->when(
+                $ticket_type,
+                fn($query)
+                =>
+                $query->whereRelation('ticketDetail', 'ticket_type', $ticket_type)
+            )
             ->when(
                 $search,
                 fn($query)
@@ -215,7 +222,8 @@ class ReportsService
         $branchCode,
         $ticketCategory,
         $branchCategory,
-        $search
+        $search,
+        $ticket_type
     ) {
 
         $assignedBranchCas = $user->assignedBranchCas->pluck('blist_id');
@@ -251,6 +259,12 @@ class ReportsService
             'editedBy.branch',
             'branch',
         )
+            ->when(
+                $ticket_type,
+                fn($query)
+                =>
+                $query->whereRelation('ticketDetail', 'ticket_type', $ticket_type)
+            )
             ->when(
                 $search,
                 fn($query)

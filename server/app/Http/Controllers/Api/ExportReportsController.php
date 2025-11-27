@@ -21,6 +21,7 @@ class ExportReportsController extends Controller
         $ticketCategory = $request->ticket_category;
         $branchCategory = $request->branch_type;
         $search = $request->search;
+        $ticket_type = $request->ticket_type;
 
         $user = Auth::user();
 
@@ -38,7 +39,8 @@ class ExportReportsController extends Controller
             $branchCode,
             $ticketCategory,
             $branchCategory,
-            $search
+            $search,
+            $ticket_type
         );
 
         return response()->json([

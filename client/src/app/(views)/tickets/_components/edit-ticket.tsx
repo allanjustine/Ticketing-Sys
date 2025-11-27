@@ -249,7 +249,7 @@ export function EditTicket({
 
   return (
     <Dialog open={open} onOpenChange={setIsOpenDialog}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-md">
         <form className="space-y-5" onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>

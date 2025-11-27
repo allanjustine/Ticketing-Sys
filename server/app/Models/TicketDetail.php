@@ -25,13 +25,6 @@ class TicketDetail extends Model
         ];
     }
 
-    protected $attributes = [
-        'td_purpose' => '[]',
-        'td_from'    => '[]',
-        'td_to'      => '[]',
-        'td_support' => '[]',
-    ];
-
     public function ticketCategory()
     {
         return $this->belongsTo(TicketCategory::class, 'ticket_category_id');

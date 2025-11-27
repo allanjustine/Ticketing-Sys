@@ -36,6 +36,8 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 COPY . /var/www
 COPY . .
 
+RUN docker-php-ext-install sockets
+
 # Build frontend assets
 RUN npm install && npm run build
 

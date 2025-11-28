@@ -31,182 +31,180 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 // AUTHENTICATED ROUTES
-Route::middleware('web')->group(function () {
-    Route::middleware([
-        "auth:sanctum",
-        "throttle:50,1"
-    ])->group(function () {
-        Route::get(
-            '/profile',
-            fn(Request $request)
-            =>
-            $request->user()->load(
-                'userDetail',
-                'userRole',
-                'branch',
-                'assignedCategories.categoryGroupCode',
-                'assignedBranches.branch:blist_id,b_code',
-                'assignedBranchCas.branch:blist_id,b_code',
-                'assignedAreaManagers.branch:blist_id,b_code',
-                'accountingAssignedBranches:blist_id,b_code',
-                'unreadNotifications'
-            )
-                ->loadCount('unreadNotifications')
-        );
+Route::middleware([
+    "auth:sanctum",
+    "throttle:50,1"
+])->group(function () {
+    Route::get(
+        '/profile',
+        fn(Request $request)
+        =>
+        $request->user()->load(
+            'userDetail',
+            'userRole',
+            'branch',
+            'assignedCategories.categoryGroupCode',
+            'assignedBranches.branch:blist_id,b_code',
+            'assignedBranchCas.branch:blist_id,b_code',
+            'assignedAreaManagers.branch:blist_id,b_code',
+            'accountingAssignedBranches:blist_id,b_code',
+            'unreadNotifications'
+        )
+            ->loadCount('unreadNotifications')
+    );
 
-        Route::controller(ProfileController::class)->group(function () {
-            Route::post('/profile/update', 'update');
+    Route::controller(ProfileController::class)->group(function () {
+        Route::post('/profile/update', 'update');
+    });
+
+    Route::controller(BranchController::class)->group(function () {
+        Route::get('/get-top-branches', 'getTopBranches');
+        Route::get('/get-all-branch-categories', 'getAllBranchCategories');
+        Route::get('/get-all-branches-table', 'getAllBranchesTable');
+        Route::post('/branches', 'store');
+        Route::patch('/branches/{id}/update', 'update');
+        Route::delete('/branches/{id}/delete', 'destroy');
+        Route::prefix('admin')->group(function () {
+            Route::get('branches', 'getAllBranches');
         });
+    });
 
-        Route::controller(BranchController::class)->group(function () {
-            Route::get('/get-top-branches', 'getTopBranches');
-            Route::get('/get-all-branch-categories', 'getAllBranchCategories');
-            Route::get('/get-all-branches-table', 'getAllBranchesTable');
-            Route::post('/branches', 'store');
-            Route::patch('/branches/{id}/update', 'update');
-            Route::delete('/branches/{id}/delete', 'destroy');
-            Route::prefix('admin')->group(function () {
-                Route::get('branches', 'getAllBranches');
-            });
+    Route::controller(DashboardController::class)->group(function () {
+        Route::get('/get-automation-data', 'index');
+        Route::get('/dashboard-data', 'dashboardData');
+    });
+
+    Route::controller(SupplierController::class)->group(function () {
+        Route::get('/suppliers', 'index');
+        Route::prefix('admin')->group(function () {
+            Route::post('suppliers', 'store');
+            Route::patch('suppliers/{id}/update', 'update');
+            Route::delete('suppliers/{id}/delete', 'destroy');
         });
+    });
 
-        Route::controller(DashboardController::class)->group(function () {
-            Route::get('/get-automation-data', 'index');
-            Route::get('/dashboard-data', 'dashboardData');
+    Route::controller(TicketController::class)->group(function () {
+        Route::get('/tickets', 'index');
+        Route::get('/reports', 'reports');
+        Route::put('/update-notif/{id}', 'updateNotif');
+        Route::post('/submit-ticket', 'store');
+        Route::post('/update-ticket/{id}/update', 'update');
+        Route::delete('/delete-ticket/{id}/delete', 'destroy');
+        Route::patch('/revise-ticket/{id}/revise', 'revise');
+        Route::patch('/approve-ticket/{id}/approve', 'approve');
+        Route::patch('/mark-as-edited-ticket/{id}/mark-as-edited', 'markAsEdited');
+        Route::get('/view-ticket/{id}/view', 'show');
+        Route::patch('/return-to-automation/{ticket_code}/return', 'returnToAutomation');
+        Route::patch('/counted-or-not-counted/{ticket_code}/counted-or-not-counted', 'markAsCountedOrNotCounted');
+        Route::patch('/edit-note/{ticket_code}/update', 'editNote');
+        Route::patch('/transfer-ticket/{ticket_code}/to-automation', 'transferTicketToAutomation');
+    });
+
+    Route::controller(CategoryController::class)->group(function () {
+        Route::get('/categories', 'index');
+        Route::get('/getAssignedCategories', 'assignedCategories');
+        Route::get('/getAssignedCategoryGroup/{id}', 'assignedCategoryGroup');
+        Route::patch('/ticket-category/{id}/show-hide', 'showHide');
+        Route::get('/group-categories', function () {
+            return response()->json([
+                'message'   => 'Successfully fetched group categories',
+                'data'      => GroupCategory::all()
+            ]);
         });
-
-        Route::controller(SupplierController::class)->group(function () {
-            Route::get('/suppliers', 'index');
-            Route::prefix('admin')->group(function () {
-                Route::post('suppliers', 'store');
-                Route::patch('suppliers/{id}/update', 'update');
-                Route::delete('suppliers/{id}/delete', 'destroy');
-            });
+        Route::prefix('admin')->group(function () {
+            Route::get('ticket-categories', 'adminTicketCategories');
+            Route::post('categories', 'store');
+            Route::patch('categories/{ticket_category}/update', 'update');
+            Route::delete('categories/{ticket_category}/delete', 'destroy');
         });
+    });
 
-        Route::controller(TicketController::class)->group(function () {
-            Route::get('/tickets', 'index');
-            Route::get('/reports', 'reports');
-            Route::put('/update-notif/{id}', 'updateNotif');
-            Route::post('/submit-ticket', 'store');
-            Route::post('/update-ticket/{id}/update', 'update');
-            Route::delete('/delete-ticket/{id}/delete', 'destroy');
-            Route::patch('/revise-ticket/{id}/revise', 'revise');
-            Route::patch('/approve-ticket/{id}/approve', 'approve');
-            Route::patch('/mark-as-edited-ticket/{id}/mark-as-edited', 'markAsEdited');
-            Route::get('/view-ticket/{id}/view', 'show');
-            Route::patch('/return-to-automation/{ticket_code}/return', 'returnToAutomation');
-            Route::patch('/counted-or-not-counted/{ticket_code}/counted-or-not-counted', 'markAsCountedOrNotCounted');
-            Route::patch('/edit-note/{ticket_code}/update', 'editNote');
-            Route::patch('/transfer-ticket/{ticket_code}/to-automation', 'transferTicketToAutomation');
-        });
+    Route::controller(UserController::class)->group(function () {
+        Route::get('/users', 'index');
+        Route::post('/users', 'store');
+        Route::patch('/users/{id}/update', 'update');
+        Route::delete('/users/{id}/delete', 'destroy');
+    });
 
-        Route::controller(CategoryController::class)->group(function () {
-            Route::get('/categories', 'index');
-            Route::get('/getAssignedCategories', 'assignedCategories');
-            Route::get('/getAssignedCategoryGroup/{id}', 'assignedCategoryGroup');
-            Route::patch('/ticket-category/{id}/show-hide', 'showHide');
-            Route::get('/group-categories', function () {
-                return response()->json([
-                    'message'   => 'Successfully fetched group categories',
-                    'data'      => GroupCategory::all()
-                ]);
-            });
-            Route::prefix('admin')->group(function () {
-                Route::get('ticket-categories', 'adminTicketCategories');
-                Route::post('categories', 'store');
-                Route::patch('categories/{ticket_category}/update', 'update');
-                Route::delete('categories/{ticket_category}/delete', 'destroy');
-            });
-        });
+    Route::controller(AutomationController::class)->group(function () {
+        Route::get('/automations', 'index');
+        Route::get('/automation-branches/{user_id}/get-branches', 'show');
+        Route::patch('/automation/{user_id}/update', 'update');
+        Route::delete('/automation/{user_id}/delete', 'destroy');
+        Route::get('/all-automations', 'getAllAutomations');
+    });
 
-        Route::controller(UserController::class)->group(function () {
-            Route::get('/users', 'index');
-            Route::post('/users', 'store');
-            Route::patch('/users/{id}/update', 'update');
-            Route::delete('/users/{id}/delete', 'destroy');
-        });
+    Route::controller(AccountingBranchSetupController::class)->group(function () {
+        Route::get('/accounting-branches/{user_id}/get-branches', 'show');
+        Route::patch('/accounting/{user_id}/update', 'update');
+        Route::delete('/accounting/{user_id}/delete', 'destroy');
+    });
 
-        Route::controller(AutomationController::class)->group(function () {
-            Route::get('/automations', 'index');
-            Route::get('/automation-branches/{user_id}/get-branches', 'show');
-            Route::patch('/automation/{user_id}/update', 'update');
-            Route::delete('/automation/{user_id}/delete', 'destroy');
-            Route::get('/all-automations', 'getAllAutomations');
-        });
+    Route::controller(AccountingController::class)->group(function () {
+        Route::get('/accountings', 'index');
+        Route::get('/accounting-categories', 'show');
+        Route::patch('/accounting-category/{user_id}/update', 'update');
+        Route::delete('/accounting-category/{user_id}/delete', 'destroy');
+    });
 
-        Route::controller(AccountingBranchSetupController::class)->group(function () {
-            Route::get('/accounting-branches/{user_id}/get-branches', 'show');
-            Route::patch('/accounting/{user_id}/update', 'update');
-            Route::delete('/accounting/{user_id}/delete', 'destroy');
-        });
+    Route::controller(CasController::class)->group(function () {
+        Route::get('/cas', 'index');
+        Route::get('/cas-branches/{user_id}/get-branches', 'show');
+        Route::patch('/cas/{user_id}/update', 'update');
+        Route::delete('/cas/{user_id}/delete', 'destroy');
+    });
 
-        Route::controller(AccountingController::class)->group(function () {
-            Route::get('/accountings', 'index');
-            Route::get('/accounting-categories', 'show');
-            Route::patch('/accounting-category/{user_id}/update', 'update');
-            Route::delete('/accounting-category/{user_id}/delete', 'destroy');
-        });
+    Route::controller(AreaManagerController::class)->group(function () {
+        Route::get('/area-managers', 'index');
+        Route::get('/area-manager-branches/{user_id}/get-branches', 'show');
+        Route::patch('/area-manager/{user_id}/update', 'update');
+        Route::delete('/area-manager/{user_id}/delete', 'destroy');
+    });
 
-        Route::controller(CasController::class)->group(function () {
-            Route::get('/cas', 'index');
-            Route::get('/cas-branches/{user_id}/get-branches', 'show');
-            Route::patch('/cas/{user_id}/update', 'update');
-            Route::delete('/cas/{user_id}/delete', 'destroy');
-        });
+    Route::controller(ForFilterDataController::class)->group(function () {
+        Route::get('/for-filter-datas', 'index');
+    });
 
-        Route::controller(AreaManagerController::class)->group(function () {
-            Route::get('/area-managers', 'index');
-            Route::get('/area-manager-branches/{user_id}/get-branches', 'show');
-            Route::patch('/area-manager/{user_id}/update', 'update');
-            Route::delete('/area-manager/{user_id}/delete', 'destroy');
-        });
+    Route::controller(ExportReportsController::class)->group(
+        fn()
+        =>
+        Route::post('/export-reports', 'exportReports')
+    );
 
-        Route::controller(ForFilterDataController::class)->group(function () {
-            Route::get('/for-filter-datas', 'index');
-        });
+    Route::controller(UserRoleController::class)->group(function () {
+        Route::get('admin/user-roles', 'index');
+        Route::get('admin/all-user-roles', 'allUserRoles');
+        Route::post('admin/user-roles', 'store');
+        Route::patch('admin/user-roles/{id}/update', 'update');
+        Route::delete('admin/user-roles/{id}/delete', 'destroy');
+    });
 
-        Route::controller(ExportReportsController::class)->group(
-            fn()
-            =>
-            Route::post('/export-reports', 'exportReports')
-        );
+    Route::controller(NotificationController::class)->group(function () {
+        Route::patch('notifications/{id}/mark-as-read', 'markedAsRead');
+        Route::patch('notifications/mark-all-as-read', 'markedAllAsRead');
+    });
 
-        Route::controller(UserRoleController::class)->group(function () {
-            Route::get('admin/user-roles', 'index');
-            Route::get('admin/all-user-roles', 'allUserRoles');
-            Route::post('admin/user-roles', 'store');
-            Route::patch('admin/user-roles/{id}/update', 'update');
-            Route::delete('admin/user-roles/{id}/delete', 'destroy');
-        });
+    Route::controller(PostController::class)->group(function () {
+        Route::get('/posts', 'index');
+        Route::post('/posts', 'store');
+        Route::patch('/posts/{id}/update', 'update');
+        Route::delete('/posts/{id}/delete', 'destroy');
+    });
 
-        Route::controller(NotificationController::class)->group(function () {
-            Route::patch('notifications/{id}/mark-as-read', 'markedAsRead');
-            Route::patch('notifications/mark-all-as-read', 'markedAllAsRead');
-        });
+    Route::controller(CommentController::class)->group(function () {
+        Route::get('/comments/{post_id}/comments', 'index');
+        Route::post('/comments', 'store');
+        Route::patch('/comments/{id}/update', 'update');
+        Route::delete('/comments/{id}/delete', 'destroy');
+    });
 
-        Route::controller(PostController::class)->group(function () {
-            Route::get('/posts', 'index');
-            Route::post('/posts', 'store');
-            Route::patch('/posts/{id}/update', 'update');
-            Route::delete('/posts/{id}/delete', 'destroy');
-        });
+    Route::post('/posts/{id}/like-unline', LikeController::class);
 
-        Route::controller(CommentController::class)->group(function () {
-            Route::get('/comments/{post_id}/comments', 'index');
-            Route::post('/comments', 'store');
-            Route::patch('/comments/{id}/update', 'update');
-            Route::delete('/comments/{id}/delete', 'destroy');
-        });
-
-        Route::post('/posts/{id}/like-unline', LikeController::class);
-
-        Route::prefix('admin')->controller(SubCategoryController::class)->group(function () {
-            Route::get('sub-categories/{ticket_category_id}/ticket-category-items', 'index');
-            Route::post('sub-categories', 'store');
-            Route::patch('sub-categories/{id}/update', 'update');
-            Route::delete('sub-categories/{id}/delete', 'destroy');
-        });
+    Route::prefix('admin')->controller(SubCategoryController::class)->group(function () {
+        Route::get('sub-categories/{ticket_category_id}/ticket-category-items', 'index');
+        Route::post('sub-categories', 'store');
+        Route::patch('sub-categories/{id}/update', 'update');
+        Route::delete('sub-categories/{id}/delete', 'destroy');
     });
 });
 

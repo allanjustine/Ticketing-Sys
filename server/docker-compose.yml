@@ -16,7 +16,7 @@ services:
     volumes:
       - ./docker-compose/nginx/default.conf:/etc/nginx/nginx.conf
       - ./:/var/www
-      - /mnt/nvme0n1/ticketing_netsuite_uploads:/mnt/nvme0n1/ticketing_netsuite_uploads
+      - /mnt/nvme0n1/ticketing-v2-uploads:/mnt/nvme0n1/ticketing-v2-uploads
     networks:
       - ticketing-netsuite-server-v2
 
@@ -29,7 +29,7 @@ services:
     volumes:
       - ./docker-compose/nginx/default.conf:/etc/nginx/nginx.conf
       - ./:/var/www
-      - /mnt/nvme0n1/ticketing_netsuite_uploads:/mnt/nvme0n1/ticketing_netsuite_uploads
+      - /mnt/nvme0n1/ticketing-v2-uploads:/mnt/nvme0n1/ticketing-v2-uploads
 
     networks:
       - ticketing-netsuite-server-v2

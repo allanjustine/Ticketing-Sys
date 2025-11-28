@@ -28,7 +28,11 @@ import { TICKET_STATUS } from "@/constants/ticket-status";
 import { useAuth } from "@/context/auth-context";
 import formattedDateFull from "@/utils/format-date-full";
 import { isImage } from "@/utils/image-format";
-import { isApprovers, isAutomation } from "@/utils/is-approvers";
+import {
+  isAccountingStaffApprover,
+  isApprovers,
+  isAutomation,
+} from "@/utils/is-approvers";
 import Storage from "@/utils/storage";
 import ticketTypeUpperCase from "@/utils/ticket-type-upper-case";
 import { TooltipArrow } from "@radix-ui/react-tooltip";
@@ -114,7 +118,9 @@ export function ViewTicketDetails({
                 <div className="text-gray-600 font-bold text-xl text-center">
                   Branch head note
                 </div>
-                <div className="text-sm wrap-break-word">{data?.ticket_detail?.td_note_bh}</div>
+                <div className="text-sm wrap-break-word">
+                  {data?.ticket_detail?.td_note_bh}
+                </div>
               </div>
             )}
             {data?.ticket_detail?.td_note && (
@@ -122,60 +128,64 @@ export function ViewTicketDetails({
                 <div className="text-gray-600 font-bold text-xl text-center">
                   Automation note
                 </div>
-                <div className="text-sm wrap-break-word">{data?.ticket_detail?.td_note}</div>
+                <div className="text-sm wrap-break-word">
+                  {data?.ticket_detail?.td_note}
+                </div>
               </div>
             )}
-            {isApprovers(role) && isYourPendingTicket && !TICKET_REJECTED && (
-              <>
-                <div className="p-2 border rounded-lg flex flex-col gap-2">
-                  <div className="text-gray-600 font-bold text-xl text-center">
-                    Enter note
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <Textarea
-                      placeholder="Enter note"
-                      className="resize-none"
-                      value={defaultNote}
-                      onChange={handleChange}
-                    />
-
-                    {(error?.td_note ?? error?.td_note_bh) && (
-                      <small className="text-red-500">
-                        {error?.td_note
-                          ? error?.td_note[0]
-                          : error?.td_note_bh[0]}
-                      </small>
-                    )}
-                  </div>
-                </div>
-                {isAutomation(role) && !AUTOMATION_MANAGER && (
+            {(isApprovers(role) || !isAccountingStaffApprover(role)) &&
+              isYourPendingTicket &&
+              !TICKET_REJECTED && (
+                <>
                   <div className="p-2 border rounded-lg flex flex-col gap-2">
                     <div className="text-gray-600 font-bold text-xl text-center">
-                      Is Counted?
+                      Enter note
                     </div>
                     <div className="flex flex-col gap-1">
-                      <Select value={isCounted} onValueChange={setIsCounted}>
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Select is counted" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectLabel>Is Counted?</SelectLabel>
-                            <SelectItem value="0">Yes</SelectItem>
-                            <SelectItem value="1">No</SelectItem>
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                      {error?.is_counted && (
+                      <Textarea
+                        placeholder="Enter note"
+                        className="resize-none"
+                        value={defaultNote}
+                        onChange={handleChange}
+                      />
+
+                      {(error?.td_note ?? error?.td_note_bh) && (
                         <small className="text-red-500">
-                          {error?.is_counted[0]}
+                          {error?.td_note
+                            ? error?.td_note[0]
+                            : error?.td_note_bh[0]}
                         </small>
                       )}
                     </div>
                   </div>
-                )}
-              </>
-            )}
+                  {isAutomation(role) && !AUTOMATION_MANAGER && (
+                    <div className="p-2 border rounded-lg flex flex-col gap-2">
+                      <div className="text-gray-600 font-bold text-xl text-center">
+                        Is Counted?
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <Select value={isCounted} onValueChange={setIsCounted}>
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select is counted" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectLabel>Is Counted?</SelectLabel>
+                              <SelectItem value="0">Yes</SelectItem>
+                              <SelectItem value="1">No</SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                        {error?.is_counted && (
+                          <small className="text-red-500">
+                            {error?.is_counted[0]}
+                          </small>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
             <div className="grid grid-cols-2 gap-4 border rounded-lg p-2">
               <div className="flex flex-col gap-1">
                 <span className="font-bold text-gray-600">
@@ -386,46 +396,48 @@ export function ViewTicketDetails({
             <DialogClose asChild>
               <Button variant="secondary">Close</Button>
             </DialogClose>
-            {isApprovers(role) && isYourPendingTicket && !TICKET_REJECTED && (
-              <>
-                <Button
-                  type="button"
-                  variant={"outline"}
-                  onClick={handleReviseTicket(
-                    data?.ticket_code,
-                    data?.ticket_details_id
+            {(isApprovers(role) || isAccountingStaffApprover(role)) &&
+              isYourPendingTicket &&
+              !TICKET_REJECTED && (
+                <>
+                  <Button
+                    type="button"
+                    variant={"outline"}
+                    onClick={handleReviseTicket(
+                      data?.ticket_code,
+                      data?.ticket_details_id
+                    )}
+                    className="bg-red-500 hover:bg-red-600 text-white hover:text-white"
+                  >
+                    Revise
+                  </Button>
+                  {isAutomation(role) && !AUTOMATION_MANAGER ? (
+                    <Button
+                      type="button"
+                      variant={"outline"}
+                      onClick={handleEditTicket(
+                        data?.ticket_code,
+                        data?.ticket_details_id
+                      )}
+                      className="bg-blue-500 hover:bg-blue-600 text-white hover:text-white"
+                    >
+                      Mark as edited
+                    </Button>
+                  ) : (
+                    <Button
+                      type="button"
+                      variant={"outline"}
+                      onClick={handleApproveTicket(
+                        data?.ticket_code,
+                        data?.ticket_details_id
+                      )}
+                      className="bg-green-500 hover:bg-green-600 text-white hover:text-white"
+                    >
+                      Approve
+                    </Button>
                   )}
-                  className="bg-red-500 hover:bg-red-600 text-white hover:text-white"
-                >
-                  Revise
-                </Button>
-                {isAutomation(role) && !AUTOMATION_MANAGER ? (
-                  <Button
-                    type="button"
-                    variant={"outline"}
-                    onClick={handleEditTicket(
-                      data?.ticket_code,
-                      data?.ticket_details_id
-                    )}
-                    className="bg-blue-500 hover:bg-blue-600 text-white hover:text-white"
-                  >
-                    Mark as edited
-                  </Button>
-                ) : (
-                  <Button
-                    type="button"
-                    variant={"outline"}
-                    onClick={handleApproveTicket(
-                      data?.ticket_code,
-                      data?.ticket_details_id
-                    )}
-                    className="bg-green-500 hover:bg-green-600 text-white hover:text-white"
-                  >
-                    Approve
-                  </Button>
-                )}
-              </>
-            )}
+                </>
+              )}
           </DialogFooter>
         </DialogContent>
       </Dialog>

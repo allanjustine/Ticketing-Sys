@@ -115,6 +115,8 @@ class TicketService
     {
         $user = Auth::user();
 
+        $branchId = $user->hasMultipleBranches() ? $request->ticket_for :  $user->blist_id;
+
         $automationAdmin = UserLogin::query()
             ->whereHas(
                 'userRole',
@@ -148,11 +150,7 @@ class TicketService
                 =>
                 $query->where('role_name', UserRoles::BRANCH_HEAD)
             )
-            ->where(
-                fn($q)
-                =>
-                $this->filterByUserBranch($q, $user, $request)
-            )
+            ->whereRaw("FIND_IN_SET(?, blist_id)", [$branchId])
             ->first();
 
         $assignedAccountingStaff = UserLogin::query()
@@ -168,7 +166,12 @@ class TicketService
                 'ticket_category_id',
                 $request->ticket_category
             )
-            ->inRandomOrder()
+            ->whereHas(
+                'accountingAssignedBranches',
+                fn($query)
+                =>
+                $query->where('assigned_accounting_branches.blist_id', $user->hasMultipleBranches() ? $request->ticket_for : $user->blist_id)
+            )
             ->first();
 
         $assignedAccountingHead = UserLogin::query()
@@ -184,7 +187,6 @@ class TicketService
                 'ticket_category_id',
                 $request->ticket_category
             )
-            ->inRandomOrder()
             ->first();
 
         $transactionDate = Carbon::parse($request->ticket_transaction_date)->startOfDay();
@@ -240,8 +242,8 @@ class TicketService
                 };
 
                 $assignedPerson = match (true) {
-                    $assignedAutomation     => $assignedAutomation->assignedAutomation->login_id,
-                    default                 => $automationAdmin->login_id,
+                    $assignedAutomation?->exists()  => $assignedAutomation->assignedAutomation->login_id,
+                    default                         => $automationAdmin->login_id,
                 };
 
                 $ticket = $ticketDetail->ticket()->create(
@@ -444,7 +446,6 @@ class TicketService
                             $category->where('group_code', $ticketDetail->ticketCategory->group_code)
                         )
                 )
-                ->inRandomOrder()
                 ->first();
 
             $accountingStaff = UserLogin::query()
@@ -459,19 +460,30 @@ class TicketService
                             =>
                             $category->where('group_code', $ticketDetail->ticketCategory->group_code)
                         )
+                        ->whereHas(
+                            'accountingAssignedBranches',
+                            fn($query)
+                            =>
+                            $query->where('assigned_accounting_branches.blist_id', $ticketDetail->ticket->branch_id)
+                        )
                 )
-                ->inRandomOrder()
                 ->first();
 
-            $transactionDate = Carbon::parse($request->ticket_transaction_date)->startOfDay();
+            $transactionDate = Carbon::parse($ticketDetail->ticket_transaction_date)->startOfDay();
 
             $oneMonthAgo = Carbon::now()->subMonth()->startOfDay();
 
             $isLastMonth = $transactionDate->lte($oneMonthAgo);
 
-            $isSql = $request->ticket_type === 'sql_ticket';
+            $isSql = $ticketDetail->ticket_type === 'sql_ticket';
 
             $directToAccounting = $isLastMonth && $isSql && $accountingStaff;
+
+            $errorForNoBranchesOrAccountingStaff = $isLastMonth && $isSql && !$accountingStaff;
+
+            if ($errorForNoBranchesOrAccountingStaff) {
+                abort(400, 'No assigned accounting staff for this branch and category.');
+            }
 
             $requestData = [];
 

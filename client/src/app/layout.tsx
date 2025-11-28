@@ -4,6 +4,7 @@ import "./globals.css";
 import BaseLayout from "@/components/layout/base-layout";
 import AuthContextProvider from "@/context/auth-context";
 import { IsRefreshProvider } from "@/context/is-refresh-context";
+import logo from "@/assets/logo.png";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -21,6 +22,19 @@ export const metadata: Metadata = {
     template: "SMCT Group of Companies Ticketing | %s",
   },
   description: "The official website for SMCT Group of Companies Ticketing",
+  icons: {
+    icon: "/favicon.ico",
+  },
+  openGraph: {
+    title: "SMCT Group of Companies Ticketing | Home",
+    description: "The official website for SMCT Group of Companies Ticketing",
+    images: [
+      {
+        url: logo.src,
+        alt: "SMCT Logo",
+      },
+    ],
+  },
 };
 
 export default function RootLayout({

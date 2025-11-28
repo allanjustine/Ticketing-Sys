@@ -38,10 +38,15 @@ class AccountingBranchSetupController extends Controller
      */
     public function show($userId)
     {
-        $user = UserLogin::with('accountingAssignedBranches')->findOrFail($userId);
+        $user = UserLogin::with('accountingAssignedBranches', 'assignedCategories')->findOrFail($userId);
 
         $branches = BranchList::query()
-            ->whereDoesntHave("branchAssignedAccountings")
+            ->whereDoesntHaveRelation(
+                'branchAssignedAccountings.assignedCategories',
+                fn($q)
+                =>
+                $q->where('group_code', $user->assignedCategories[0]->group_code)
+            )
             ->get();
 
         $userBranches = $user->accountingAssignedBranches;

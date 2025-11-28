@@ -23,7 +23,7 @@ class RegisterService
             'password'          => $request->password,
             'username'          => Str::lower(Str::slug($request->username, '_')),
             'user_role_id'      => 5,
-            'blist_id'          => $request->branch_code
+            'blist_id'          => $request->blist_id
         ]);
 
         abort(200, 'Registered successfully');

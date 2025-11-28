@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class ExportReportsController extends Controller
 {
-    public function exortReports(ReportsService $reportsService, Request $request)
+    public function exportReports(ReportsService $reportsService, Request $request)
     {
         $edited_start_date = $request->edited_start_date;
         $edited_end_date = $request->edited_end_date;

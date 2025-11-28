@@ -17,15 +17,7 @@ return [
 
     'paths' => [
         'api/*',
-        'sanctum/csrf-cookie',
-        'profile',
-        'login',
-        'register',
-        'logout',
-        'send-login-code',
-        'submit-otp-login',
-        '/branches',
-        'broadcasting/auth'
+        'sanctum/csrf-cookie'
     ],
 
     'allowed_methods' => ['*'],

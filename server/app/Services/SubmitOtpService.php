@@ -14,9 +14,7 @@ class SubmitOtpService
             ->first();
 
         if ($user->userLoginCode->otpCode($request->otp) && $user->userLoginCode->isValid()) {
-            Auth::guard('web')->login($user->userLogin);
-
-            $request->session()->regenerate();
+            Auth::login($user->userLogin);
 
             $user?->userLoginCode?->delete();
 

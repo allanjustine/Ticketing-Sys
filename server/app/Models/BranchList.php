@@ -56,4 +56,9 @@ class BranchList extends Model
     {
         return $this->belongsToMany(UserLogin::class, 'assigned_branch_cas', 'blist_id', 'login_id');
     }
+
+    public function branchAssignedAccountings()
+    {
+        return $this->belongsToMany(UserLogin::class, 'assigned_accounting_branches', 'blist_id', 'login_id');
+    }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AccountingBranchSetupController;
 use App\Http\Controllers\Api\AccountingController;
 use App\Http\Controllers\Api\AreaManagerController;
 use App\Http\Controllers\Api\AutomationController;
@@ -46,6 +47,7 @@ Route::middleware([
             'assignedBranches.branch:blist_id,b_code',
             'assignedBranchCas.branch:blist_id,b_code',
             'assignedAreaManagers.branch:blist_id,b_code',
+            'accountingAssignedBranches:blist_id,b_code',
             'unreadNotifications'
         )
             ->loadCount('unreadNotifications')
@@ -130,6 +132,12 @@ Route::middleware([
         Route::patch('/automation/{user_id}/update', 'update');
         Route::delete('/automation/{user_id}/delete', 'destroy');
         Route::get('/all-automations', 'getAllAutomations');
+    });
+
+    Route::controller(AccountingBranchSetupController::class)->group(function () {
+        Route::get('/accounting-branches/{user_id}/get-branches', 'show');
+        Route::patch('/accounting/{user_id}/update', 'update');
+        Route::delete('/accounting/{user_id}/delete', 'destroy');
     });
 
     Route::controller(AccountingController::class)->group(function () {

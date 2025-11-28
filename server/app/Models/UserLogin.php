@@ -267,4 +267,9 @@ class UserLogin extends Authenticatable
     {
         return $this->belongsToMany(Post::class, 'likes', 'user_id', 'post_id');
     }
+
+    public function accountingAssignedBranches()
+    {
+        return $this->belongsToMany(BranchList::class, 'assigned_accounting_branches', 'login_id', 'blist_id');
+    }
 }

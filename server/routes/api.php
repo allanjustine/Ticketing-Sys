@@ -33,7 +33,8 @@ use Illuminate\Support\Facades\Route;
 // AUTHENTICATED ROUTES
 Route::middleware([
     "auth:sanctum",
-    "throttle:50,1"
+    "throttle:50,1",
+    "web"
 ])->group(function () {
     Route::get(
         '/profile',
@@ -209,7 +210,7 @@ Route::middleware([
 });
 
 // GUEST ROUTES
-Route::middleware("throttle:20,1")->group(function () {
+Route::middleware(["throttle:20,1", 'web'])->group(function () {
     Route::controller(BranchController::class)->group(function () {
         Route::get('/branches', 'index');
     });

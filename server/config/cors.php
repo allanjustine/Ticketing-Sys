@@ -24,6 +24,7 @@ return [
         'logout',
         'send-login-code',
         'submit-otp-login',
+        '/branches',
         'broadcasting/auth'
     ],
 

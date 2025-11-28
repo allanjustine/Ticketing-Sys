@@ -103,8 +103,8 @@ class TicketController extends Controller
                             break;
                         case UserRoles::AUTOMATION_MANAGER:
                             $subQuery->whereNot('status', TicketStatus::EDITED)
-                                ->where('displayTicket', Auth::id())
-                                ->orWhere('last_approver', Auth::id());
+                                ->where('displayTicket', Auth::id());
+                                // ->orWhere('last_approver', Auth::id());
                             break;
                         case UserRoles::BRANCH_HEAD:
                             $subQuery->whereNot('status', TicketStatus::EDITED)

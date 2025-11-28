@@ -63,7 +63,7 @@ class ReportsService
             'branch'
         )
             ->when(
-                $ticket_type,
+                $ticket_type !== "ALL",
                 fn($query)
                 =>
                 $query->whereRelation('ticketDetail', 'ticket_type', $ticket_type)
@@ -156,7 +156,7 @@ class ReportsService
                     }
                 });
             })
-            ->where('status', TicketStatus::EDITED)
+            ->whereIn('status', [TicketStatus::EDITED, TicketStatus::REJECTED])
             ->orderBy('branch_name')
             ->get();
 
@@ -260,7 +260,7 @@ class ReportsService
             'branch',
         )
             ->when(
-                $ticket_type,
+                $ticket_type !== "ALL",
                 fn($query)
                 =>
                 $query->whereRelation('ticketDetail', 'ticket_type', $ticket_type)

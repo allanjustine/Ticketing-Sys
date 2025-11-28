@@ -209,7 +209,7 @@ Route::middleware([
 });
 
 // GUEST ROUTES
-Route::middleware(["throttle:20,1", 'web'])->group(function () {
+Route::middleware(["throttle:20,1"])->group(function () {
     Route::controller(BranchController::class)->group(function () {
         Route::get('/branches', 'index');
     });

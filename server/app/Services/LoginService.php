@@ -20,7 +20,7 @@ class LoginService
             abort(400, 'Username or email not found');
         }
 
-        $credentials = Auth::guard('web')->attempt([
+        $credentials = Auth::attempt([
             'username'       => $user->userDetail->user_email === $request->usernameOrEmail ? $user->username : $request->usernameOrEmail,
             'password'       => $request->password,
         ]);

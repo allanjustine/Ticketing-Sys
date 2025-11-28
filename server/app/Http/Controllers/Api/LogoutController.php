@@ -29,7 +29,7 @@ class LogoutController extends Controller
      */
     public function store(Request $request)
     {
-        Auth::guard('web')->logout();
+        Auth::logout();
 
         $request->session()->invalidate();
 

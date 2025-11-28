@@ -23,8 +23,8 @@ class UserController extends Controller
         $limit = request('limit');
         $search = request('search');
 
-        $users = UserLogin::search($search)
-            ->with('userDetail', 'branch', 'userRole')
+        $users = UserLogin::with('userDetail', 'branch', 'userRole')
+            ->search($search)
             ->whereNot('login_id', Auth::id())
             ->orderByDesc(
                 UserRole::select('role_name')

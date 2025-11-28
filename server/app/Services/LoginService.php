@@ -26,7 +26,7 @@ class LoginService
         ]);
 
         if ($credentials) {
-            $request->session()->regenerate();
+            // $request->session()->regenerate();
 
             $user?->userDetail?->userLoginCode?->delete();
 

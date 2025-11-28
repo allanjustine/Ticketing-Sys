@@ -18,7 +18,7 @@ class AccountingController extends Controller
         $search = request('search');
         $limit = request('limit');
 
-        $accountings = UserLogin::with('userRole', 'branch', 'userDetail', 'assignedCategories.categoryGroupCode')
+        $accountings = UserLogin::with('userRole', 'branch', 'userDetail', 'assignedCategories.categoryGroupCode', 'accountingAssignedBranches:blist_id,b_code')
             ->search($search)
             ->whereHas(
                 "userRole",

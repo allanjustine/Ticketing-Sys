@@ -25,6 +25,7 @@ import PostList from "./_components/post-list";
 import ButtonLoader from "@/components/ui/button-loader";
 import PostLoader from "./_components/post-loader";
 import { useFetchCursor } from "@/hooks/use-fetch-cursor";
+import AssignedBranchAccounting from "./_components/assigned-branch-accounting";
 
 function Profile() {
   const { user } = useAuth();
@@ -44,10 +45,20 @@ function Profile() {
     [ROLE.AUTOMATION]: <AssignedBranch branches={user?.assigned_branches} />,
     [ROLE.CAS]: <AssignedBranchCas branches={user?.assigned_branch_cas} />,
     [ROLE.ACCOUNTING_HEAD]: (
-      <AssignedCategory categories={user?.assigned_categories} />
+      <div className="space-y-2">
+        <AssignedCategory categories={user?.assigned_categories} />
+        <AssignedBranchAccounting
+          branches={user?.accounting_assigned_branches}
+        />
+      </div>
     ),
     [ROLE.ACCOUNTING_STAFF]: (
-      <AssignedCategory categories={user?.assigned_categories} />
+      <div className="space-y-2">
+        <AssignedCategory categories={user?.assigned_categories} />
+        <AssignedBranchAccounting
+          branches={user?.accounting_assigned_branches}
+        />
+      </div>
     ),
   };
 

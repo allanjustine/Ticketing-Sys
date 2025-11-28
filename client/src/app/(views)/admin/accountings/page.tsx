@@ -4,7 +4,7 @@ import DataTableComponent from "@/components/data-table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import useFetch from "@/hooks/use-fetch";
 import withAuthPage from "@/lib/hoc/with-auth-page";
-import { PenIcon, Trash, Users2 } from "lucide-react";
+import { PenBox, PenIcon, Trash, Users2 } from "lucide-react";
 import { SEARCH_FILTER } from "@/constants/filter-by";
 import { ACCOUNTINGS_COLUMNS } from "../_constants/accountings-columns";
 import SearchInput from "@/components/ui/search-input";
@@ -13,6 +13,12 @@ import { useState } from "react";
 import Swal from "sweetalert2";
 import { toast } from "sonner";
 import { api } from "@/lib/api";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import EditAccountingDialog from "../_components/_accounting-dialogs/edit-accounting";
 
 function Accountings() {
   const {
@@ -31,6 +37,8 @@ function Accountings() {
     filters: SEARCH_FILTER,
   });
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+  const [isDialogForBranchesOpen, setIsDialogForBranchesOpen] =
+    useState<boolean>(false);
   const [user, setUser] = useState<any>(null);
 
   const ACCOUNTINGS_COLUMNS_ACTIONS = [
@@ -38,13 +46,34 @@ function Accountings() {
       name: "Action",
       cell: (row: any) => (
         <div className="flex gap-2">
-          <button
-            type="button"
-            onClick={handleEdit(row)}
-            className="text-blue-500 hover:text-blue-600 hover:scale-105 transition-all duration-300 ease-in-out"
-          >
-            <PenIcon size={18} />
-          </button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                type="button"
+                onClick={handleEdit(row, "category")}
+                className="text-blue-500 hover:text-blue-600 hover:scale-105 transition-all duration-300 ease-in-out"
+              >
+                <PenIcon size={18} />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <span>Edit Assigned Categories</span>
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                type="button"
+                onClick={handleEdit(row, "branch")}
+                className="text-blue-700 hover:text-blue-800 hover:scale-105 transition-all duration-300 ease-in-out"
+              >
+                <PenBox size={18} />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <span>Edit Assigned Branches</span>
+            </TooltipContent>
+          </Tooltip>
           <button
             type="button"
             onClick={handleDeleteAllCategories(row.login_id)}
@@ -58,9 +87,16 @@ function Accountings() {
     },
   ];
 
-  const handleEdit = (row: any) => () => {
-    setUser(row);
-    setIsDialogOpen(true);
+  const handleEdit = (row: any, title: "category" | "branch") => () => {
+    if (title === "category") {
+      setUser(row);
+      setIsDialogOpen(true);
+    }
+
+    if (title === "branch") {
+      setUser(row);
+      setIsDialogForBranchesOpen(true);
+    }
   };
 
   const handleDeleteAllCategories = (id: string | number) => () => {
@@ -70,6 +106,9 @@ function Accountings() {
       text: "You won't be able to revert this!",
       showCancelButton: true,
       confirmButtonText: "Yes, remove all categories!",
+      showDenyButton: true,
+      denyButtonText: `Yes, remove all branches!`,
+      denyButtonColor: "#4169E1",
     }).then(async (result) => {
       if (result.isConfirmed) {
         Swal.fire({
@@ -85,6 +124,37 @@ function Accountings() {
           const response = await api.delete(
             `/accounting-category/${id}/delete`
           );
+
+          if (response.status === 200) {
+            Swal.close();
+            toast.success("Success", {
+              description: response.data.message,
+              position: "bottom-center",
+            });
+          }
+        } catch (error: any) {
+          console.error(error);
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: error.response.data.message,
+            confirmButtonText: "Close",
+          });
+        } finally {
+          setIsRefresh(false);
+        }
+      } else if (result.isDenied) {
+        Swal.fire({
+          title: "Removing all branches...",
+          text: "Please wait while the branches are being removed...",
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          },
+        });
+        setIsRefresh(true);
+        try {
+          const response = await api.delete(`/accounting/${id}/delete`);
 
           if (response.status === 200) {
             Swal.close();
@@ -143,6 +213,15 @@ function Accountings() {
           user={user}
           open={isDialogOpen}
           setOpen={setIsDialogOpen}
+          setIsRefresh={setIsRefresh}
+        />
+      )}
+
+      {isDialogForBranchesOpen && (
+        <EditAccountingDialog
+          user={user}
+          open={isDialogForBranchesOpen}
+          setOpen={setIsDialogForBranchesOpen}
           setIsRefresh={setIsRefresh}
         />
       )}

@@ -168,7 +168,7 @@ class TicketService
                 'ticket_category_id',
                 $request->ticket_category
             )
-            ->inRandomOrder()
+            ->whereRelation('accountingAssignedBranches', 'blist_id', $user->hasMultipleBranches() ? $request->ticket_for :  $user->blist_id)
             ->first();
 
         $assignedAccountingHead = UserLogin::query()
@@ -184,7 +184,6 @@ class TicketService
                 'ticket_category_id',
                 $request->ticket_category
             )
-            ->inRandomOrder()
             ->first();
 
         $transactionDate = Carbon::parse($request->ticket_transaction_date)->startOfDay();
@@ -444,7 +443,6 @@ class TicketService
                             $category->where('group_code', $ticketDetail->ticketCategory->group_code)
                         )
                 )
-                ->inRandomOrder()
                 ->first();
 
             $accountingStaff = UserLogin::query()
@@ -459,8 +457,8 @@ class TicketService
                             =>
                             $category->where('group_code', $ticketDetail->ticketCategory->group_code)
                         )
+                        ->whereRelation('accountingAssignedBranches', 'blist_id', $ticketDetail->ticket->branch_id)
                 )
-                ->inRandomOrder()
                 ->first();
 
             $transactionDate = Carbon::parse($request->ticket_transaction_date)->startOfDay();

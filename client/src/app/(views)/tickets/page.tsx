@@ -317,6 +317,13 @@ function Tickets() {
               setError(error.response.data.errors);
               Swal.close();
               setIsOpenView(true);
+            } else if (error.response.status === 400) {
+              Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: error.response.data.message,
+              });
+              setError(null);
             } else {
               Swal.fire({
                 icon: "error",

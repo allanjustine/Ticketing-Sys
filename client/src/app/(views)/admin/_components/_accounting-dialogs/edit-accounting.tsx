@@ -41,9 +41,9 @@ export default function EditAccountingDialog({
 
   useEffect(() => {
     setFormInputs(
-      user?.assigned_branches?.map((item: any) => String(item.blist_id))
+      user?.accounting_assigned_branches?.map((item: any) => String(item.blist_id))
     );
-  }, [user?.assigned_branches]);
+  }, [user?.accounting_assigned_branches]);
 
   const handleSelectValue = (e: string[]) => {
     setFormInputs(e);

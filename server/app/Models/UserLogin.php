@@ -30,7 +30,7 @@ class UserLogin extends Authenticatable
     protected function casts(): array
     {
         return [
-            'password' => 'hashed'
+            'password' => 'hashed',
         ];
     }
 

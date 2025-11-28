@@ -61,9 +61,13 @@ export const ACCOUNTINGS_COLUMNS = [
               )
             )
           ) : (
-            <Badge variant={accountingHead(row) ? "secondary" : "destructive"}>
+            <div
+              className={`${
+                accountingHead(row) ? "bg-gray-200" : "bg-red-500"
+              } p-1.5 rounded-xl`}
+            >
               <span
-                className={`${
+                className={`wrap-break-word ${
                   accountingHead(row) ? "text-gray-500" : "text-red-100"
                 } font-bold text-xs`}
               >
@@ -71,7 +75,7 @@ export const ACCOUNTINGS_COLUMNS = [
                   ? "Accounting Head does not need branches."
                   : "No assigned branches yet"}
               </span>
-            </Badge>
+            </div>
           )}
         </div>
       </>

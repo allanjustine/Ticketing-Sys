@@ -33,8 +33,7 @@ use Illuminate\Support\Facades\Route;
 // AUTHENTICATED ROUTES
 Route::middleware([
     "auth:sanctum",
-    "throttle:50,1",
-    "web"
+    "throttle:50,1"
 ])->group(function () {
     Route::get(
         '/profile',

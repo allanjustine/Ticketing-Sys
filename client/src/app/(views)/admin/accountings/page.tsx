@@ -9,7 +9,7 @@ import { SEARCH_FILTER } from "@/constants/filter-by";
 import { ACCOUNTINGS_COLUMNS } from "../_constants/accountings-columns";
 import SearchInput from "@/components/ui/search-input";
 import EditAccountingCategoryDialog from "../_components/_accounting-dialogs/edit-accounting-category";
-import { useState } from "react";
+import { Activity, useState } from "react";
 import Swal from "sweetalert2";
 import { toast } from "sonner";
 import { api } from "@/lib/api";
@@ -19,6 +19,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import EditAccountingDialog from "../_components/_accounting-dialogs/edit-accounting";
+import { ROLE } from "@/constants/roles";
 
 function Accountings() {
   const {
@@ -60,20 +61,28 @@ function Accountings() {
               <span>Edit Assigned Categories</span>
             </TooltipContent>
           </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                type="button"
-                onClick={handleEdit(row, "branch")}
-                className="text-blue-700 hover:text-blue-800 hover:scale-105 transition-all duration-300 ease-in-out"
-              >
-                <PenBox size={18} />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <span>Edit Assigned Branches</span>
-            </TooltipContent>
-          </Tooltip>
+          <Activity
+            mode={
+              row?.user_role?.role_name === ROLE.ACCOUNTING_STAFF
+                ? "visible"
+                : "hidden"
+            }
+          >
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  onClick={handleEdit(row, "branch")}
+                  className="text-blue-700 hover:text-blue-800 hover:scale-105 transition-all duration-300 ease-in-out"
+                >
+                  <PenBox size={18} />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <span>Edit Assigned Branches</span>
+              </TooltipContent>
+            </Tooltip>
+          </Activity>
           <button
             type="button"
             onClick={handleDeleteAllCategories(row.login_id)}

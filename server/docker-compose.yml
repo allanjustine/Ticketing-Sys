@@ -64,7 +64,7 @@ services:
       - ./bootstrap/cache:/var/www/bootstrap/cache
       - ./:/var/www
     networks:
-      - requestform-server
+      - ticketing-netsuite-server-v2
     restart: unless-stopped
 
 networks:

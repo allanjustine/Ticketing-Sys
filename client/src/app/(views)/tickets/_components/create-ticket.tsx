@@ -230,7 +230,7 @@ export function CreateTicket({ setIsRefresh, categories, user }: any) {
               <TabsTrigger value="netsuite_ticket">Netsuite</TabsTrigger>
               <TabsTrigger value="sql_ticket">SQL</TabsTrigger>
             </TabsList>
-            <div className="flex flex-col gap-4 max-h-[calc(100vh-400px)] overflow-y-auto p-3">
+            <div className="flex flex-col gap-4 max-h-[calc(100vh-250px)] overflow-y-auto p-3">
               <BasicForm
                 formInput={formInput}
                 handleInputChange={handleInputChange}

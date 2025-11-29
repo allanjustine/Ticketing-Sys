@@ -5,9 +5,8 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: "http",
-        hostname: "localhost",
-        port: "4001",
+        protocol: "https",
+        hostname: "beta-ticketing.smctgroup.ph",
         pathname: "/storage/uploads/**",
       },
       {

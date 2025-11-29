@@ -17,6 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://beta-ticketing.smctgroup.ph"),
   title: {
     default: "SMCT Group of Companies Ticketing | Home",
     template: "SMCT Group of Companies Ticketing | %s",

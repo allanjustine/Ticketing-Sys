@@ -53,7 +53,7 @@ services:
       - ticketing-netsuite-server-v2
 
   ticketing-v2-queue-worker:
-    image: queue-worker-ticketing-v2
+    image: ticketing-netsuite-server-v2
     container_name: ticketing-v2-queue-worker
     working_dir: /var/www/
     depends_on:

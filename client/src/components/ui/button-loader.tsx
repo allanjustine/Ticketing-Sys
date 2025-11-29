@@ -5,15 +5,27 @@ import { Spinner } from "./spinner";
 interface ButtonLoaderProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   isLoading?: boolean;
   children: ReactNode;
+  variant?:
+    | "default"
+    | "ghost"
+    | "outline"
+    | "secondary"
+    | "link"
+    | "destructive"
+    | null
+    | undefined;
+  size?: "default" | "sm" | "lg" | "xs" | "icon" | null | undefined;
 }
 
 export default function ButtonLoader({
   isLoading = false,
   children,
+  variant = "default",
+  size = "default",
   ...props
 }: ButtonLoaderProps) {
   return (
-    <Button disabled={isLoading} {...props}>
+    <Button disabled={isLoading} variant={variant} size={size} {...props}>
       {isLoading && <Spinner />}
       {children}
     </Button>

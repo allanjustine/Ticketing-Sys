@@ -18,9 +18,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { api } from "@/lib/api";
 import { Loader2Icon, MessageCircleWarning } from "lucide-react";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/context/auth-context";
+import ButtonLoader from "@/components/ui/button-loader";
 
 export default function LoginAsCode() {
   const [email, setEmail] = useState<string>("");
@@ -28,8 +29,27 @@ export default function LoginAsCode() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [isEnterCode, setIsEnterCode] = useState<boolean>(false);
+  const [isResendCode, setIsResendCode] = useState<boolean>(false);
+  const [resendCodeTimer, setResendCodeTimer] = useState<number>(60);
   const [code, setCode] = useState<string>("");
   const { loginAsOtp } = useAuth();
+
+  useEffect(() => {
+    if (!isResendCode) return;
+
+    const interval = setInterval(() => {
+      setResendCodeTimer((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          setIsResendCode(false);
+          return 60;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [isResendCode]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -47,6 +67,7 @@ export default function LoginAsCode() {
         setIsEnterCode(true);
         setErrors(null);
         setError(null);
+        setIsResendCode(true);
       }
     } catch (error: any) {
       console.error(error);
@@ -69,6 +90,8 @@ export default function LoginAsCode() {
       if (response.status === 200) {
         setError(null);
         setErrors(null);
+        setIsResendCode(false);
+        setResendCodeTimer(60);
       }
     } catch (error: any) {
       console.error(error);
@@ -90,6 +113,8 @@ export default function LoginAsCode() {
     setErrors(null);
     setEmail("");
     setCode("");
+    setIsResendCode(false);
+    setResendCodeTimer(60);
   };
 
   return (
@@ -155,6 +180,17 @@ export default function LoginAsCode() {
               {errors?.otp && (
                 <small className="text-red-500">{errors?.otp[0]}</small>
               )}
+              <ButtonLoader
+                type="button"
+                variant={"link"}
+                size="xs"
+                className="justify-end"
+                disabled={isLoading || isResendCode}
+                onClick={handleSendLoginCode}
+                isLoading={isLoading || isResendCode}
+              >
+                Resend code {isResendCode && `in (${resendCodeTimer}s)`}
+              </ButtonLoader>
             </div>
           ) : (
             <div className="grid flex-1 gap-2">

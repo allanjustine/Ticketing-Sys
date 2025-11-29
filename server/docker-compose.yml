@@ -52,6 +52,21 @@ services:
     networks:
       - ticketing-netsuite-server-v2
 
+    queue-worker:
+    image: ticketing-v2-queue-worker
+    container_name: ticketing-v2-queue-worker
+    working_dir: /var/www/
+    depends_on:
+      - ticketing-netsuite-server-v2
+    command: php artisan queue:work redis --tries=3
+    volumes:
+      - ./storage:/var/www/storage
+      - ./bootstrap/cache:/var/www/bootstrap/cache
+      - ./:/var/www
+    networks:
+      - requestform-server
+    restart: unless-stopped
+
 networks:
   ticketing-netsuite-server-v2:
     driver: bridge

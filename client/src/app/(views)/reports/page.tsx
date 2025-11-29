@@ -199,7 +199,7 @@ function Reports() {
         const noteText = total?.ticket_category_items
           ?.map((t: any) => {
             const subs =
-              t.sub_category_items?.length > 1
+              t.sub_category_items?.length > 0
                 ? t.sub_category_items
                     ?.map(
                       (sub: any) =>

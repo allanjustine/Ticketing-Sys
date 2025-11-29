@@ -43,9 +43,8 @@ class AccountingBranchSetupController extends Controller
         $branches = BranchList::query()
             ->whereDoesntHaveRelation(
                 'branchAssignedAccountings.assignedCategories',
-                fn($q)
-                =>
-                $q->where('group_code', $user->assignedCategories[0]->group_code)
+                'group_code',
+                $user->assignedCategories[0]->group_code
             )
             ->get();
 

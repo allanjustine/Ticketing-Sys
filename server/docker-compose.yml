@@ -52,7 +52,7 @@ services:
     networks:
       - ticketing-netsuite-server-v2
 
-    queue-worker:
+  ticketing-v2-queue-worker:
     image: ticketing-v2-queue-worker
     container_name: ticketing-v2-queue-worker
     working_dir: /var/www/

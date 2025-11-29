@@ -36,7 +36,7 @@ import {
 import Storage from "@/utils/storage";
 import ticketTypeUpperCase from "@/utils/ticket-type-upper-case";
 import { TooltipArrow } from "@radix-ui/react-tooltip";
-import { Eye, FileSpreadsheet } from "lucide-react";
+import { Eye, FileSpreadsheet, X } from "lucide-react";
 import Image from "next/image";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 
@@ -442,10 +442,14 @@ export function ViewTicketDetails({
         </DialogContent>
       </Dialog>
       <Dialog onOpenChange={setOpenImage} open={openImage}>
-        <DialogContent
-          showCloseButton={false}
-          className="bg-transparent border-none shadow-none sm:max-w-sm! md:max-w-md! lg:max-w-lg! xl:max-w-xl! 2xl:max-w-2xl! h-fit!"
-        >
+        <DialogContent className="bg-transparent border-none shadow-none sm:max-w-full h-fit!">
+          <Button
+            type="button"
+            onClick={() => setOpenImage(false)}
+            className="absolute top-20 right-5 font-bold bg-transparent hover:bg-black/20"
+          >
+            <X className="text-white stroke-4" />
+          </Button>
           <DialogHeader>
             <DialogTitle></DialogTitle>
           </DialogHeader>

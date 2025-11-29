@@ -11,7 +11,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import { isImage } from "@/utils/image-format";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface CarouselProps {
   images: string[];
@@ -20,6 +20,8 @@ interface CarouselProps {
 
 export default function CarouselLayout({ images, image }: CarouselProps) {
   const [api, setApi] = useState<any>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
+  const prevRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (!api || !images || !image) return;
@@ -30,20 +32,36 @@ export default function CarouselLayout({ images, image }: CarouselProps) {
     }
   }, [api, images, image]);
 
+  useEffect(() => {
+    const button = (e: KeyboardEvent) => {
+      if (e.key === "ArrowRight") {
+        nextRef.current?.click();
+      } else if (e.key === "ArrowLeft") {
+        prevRef.current?.click();
+      }
+    };
+
+    document.addEventListener("keydown", button);
+  }, []);
+
   return (
     <Carousel setApi={setApi}>
-      <CarouselContent className="items-center">
+      <CarouselContent>
         {images.map((item: any, index: number) => (
-          <CarouselItem key={index}>
+          <CarouselItem
+            key={index}
+            className="flex items-center justify-center"
+          >
             {isImage(item) ? (
-              <Image
-                alt={`Image ${index}`}
-                src={item && Storage(item)}
-                width={1000}
-                height={1000}
-                className="object-contain"
-                loading="lazy"
-              />
+              <div className="relative w-full h-screen">
+                <Image
+                  alt={`Image ${index}`}
+                  src={item && Storage(item)}
+                  fill
+                  className="object-contain"
+                  loading="lazy"
+                />
+              </div>
             ) : (
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -60,8 +78,8 @@ export default function CarouselLayout({ images, image }: CarouselProps) {
 
       {images.length > 1 && (
         <>
-          <CarouselPrevious />
-          <CarouselNext />
+          <CarouselPrevious ref={prevRef} />
+          <CarouselNext ref={nextRef} />
         </>
       )}
     </Carousel>

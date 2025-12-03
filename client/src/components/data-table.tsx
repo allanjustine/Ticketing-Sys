@@ -47,12 +47,12 @@ export default function DataTableComponent({
       paginationRowsPerPageOptions={paginationRowsPerPageOptions}
       onChangePage={handlePageChange}
       onChangeRowsPerPage={handlePerPageChange}
-      persistTableHead={true}
+      persistTableHead
       noDataComponent={<NoData />}
       paginationPerPage={perPage}
       conditionalRowStyles={conditionalRowStyles}
       paginationDefaultPage={currentPage}
-      responsive={true}
+      responsive
     />
   );
 }

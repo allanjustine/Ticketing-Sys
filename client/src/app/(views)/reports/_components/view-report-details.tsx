@@ -15,9 +15,18 @@ import { isCounted } from "@/utils/is-counted";
 import { useAuth } from "@/context/auth-context";
 import { ViewTicketDetails } from "../../tickets/_components/view-ticket-details";
 import { api } from "@/lib/api";
-import { Loader2 } from "lucide-react";
+import { Loader2, X } from "lucide-react";
 import { IsForCounted } from "./is-for-counted";
 import { EditNote } from "./edit-note";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Eye } from "lucide-react";
+import CarouselLayout from "@/components/carousel-layout";
 
 export function ViewReportDetails({ data, open, setIsOpen }: any) {
   const [ticketCode, setTicketCode] = useState<string>("");
@@ -29,6 +38,7 @@ export function ViewReportDetails({ data, open, setIsOpen }: any) {
   const [selectedTicketData, setSelectedTicketData] = useState<any>(null);
   const [type, setType] = useState<string | undefined>("");
   const [isLoading, setIsLoading] = useState<any>(false);
+  const [isOpenImage, setOpenImage] = useState<boolean>(false);
   const { isAdmin } = useAuth();
 
   const VIEW_DETAIL_COMLUMNS_TICKET_CODE = [
@@ -61,6 +71,35 @@ export function ViewReportDetails({ data, open, setIsOpen }: any) {
             )}
         </>
       ),
+    },
+    {
+      name: "ATTACHMENTS",
+      cell: (row: any) =>
+        row.ticket_detail.td_support.length > 0 && (
+          <Dialog open={isOpenImage} onOpenChange={setOpenImage}>
+            <DialogTrigger asChild>
+              <Eye className="h-4 w-4 text-blue-500 hover:text-blue-600 cursor-pointer" />
+            </DialogTrigger>
+            <DialogContent
+              showCloseButton={false}
+              className="bg-transparent border-none shadow-none sm:max-w-full h-fit!"
+            >
+              <Button
+                type="button"
+                onClick={() => setOpenImage(false)}
+                className="absolute top-20 right-5 font-bold bg-transparent hover:bg-black/20"
+              >
+                <X className="text-white stroke-4" />
+              </Button>
+              <DialogHeader>
+                <DialogTitle></DialogTitle>
+              </DialogHeader>
+              <div className="p-10">
+                <CarouselLayout images={row.ticket_detail.td_support} />
+              </div>
+            </DialogContent>
+          </Dialog>
+        ),
     },
   ];
 

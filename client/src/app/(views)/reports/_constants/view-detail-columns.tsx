@@ -4,39 +4,8 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Eye } from "lucide-react";
-import CarouselLayout from "@/components/carousel-layout";
 
 export const VIEW_DETAIL_COMLUMNS = [
-  {
-    name: "ATTACHMENTS",
-    cell: (row: any) =>
-      row.ticket_detail.td_support.length > 0 && (
-        <Dialog>
-          <DialogTrigger asChild>
-            <Eye className="h-4 w-4 text-blue-500 hover:text-blue-600 cursor-pointer" />
-          </DialogTrigger>
-          <DialogContent
-            showCloseButton={false}
-            className="bg-transparent border-none shadow-none sm:!max-w-sm md:!max-w-md lg:!max-w-lg xl:!max-w-xl 2xl:!max-w-2xl !h-fit"
-          >
-            <DialogHeader>
-              <DialogTitle></DialogTitle>
-            </DialogHeader>
-            <div className="p-10">
-              <CarouselLayout images={row.ticket_detail.td_support} />
-            </div>
-          </DialogContent>
-        </Dialog>
-      ),
-  },
   {
     name: "TRANSACTION DATE",
     cell: (row: any) =>

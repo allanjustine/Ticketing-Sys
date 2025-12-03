@@ -442,7 +442,10 @@ export function ViewTicketDetails({
         </DialogContent>
       </Dialog>
       <Dialog onOpenChange={setOpenImage} open={openImage}>
-        <DialogContent className="bg-transparent border-none shadow-none sm:max-w-full h-fit!">
+        <DialogContent
+          showCloseButton={false}
+          className="bg-transparent border-none shadow-none sm:max-w-full h-fit!"
+        >
           <Button
             type="button"
             onClick={() => setOpenImage(false)}

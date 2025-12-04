@@ -20,8 +20,6 @@ interface CarouselProps {
 
 export default function CarouselLayout({ images, image }: CarouselProps) {
   const [api, setApi] = useState<any>(null);
-  const nextRef = useRef<HTMLButtonElement>(null);
-  const prevRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (!api || !images || !image) return;
@@ -33,16 +31,20 @@ export default function CarouselLayout({ images, image }: CarouselProps) {
   }, [api, images, image]);
 
   useEffect(() => {
-    const button = (e: KeyboardEvent) => {
+    const handleNextPrev = (e: KeyboardEvent) => {
       if (e.key === "ArrowRight") {
-        nextRef.current?.click();
+        api.scrollNext();
       } else if (e.key === "ArrowLeft") {
-        prevRef.current?.click();
+        api.scrollPrev();
       }
     };
 
-    document.addEventListener("keydown", button);
-  }, []);
+    window.addEventListener("keydown", handleNextPrev);
+
+    return () => {
+      window.removeEventListener("keydown", handleNextPrev);
+    };
+  }, [api]);
 
   return (
     <Carousel setApi={setApi}>
@@ -78,8 +80,8 @@ export default function CarouselLayout({ images, image }: CarouselProps) {
 
       {images.length > 1 && (
         <>
-          <CarouselPrevious ref={prevRef} />
-          <CarouselNext ref={nextRef} />
+          <CarouselPrevious />
+          <CarouselNext />
         </>
       )}
     </Carousel>

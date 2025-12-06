@@ -39,6 +39,7 @@ export function ViewReportDetails({ data, open, setIsOpen }: any) {
   const [type, setType] = useState<string | undefined>("");
   const [isLoading, setIsLoading] = useState<any>(false);
   const [isOpenImage, setOpenImage] = useState<boolean>(false);
+  const [selectedImages, setSelectedImages] = useState<any>([]);
   const { isAdmin } = useAuth();
 
   const VIEW_DETAIL_COMLUMNS_TICKET_CODE = [
@@ -76,29 +77,13 @@ export function ViewReportDetails({ data, open, setIsOpen }: any) {
       name: "ATTACHMENTS",
       cell: (row: any) =>
         row.ticket_detail.td_support.length > 0 && (
-          <Dialog open={isOpenImage} onOpenChange={setOpenImage}>
-            <DialogTrigger asChild>
-              <Eye className="h-4 w-4 text-blue-500 hover:text-blue-600 cursor-pointer" />
-            </DialogTrigger>
-            <DialogContent
-              showCloseButton={false}
-              className="bg-transparent border-none shadow-none sm:max-w-full h-fit!"
-            >
-              <Button
-                type="button"
-                onClick={() => setOpenImage(false)}
-                className="absolute top-20 right-5 font-bold bg-transparent hover:bg-black/20"
-              >
-                <X className="text-white stroke-4" />
-              </Button>
-              <DialogHeader>
-                <DialogTitle></DialogTitle>
-              </DialogHeader>
-              <div className="p-10">
-                <CarouselLayout images={row.ticket_detail.td_support} />
-              </div>
-            </DialogContent>
-          </Dialog>
+          <Button
+            onClick={handleSelectImages(row.ticket_detail.td_support)}
+            type="button"
+            variant={"link"}
+          >
+            <Eye className="h-4 w-4 text-blue-500 hover:text-blue-600 cursor-pointer" />
+          </Button>
         ),
     },
   ];
@@ -186,6 +171,11 @@ export function ViewReportDetails({ data, open, setIsOpen }: any) {
     }
   };
 
+  const handleSelectImages = (images: any) => () => {
+    setSelectedImages(images);
+    setOpenImage(true);
+  };
+
   if (!open) return null;
   return (
     <>
@@ -248,6 +238,32 @@ export function ViewReportDetails({ data, open, setIsOpen }: any) {
           noteValue={noteValue}
           setNoteValue={setNoteValue}
         />
+      )}
+
+      {isOpenImage && (
+        <Dialog open={isOpenImage} onOpenChange={setOpenImage}>
+          <DialogTrigger asChild>
+            <Eye className="h-4 w-4 text-blue-500 hover:text-blue-600 cursor-pointer" />
+          </DialogTrigger>
+          <DialogContent
+            showCloseButton={false}
+            className="bg-transparent border-none shadow-none sm:max-w-full h-fit!"
+          >
+            <Button
+              type="button"
+              onClick={() => setOpenImage(false)}
+              className="absolute top-20 right-5 font-bold bg-transparent hover:bg-black/20"
+            >
+              <X className="text-white stroke-4" />
+            </Button>
+            <DialogHeader>
+              <DialogTitle></DialogTitle>
+            </DialogHeader>
+            <div className="p-10">
+              <CarouselLayout images={selectedImages} />
+            </div>
+          </DialogContent>
+        </Dialog>
       )}
     </>
   );

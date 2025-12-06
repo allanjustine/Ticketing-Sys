@@ -65,14 +65,20 @@ export default function CarouselLayout({ images, image }: CarouselProps) {
                 />
               </div>
             ) : (
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Link href={Storage(item)} target="_blank">
-                    <FileInput className="text-blue-500 hover:text-blue-600 w-full h-full" />
-                  </Link>
-                </TooltipTrigger>
-                <TooltipContent>Download/View</TooltipContent>
-              </Tooltip>
+              <div className="relative w-full h-screen">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Link
+                      href={Storage(item)}
+                      target="_blank"
+                      title="Download/View"
+                    >
+                      <FileInput className="text-blue-500 hover:text-blue-600 w-full h-full" />
+                    </Link>
+                  </TooltipTrigger>
+                  <TooltipContent>Download/View</TooltipContent>
+                </Tooltip>
+              </div>
             )}
           </CarouselItem>
         ))}

@@ -33,7 +33,7 @@ export const TICKETS_COLUMNS = [
   },
   {
     name: "Requested By",
-    cell: (row: any) => row.user_login?.full_name,
+    cell: (row: any) => row.user_login?.full_name || "Deleted Account",
     sortable: false,
     sortField: "user_details.fname",
   },

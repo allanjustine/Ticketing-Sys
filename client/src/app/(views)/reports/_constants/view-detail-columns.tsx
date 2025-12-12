@@ -59,7 +59,7 @@ export const VIEW_DETAIL_COMLUMNS = [
   },
   {
     name: "REQUESTED BY",
-    cell: (row: any) => row.user_login?.full_name,
+    cell: (row: any) => row.user_login?.full_name || "Deleted Account",
   },
   {
     name: "APPROVED BY BRANCH HEAD",

@@ -143,7 +143,8 @@ function Reports() {
             To: tos[i] ?? "",
             Note: i === 0 ? t?.ticket_detail?.td_note : "",
             Branch: i === 0 ? t?.branch_name : "",
-            "Requested By": i === 0 ? t?.user_login?.full_name : "",
+            "Requested By":
+              i === 0 ? t?.user_login?.full_name || "Deleted Account" : "",
             "Approve By BM/BS": i === 0 ? t?.approve_head?.full_name : "",
             "Approve By Acctg. Staff":
               i === 0 ? t?.approve_acctg_staff?.full_name : "",
@@ -308,7 +309,9 @@ function Reports() {
 
       saveAs(
         blob,
-        `${filterBy.ticket_type && `${filterBy.ticket_type}-`}${filterBy.search && `${filterBy.search}-`}${
+        `${filterBy.ticket_type && `${filterBy.ticket_type}-`}${
+          filterBy.search && `${filterBy.search}-`
+        }${
           filterBy?.edited_transaction_start_date &&
           filterBy?.edited_transaction_end_date &&
           `Transaction-Date-${formatDate(

@@ -106,7 +106,7 @@ export function ViewTicketDetails({
                 )} - ${data?.ticket_code}`}</span>{" "}
                 ticket from{" "}
                 <span className="font-bold">
-                  {data?.user_login.full_name} - {data?.branch_name}
+                  {data?.user_login?.full_name} - {data?.branch_name}
                 </span>
                 ...
               </span>

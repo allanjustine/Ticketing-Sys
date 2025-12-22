@@ -2,8 +2,8 @@ import PreLoader from "@/components/loaders/pre-loader";
 import { useAuth } from "@/context/auth-context";
 import { redirect } from "next/navigation";
 
-export default function withOutAuthPage(WrappedComponent: any) {
-  function WithOutAuthPageComponent(props: any) {
+export default function withoutAuthPage(WrappedComponent: any) {
+  function WithoutAuthPageComponent(props: any) {
     const { isAuthenticated, user, isLoading } = useAuth();
     const isAlreadyAuthenticated = isAuthenticated && user;
 
@@ -17,5 +17,5 @@ export default function withOutAuthPage(WrappedComponent: any) {
 
     return <WrappedComponent {...props} />;
   }
-  return WithOutAuthPageComponent;
+  return WithoutAuthPageComponent;
 }

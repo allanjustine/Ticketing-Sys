@@ -30,7 +30,7 @@ import { api } from "@/lib/api";
 import useFetch from "@/hooks/use-fetch";
 import Swal from "sweetalert2";
 import { avoidSpacesOnInput } from "@/utils/avoid-spaces-helper";
-import withOutAuthPage from "@/lib/hoc/with-out-auth-page";
+import withoutAuthPage from "@/lib/hoc/without-auth-page";
 
 const Register = () => {
   const [formInput, setFormInput] = useState<UserDetailsType>(USER_DETAILS);
@@ -336,4 +336,4 @@ const Register = () => {
   );
 };
 
-export default withOutAuthPage(Register);
+export default withoutAuthPage(Register);

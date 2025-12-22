@@ -21,7 +21,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import LoginAsCode from "../_components/login-as-code";
 import { avoidSpacesOnInput } from "@/utils/avoid-spaces-helper";
 import { Checkbox } from "@/components/ui/checkbox";
-import withOutAuthPage from "@/lib/hoc/with-out-auth-page";
+import withoutAuthPage from "@/lib/hoc/without-auth-page";
 
 const Login = () => {
   const [credentials, setCredentials] = useState<CredentialType>(CREDENTIALS);
@@ -184,4 +184,4 @@ const Login = () => {
   );
 };
 
-export default withOutAuthPage(Login);
+export default withoutAuthPage(Login);

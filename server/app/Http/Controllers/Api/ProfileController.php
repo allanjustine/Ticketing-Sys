@@ -91,7 +91,9 @@ class ProfileController extends Controller
         }
 
         if ($request->password) {
-            $updatedData['password'] = $request->password;
+            $user->update([
+                'password' => $request->password
+            ]);
         }
 
         $user->userDetail->update($updatedData);

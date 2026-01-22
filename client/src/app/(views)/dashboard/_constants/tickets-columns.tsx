@@ -33,7 +33,10 @@ export const TICKETS_COLUMNS = [
   },
   {
     name: "Requested By",
-    cell: (row: any) => row.user_login?.full_name || "Deleted Account",
+    cell: (row: any) =>
+      row.user_login?.full_name || (
+        <span className="text-red-500 font-bold text-xs">Deleted Account</span>
+      ),
     sortable: false,
     sortField: "user_details.fname",
   },
@@ -91,7 +94,7 @@ export const TICKETS_COLUMNS = [
           <Badge
             variant="outline"
             className={`${statusColor(
-              row.status
+              row.status,
             )} capitalize text-[11px] font-bold`}
           >
             {row.status.toLowerCase()}
@@ -137,7 +140,7 @@ export const TICKETS_COLUMNS = [
                             >
                               ({branch?.b_code}) - {branch?.b_name}
                             </span>
-                          )
+                          ),
                         )}
                       </span>
                     )}

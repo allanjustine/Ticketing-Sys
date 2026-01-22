@@ -7,12 +7,18 @@ import useFetch from "@/hooks/use-fetch";
 import withAuthPage from "@/lib/hoc/with-auth-page";
 import AutomationDashboard from "./_components/automation-dashboard";
 import { ROLE } from "@/constants/roles";
+import { useEffect } from "react";
+import Swal from "sweetalert2";
 
 const Dashboard = () => {
   const { isAdmin, user } = useAuth();
   const { data, isLoading } = useFetch({
     url: "/dashboard-data",
   });
+
+  useEffect(() => {
+    Swal.close();
+  }, []);
 
   if (isAdmin) {
     return <AdminDashboard data={data} isLoading={isLoading} />;

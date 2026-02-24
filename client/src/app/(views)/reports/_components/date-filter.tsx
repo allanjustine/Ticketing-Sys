@@ -6,72 +6,54 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { ChevronDownIcon } from "lucide-react";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
 
 export default function DateFilter({ filterBy, handleDateFilter }: any) {
   return (
     <div className="grid 2xl:grid-cols-3 items-center gap-4">
       <div className="flex gap-2 w-full">
         <div className="flex flex-col gap-3 w-full">
-          <Label htmlFor="edited_start_date" className="px-1">
-            Edited Start Date
+          <Label htmlFor="edited_date" className="px-1">
+            Edited Date
           </Label>
           <Popover>
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
-                id="edited_start_date"
-                className="w-full justify-between font-normal"
+                id="date-picker-range"
+                className="justify-start px-2.5 font-normal"
               >
-                {filterBy.edited_start_date
-                  ? filterBy.edited_start_date
-                  : "Select start date"}
-                <ChevronDownIcon />
+                <CalendarIcon />
+                {filterBy.edited_end_date ? (
+                  filterBy.edited_end_date ? (
+                    <>
+                      {format(filterBy.edited_start_date, "LLL dd, y")} -{" "}
+                      {format(filterBy.edited_end_date, "LLL dd, y")}
+                    </>
+                  ) : (
+                    format(filterBy.edited_start_date, "LLL dd, y")
+                  )
+                ) : (
+                  <span>Pick a date</span>
+                )}
               </Button>
             </PopoverTrigger>
-            <PopoverContent
-              className="w-auto overflow-hidden p-0"
-              align="start"
-            >
+            <PopoverContent className="w-auto p-0" align="start">
               <Calendar
-                mode="single"
-                selected={filterBy.edited_start_date}
-                captionLayout="dropdown"
-                onSelect={handleDateFilter("edited_start_date")}
-                disabled={{ after: new Date() }}
-              />
-            </PopoverContent>
-          </Popover>
-        </div>
-        <div className="flex flex-col gap-3 w-full">
-          <Label htmlFor="edited_end_date" className="px-1">
-            Edited End Date
-          </Label>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                id="edited_end_date"
-                className="w-full justify-between font-normal"
-              >
-                {filterBy.edited_end_date
-                  ? filterBy.edited_end_date
-                  : "Select end date"}
-                <ChevronDownIcon />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent
-              className="w-auto overflow-hidden p-0"
-              align="start"
-            >
-              <Calendar
-                mode="single"
-                selected={filterBy.edited_end_date}
-                captionLayout="dropdown"
-                onSelect={handleDateFilter("edited_end_date")}
+                mode="range"
+                defaultMonth={filterBy.edited_end_date}
+                selected={{
+                  from: filterBy.edited_start_date,
+                  to: filterBy.edited_end_date,
+                }}
+                onSelect={(range) => {
+                  handleDateFilter("edited_start_date")(range?.from);
+                  handleDateFilter("edited_end_date")(range?.to);
+                }}
+                numberOfMonths={2}
                 disabled={{
                   after: new Date(),
-                  before: filterBy.edited_start_date,
                 }}
               />
             </PopoverContent>
@@ -80,65 +62,55 @@ export default function DateFilter({ filterBy, handleDateFilter }: any) {
       </div>
       <div className="flex gap-2 w-full">
         <div className="flex flex-col gap-3 w-full">
-          <Label htmlFor="edited_transaction_start_date" className="px-1">
-            Transaction Start Date
+          <Label htmlFor="edited_transaction_date" className="px-1">
+            Transaction Date
           </Label>
           <Popover>
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
-                id="edited_transaction_start_date"
-                className="w-full justify-between font-normal"
+                id="date-picker-range"
+                className="justify-start px-2.5 font-normal"
               >
-                {filterBy.edited_transaction_start_date
-                  ? filterBy.edited_transaction_start_date
-                  : "Select date"}
-                <ChevronDownIcon />
+                <CalendarIcon />
+                {filterBy.edited_transaction_end_date ? (
+                  filterBy.edited_transaction_end_date ? (
+                    <>
+                      {format(
+                        filterBy.edited_transaction_start_date,
+                        "LLL dd, y",
+                      )}{" "}
+                      -{" "}
+                      {format(
+                        filterBy.edited_transaction_end_date,
+                        "LLL dd, y",
+                      )}
+                    </>
+                  ) : (
+                    format(filterBy.edited_transaction_start_date, "LLL dd, y")
+                  )
+                ) : (
+                  <span>Pick a date</span>
+                )}
               </Button>
             </PopoverTrigger>
-            <PopoverContent
-              className="w-auto overflow-hidden p-0"
-              align="start"
-            >
+            <PopoverContent className="w-auto p-0" align="start">
               <Calendar
-                mode="single"
-                selected={filterBy.edited_transaction_start_date}
-                captionLayout="dropdown"
-                onSelect={handleDateFilter("edited_transaction_start_date")}
-                disabled={{ after: new Date() }}
-              />
-            </PopoverContent>
-          </Popover>
-        </div>
-        <div className="flex flex-col gap-3 w-full">
-          <Label htmlFor="edited_transaction_end_date" className="px-1">
-            Transaction End Date
-          </Label>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                id="edited_transaction_end_date"
-                className="w-full justify-between font-normal"
-              >
-                {filterBy.edited_transaction_end_date
-                  ? filterBy.edited_transaction_end_date
-                  : "Select date"}
-                <ChevronDownIcon />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent
-              className="w-auto overflow-hidden p-0"
-              align="start"
-            >
-              <Calendar
-                mode="single"
-                selected={filterBy.edited_transaction_end_date}
-                captionLayout="dropdown"
-                onSelect={handleDateFilter("edited_transaction_end_date")}
+                mode="range"
+                defaultMonth={filterBy.edited_transaction_end_date}
+                selected={{
+                  from: filterBy.edited_transaction_start_date,
+                  to: filterBy.edited_transaction_end_date,
+                }}
+                onSelect={(range) => {
+                  handleDateFilter("edited_transaction_start_date")(
+                    range?.from,
+                  );
+                  handleDateFilter("edited_transaction_end_date")(range?.to);
+                }}
+                numberOfMonths={2}
                 disabled={{
                   after: new Date(),
-                  before: filterBy.edited_transaction_start_date,
                 }}
               />
             </PopoverContent>
@@ -147,65 +119,55 @@ export default function DateFilter({ filterBy, handleDateFilter }: any) {
       </div>
       <div className="flex gap-2 w-full">
         <div className="flex flex-col gap-3 w-full">
-          <Label htmlFor="created_start_date" className="px-1">
-            Created Start Date
+          <Label htmlFor="created_date" className="px-1">
+            Created Date
           </Label>
           <Popover>
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
-                id="created_start_date"
-                className="w-full justify-between font-normal"
+                id="date-picker-range"
+                className="justify-start px-2.5 font-normal"
               >
-                {filterBy.created_start_date
-                  ? filterBy.created_start_date
-                  : "Select date"}
-                <ChevronDownIcon />
+                <CalendarIcon />
+                {filterBy.created_end_date ? (
+                  filterBy.created_end_date ? (
+                    <>
+                      {format(
+                        filterBy.created_start_date,
+                        "LLL dd, y",
+                      )}{" "}
+                      -{" "}
+                      {format(
+                        filterBy.created_end_date,
+                        "LLL dd, y",
+                      )}
+                    </>
+                  ) : (
+                    format(filterBy.created_start_date, "LLL dd, y")
+                  )
+                ) : (
+                  <span>Pick a date</span>
+                )}
               </Button>
             </PopoverTrigger>
-            <PopoverContent
-              className="w-auto overflow-hidden p-0"
-              align="start"
-            >
+            <PopoverContent className="w-auto p-0" align="start">
               <Calendar
-                mode="single"
-                selected={filterBy.created_start_date}
-                captionLayout="dropdown"
-                onSelect={handleDateFilter("created_start_date")}
-                disabled={{ after: new Date() }}
-              />
-            </PopoverContent>
-          </Popover>
-        </div>
-        <div className="flex flex-col gap-3 w-full">
-          <Label htmlFor="created_end_date" className="px-1">
-            Created End Date
-          </Label>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                id="created_end_date"
-                className="w-full justify-between font-normal"
-              >
-                {filterBy.created_end_date
-                  ? filterBy.created_end_date
-                  : "Select date"}
-                <ChevronDownIcon />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent
-              className="w-auto overflow-hidden p-0"
-              align="start"
-            >
-              <Calendar
-                mode="single"
-                selected={filterBy.created_end_date}
-                captionLayout="dropdown"
-                onSelect={handleDateFilter("created_end_date")}
+                mode="range"
+                defaultMonth={filterBy.created_end_date}
+                selected={{
+                  from: filterBy.created_start_date,
+                  to: filterBy.created_end_date,
+                }}
+                onSelect={(range) => {
+                  handleDateFilter("created_start_date")(
+                    range?.from,
+                  );
+                  handleDateFilter("created_end_date")(range?.to);
+                }}
+                numberOfMonths={2}
                 disabled={{
                   after: new Date(),
-                  before: filterBy.created_start_date,
                 }}
               />
             </PopoverContent>

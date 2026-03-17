@@ -155,6 +155,7 @@ export default function DateFilter({ filterBy, handleDateFilter }: any) {
               <Calendar
                 mode="range"
                 defaultMonth={filterBy.created_end_date}
+                captionLayout="dropdown"
                 selected={{
                   from: filterBy.created_start_date,
                   to: filterBy.created_end_date,

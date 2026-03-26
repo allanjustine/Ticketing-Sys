@@ -240,24 +240,4 @@ Route::middleware(["throttle:20,1"])->group(function () {
             'message'   => 'Successfully deleted',
         ], 201);
     });
-
-    Route::post('/test-data', function (Request $request) {
-
-        $datas = [];
-
-        foreach ($request->name as $index => $name) {
-            $list = BranchList::create([
-                'b_code'    => $name,
-                'b_name'    => $request->email[$index],
-                'category'  => $request->age[$index],
-            ]);
-
-            $datas[] = $list;
-        }
-
-        return response()->json([
-            'message'   => 'Successfully submitted',
-            'datas'     => $datas,
-        ], 201);
-    });
 });

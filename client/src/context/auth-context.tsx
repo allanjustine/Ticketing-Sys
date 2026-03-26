@@ -13,6 +13,7 @@ import {
   logout as sanctumLogout,
   fetchProfile,
   updateProfile,
+  getCsrfToken,
 } from "@/lib/sanctum";
 import { api } from "@/lib/api";
 import { ROLE } from "@/constants/roles";
@@ -128,6 +129,7 @@ export default function AuthContextProvider({
   }
 
   async function loginAsOtp(code: string, email: string) {
+    await getCsrfToken();
     const response = await api.post("/submit-otp-login", { otp: code, email });
     if (response.status !== 200) return response;
 

@@ -14,7 +14,7 @@ export default function withoutAuthPage(WrappedComponent: any) {
 
     if (isAlreadyAuthenticated) {
       Swal.fire({
-        title: "Authenticating...",
+        title: "Redirecting...",
         text: "Redirecting to dashboard. Please wait...",
         allowOutsideClick: false,
         didOpen: () => {

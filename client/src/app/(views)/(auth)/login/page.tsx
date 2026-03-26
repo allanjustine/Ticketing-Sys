@@ -16,12 +16,13 @@ import { useAuth } from "@/context/auth-context";
 import { CredentialType } from "@/types/auth-context-type";
 import { LoaderCircle, MessageCircleWarning } from "lucide-react";
 import Link from "next/link";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import LoginAsCode from "../_components/login-as-code";
 import { avoidSpacesOnInput } from "@/utils/avoid-spaces-helper";
 import { Checkbox } from "@/components/ui/checkbox";
 import withoutAuthPage from "@/lib/hoc/without-auth-page";
+import Swal from "sweetalert2";
 
 const Login = () => {
   const [credentials, setCredentials] = useState<CredentialType>(CREDENTIALS);
@@ -30,6 +31,10 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isShowPassword, setIsShowPassword] = useState<boolean>(false);
   const { login } = useAuth();
+
+  useEffect(() => {
+    Swal.close();
+  }, []);
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();

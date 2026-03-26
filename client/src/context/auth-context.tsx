@@ -21,7 +21,7 @@ import { toast } from "sonner";
 import { usePathname } from "next/navigation";
 
 export const AuthContext = createContext<AuthContextType | undefined>(
-  undefined
+  undefined,
 );
 
 export default function AuthContextProvider({
@@ -153,13 +153,13 @@ export default function AuthContextProvider({
       setUser(response.data.data);
       setNotifications(response.data.data.unread_notifications);
       setTotalUnreadNotifications(
-        response.data.data.unread_notifications_count
+        response.data.data.unread_notifications_count,
       );
       setIsAuthenticated(true);
 
       if (
         isAdminOrAutomationAdmin.includes(
-          response.data.data.user_role.role_name
+          response.data.data.user_role.role_name,
         )
       ) {
         setIsAdmin(true);

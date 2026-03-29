@@ -11,7 +11,7 @@ export default function withAuthPage(
 ) {
   function AppWrappedComponent(props: any) {
     const { isAuthenticated, user, isLoading } = useAuth();
-    const isAlreadyAuthenticated = isAuthenticated && user;
+    const isAlreadyAuthenticated = isAuthenticated || user;
     const noAccess =
       isProtected &&
       ![ROLE.ADMIN, ROLE.AUTOMATION_ADMIN].includes(
@@ -27,7 +27,7 @@ export default function withAuthPage(
       return <Unauthorized />;
     }
 
-    if (!isAlreadyAuthenticated || !user) {
+    if (!isAlreadyAuthenticated) {
       Swal.fire({
         title: "Redirecting...",
         text: "Redirecting to login. Please wait...",

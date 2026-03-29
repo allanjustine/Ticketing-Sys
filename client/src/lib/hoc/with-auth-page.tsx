@@ -27,7 +27,7 @@ export default function withAuthPage(
       return <Unauthorized />;
     }
 
-    if (!isAlreadyAuthenticated) {
+    if (!isAlreadyAuthenticated || !user) {
       Swal.fire({
         title: "Redirecting...",
         text: "Redirecting to login. Please wait...",

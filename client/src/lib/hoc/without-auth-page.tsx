@@ -12,7 +12,7 @@ export default function withoutAuthPage(WrappedComponent: any) {
       return <PreLoader />;
     }
 
-    if (isAlreadyAuthenticated) {
+    if (isAlreadyAuthenticated || user) {
       Swal.fire({
         title: "Redirecting...",
         text: "Redirecting to dashboard. Please wait...",

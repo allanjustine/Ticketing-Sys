@@ -8,7 +8,7 @@ import Link from "next/link";
 
 export default function Home() {
   const { isAuthenticated, user, isLoading } = useAuth();
-  const isAlreadyAuthenticated = isAuthenticated && user;
+  const isAlreadyAuthenticated = isAuthenticated || user;
   
   return (
     <div className={`h-screen w-full bg-no-repeat bg-cover bg-center`}>

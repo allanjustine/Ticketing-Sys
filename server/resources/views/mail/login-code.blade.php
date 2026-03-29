@@ -15,6 +15,7 @@
 
         <div style="text-align: center; margin: 30px 0;">
             <span
+                onclick="navigator.clipboard.writeText('{{ $code }}');"
                 style="cursor: pointer; display: inline-block; font-size: 24px; font-weight: bold; color: #ffffff; background-color: #3498db; padding: 10px 20px; border-radius: 6px; letter-spacing: 3px;">
                 {{ $code }}
             </span>

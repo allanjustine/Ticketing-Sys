@@ -261,7 +261,7 @@ export function EditTicket({
 
   return (
     <Dialog open={open} onOpenChange={setIsOpenDialog}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-2xl">
         <form className="space-y-5" onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>
@@ -292,14 +292,6 @@ export function EditTicket({
                 oldFiles={oldFiles}
                 handleRemoveFile={handleRemoveFile}
               />
-              <TabsContent value="netsuite_ticket"></TabsContent>
-              <TabsContent value="sql_ticket" className="space-y-4">
-                <SqlForm
-                  formInput={formInput}
-                  errors={errors}
-                  handleInputChange={handleInputChange}
-                />
-              </TabsContent>
             </div>
             {error && (
               <div className="w-full">

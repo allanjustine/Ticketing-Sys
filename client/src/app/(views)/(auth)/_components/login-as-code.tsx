@@ -128,7 +128,7 @@ export default function LoginAsCode() {
           Login with OTP
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>
             {isEnterCode ? "Enter 6 digits code" : "Login with OTP"}

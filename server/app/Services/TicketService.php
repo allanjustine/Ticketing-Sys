@@ -36,7 +36,8 @@ class TicketService
             'approveAutm',
             'approveAcctgSup',
             'branch',
-            'userLogin.userDetail'
+            'userLogin.userDetail',
+            'pendingUser.userDetail'
         )
             ->where('login_id', $this->user->login_id)
             ->orderByDesc(

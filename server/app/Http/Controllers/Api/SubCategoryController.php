@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\SubCategory;
+use App\Models\TicketCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -19,6 +20,8 @@ class SubCategoryController extends Controller
         $take = request('limit');
 
         $search = request('search');
+
+        $ticket_category_name = TicketCategory::query()->findOrFail($ticket_category_id)->category_name;
 
         $sub_categories = SubCategory::query()
             ->when(
@@ -36,7 +39,8 @@ class SubCategoryController extends Controller
 
         return response()->json([
             "message"       => "Sub Categories fetched successfully",
-            "data"          => $sub_categories
+            "data"          => $sub_categories,
+            'category_name' => $ticket_category_name
         ], 200);
     }
 

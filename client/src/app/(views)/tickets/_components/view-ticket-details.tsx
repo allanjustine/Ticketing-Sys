@@ -18,11 +18,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { ROLE } from "@/constants/roles";
 import { TICKET_STATUS } from "@/constants/ticket-status";
 import { useAuth } from "@/context/auth-context";
@@ -35,10 +30,21 @@ import {
 } from "@/utils/is-approvers";
 import Storage from "@/utils/storage";
 import ticketTypeUpperCase from "@/utils/ticket-type-upper-case";
-import { TooltipArrow } from "@radix-ui/react-tooltip";
-import { Eye, FileSpreadsheet, X } from "lucide-react";
+import {
+  CalendarDays,
+  CheckCircle2,
+  Eye,
+  FileSpreadsheet,
+  Hash,
+  Layers,
+  Tag,
+  User,
+  Users,
+  X,
+} from "lucide-react";
 import Image from "next/image";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { InfoField, NoteCard } from "./view-ticket-details-items";
 
 export function ViewTicketDetails({
   data,
@@ -68,8 +74,8 @@ export function ViewTicketDetails({
     if (!open) return;
     setDefaultNote(
       isAutomation(role)
-        ? data?.ticket_detail?.td_note ?? ""
-        : data?.ticket_detail?.td_note_bh ?? ""
+        ? (data?.ticket_detail?.td_note ?? "")
+        : (data?.ticket_detail?.td_note_bh ?? ""),
     );
   }, [open]);
 
@@ -83,9 +89,7 @@ export function ViewTicketDetails({
     const value = e.target.value;
     setDefaultNote(value);
     if (debounceRef.current) clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => {
-      setNote(value);
-    }, 500);
+    debounceRef.current = setTimeout(() => setNote(value), 500);
   };
 
   const handleOpenChange = (value: boolean) => {
@@ -96,306 +100,242 @@ export function ViewTicketDetails({
   return (
     <>
       <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>
-              <span className="text-gray-700 text-lg">
-                Viewing{" "}
-                <span className="font-bold">{`${ticketTypeUpperCase(
-                  data?.ticket_detail?.ticket_type
-                )} - ${data?.ticket_code}`}</span>{" "}
-                ticket from{" "}
-                <span className="font-bold">
-                  {data?.user_login?.full_name || "Deleted Account"} -{" "}
-                  {data?.branch_name}
+        <DialogContent className="sm:max-w-2xl p-0 gap-0 overflow-hidden rounded-2xl">
+          <DialogHeader className="px-6 pt-6 pb-4 border-b bg-gray-50/80">
+            <DialogTitle className="flex flex-col gap-1">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-xs font-semibold bg-gray-200 text-gray-600 px-2 py-0.5 rounded-full uppercase tracking-wide">
+                  {ticketTypeUpperCase(data?.ticket_detail?.ticket_type)}
                 </span>
-                ...
-              </span>
+                <span className="text-base font-bold text-gray-800">
+                  {data?.ticket_code}
+                </span>
+                {TICKET_REJECTED && (
+                  <span className="text-xs font-semibold bg-red-100 text-red-500 px-2 py-0.5 rounded-full">
+                    Rejected
+                  </span>
+                )}
+              </div>
+              <p className="text-sm text-gray-500 font-normal">
+                Submitted by{" "}
+                <span className="font-semibold text-gray-700">
+                  {data?.user_login?.full_name || "Deleted Account"}
+                </span>{" "}
+                · {data?.branch_name}
+              </p>
             </DialogTitle>
           </DialogHeader>
-          <div className="max-h-[60vh] overflow-y-auto space-y-5">
+          <div className="max-h-[62vh] overflow-y-auto px-6 py-5 space-y-5">
             {data?.ticket_detail?.td_note_bh && (
-              <div className="border p-2 flex flex-col gap-2 rounded-lg">
-                <div className="text-gray-600 font-bold text-xl text-center">
-                  Branch head note
-                </div>
-                <div className="text-sm wrap-break-word">
-                  {data?.ticket_detail?.td_note_bh}
-                </div>
-              </div>
+              <NoteCard
+                label="Branch Head Note"
+                content={data.ticket_detail.td_note_bh}
+              />
             )}
             {data?.ticket_detail?.td_note && (
-              <div className="border p-2 flex flex-col gap-2 rounded-lg">
-                <div className="text-gray-600 font-bold text-xl text-center">
-                  Automation note
-                </div>
-                <div className="text-sm wrap-break-word">
-                  {data?.ticket_detail?.td_note}
-                </div>
-              </div>
+              <NoteCard
+                label="Automation Note"
+                content={data.ticket_detail.td_note}
+              />
             )}
+
             {(isApprovers(role) || !isAccountingStaffApprover(role)) &&
               isYourPendingTicket &&
               !TICKET_REJECTED && (
-                <>
-                  <div className="p-2 border rounded-lg flex flex-col gap-2">
-                    <div className="text-gray-600 font-bold text-xl text-center">
-                      Enter note
-                    </div>
-                    <div className="flex flex-col gap-1">
-                      <Textarea
-                        placeholder="Enter note"
-                        className="resize-none"
-                        value={defaultNote}
-                        onChange={handleChange}
-                      />
+                <div className="space-y-4">
+                  <div className="rounded-xl border border-gray-200 bg-white p-4 flex flex-col gap-2 shadow-sm">
+                    <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide">
+                      Add Note
+                    </span>
+                    <Textarea
+                      placeholder="Write your note here..."
+                      className="resize-none min-h-20 text-sm border-gray-200 focus-visible:ring-blue-400"
+                      value={defaultNote}
+                      onChange={handleChange}
+                    />
+                    {(error?.td_note ?? error?.td_note_bh) && (
+                      <small className="text-red-500">
+                        {error?.td_note
+                          ? error.td_note[0]
+                          : error.td_note_bh[0]}
+                      </small>
+                    )}
+                  </div>
 
-                      {(error?.td_note ?? error?.td_note_bh) && (
+                  {isAutomation(role) && !AUTOMATION_MANAGER && (
+                    <div className="rounded-xl border border-gray-200 bg-white p-4 flex flex-col gap-2 shadow-sm">
+                      <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide">
+                        Is Counted?
+                      </span>
+                      <Select value={isCounted} onValueChange={setIsCounted}>
+                        <SelectTrigger className="w-full text-sm">
+                          <SelectValue placeholder="Select option" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectLabel>Is Counted?</SelectLabel>
+                            <SelectItem value="0">Yes</SelectItem>
+                            <SelectItem value="1">No</SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                      {error?.is_counted && (
                         <small className="text-red-500">
-                          {error?.td_note
-                            ? error?.td_note[0]
-                            : error?.td_note_bh[0]}
+                          {error.is_counted[0]}
                         </small>
                       )}
                     </div>
-                  </div>
-                  {isAutomation(role) && !AUTOMATION_MANAGER && (
-                    <div className="p-2 border rounded-lg flex flex-col gap-2">
-                      <div className="text-gray-600 font-bold text-xl text-center">
-                        Is Counted?
-                      </div>
-                      <div className="flex flex-col gap-1">
-                        <Select value={isCounted} onValueChange={setIsCounted}>
-                          <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Select is counted" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectGroup>
-                              <SelectLabel>Is Counted?</SelectLabel>
-                              <SelectItem value="0">Yes</SelectItem>
-                              <SelectItem value="1">No</SelectItem>
-                            </SelectGroup>
-                          </SelectContent>
-                        </Select>
-                        {error?.is_counted && (
-                          <small className="text-red-500">
-                            {error?.is_counted[0]}
-                          </small>
-                        )}
-                      </div>
-                    </div>
                   )}
-                </>
-              )}
-            <div className="grid grid-cols-2 gap-4 border rounded-lg p-2">
-              <div className="flex flex-col gap-1">
-                <span className="font-bold text-gray-600">
-                  Transaction Date
-                </span>
-                <Tooltip>
-                  <TooltipTrigger className="text-sm truncate" asChild>
-                    <span>
-                      {formattedDateFull(
-                        data?.ticket_detail?.ticket_transaction_date
-                      )}
-                    </span>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <TooltipArrow />
-
-                    {formattedDateFull(
-                      data?.ticket_detail?.ticket_transaction_date
-                    )}
-                  </TooltipContent>
-                </Tooltip>
-              </div>
-              <div className="flex flex-col gap-1">
-                <span className="font-bold text-gray-600">Ticket Category</span>
-                <Tooltip>
-                  <TooltipTrigger className="text-sm truncate" asChild>
-                    <span>
-                      {data?.ticket_detail?.ticket_category?.category_name}
-                    </span>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <TooltipArrow />
-
-                    {data?.ticket_detail?.ticket_category?.category_name}
-                  </TooltipContent>
-                </Tooltip>
-              </div>
-              {data?.ticket_detail?.sub_category && (
-                <div className="flex flex-col gap-1">
-                  <span className="font-bold text-gray-600">
-                    Ticket Sub Category
-                  </span>
-                  <Tooltip>
-                    <TooltipTrigger className="text-sm truncate" asChild>
-                      <span>
-                        {data?.ticket_detail?.sub_category?.sub_category_name}
-                      </span>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <TooltipArrow />
-
-                      {data?.ticket_detail?.sub_category?.sub_category_name}
-                    </TooltipContent>
-                  </Tooltip>
                 </div>
               )}
-              {data?.ticket_detail?.td_ref_number && (
-                <div className="flex flex-col gap-1">
-                  <span className="font-bold text-gray-600">
-                    Ticket Reference Number
-                  </span>
-                  <Tooltip>
-                    <TooltipTrigger className="text-sm truncate" asChild>
-                      <span className=" font-bold text-gray-600">
-                        {data?.ticket_detail?.td_ref_number}
-                      </span>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <TooltipArrow />
 
-                      {data?.ticket_detail?.td_ref_number}
-                    </TooltipContent>
-                  </Tooltip>
-                </div>
-              )}
+            {/* Ticket Info Grid */}
+            <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+              <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide block mb-3">
+                Ticket Information
+              </span>
+              <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+                <InfoField
+                  label="Transaction Date"
+                  value={formattedDateFull(
+                    data?.ticket_detail?.ticket_transaction_date,
+                  )}
+                  icon={<CalendarDays className="w-3 h-3" />}
+                />
+                <InfoField
+                  label="Category"
+                  value={data?.ticket_detail?.ticket_category?.category_name}
+                  icon={<Tag className="w-3 h-3" />}
+                />
+                {data?.ticket_detail?.sub_category && (
+                  <InfoField
+                    label="Sub Category"
+                    value={data.ticket_detail.sub_category.sub_category_name}
+                    icon={<Layers className="w-3 h-3" />}
+                  />
+                )}
+                {data?.ticket_detail?.td_ref_number && (
+                  <InfoField
+                    label="Reference Number"
+                    value={data.ticket_detail.td_ref_number}
+                    icon={<Hash className="w-3 h-3" />}
+                  />
+                )}
+              </div>
             </div>
+
             {data?.ticket_detail?.td_support?.length > 0 && (
-              <div className="flex flex-col gap-2 border rounded-lg">
-                <div className="text-gray-600 font-bold p-2">Support Files</div>
-                <div className="flex gap-2 overflow-x-auto w-full h-28 overflow-y-hidden px-2">
-                  {data?.ticket_detail?.td_support?.map(
+              <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+                <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide block mb-3">
+                  Support Files
+                </span>
+                <div className="flex gap-3 overflow-x-auto pb-1">
+                  {data.ticket_detail.td_support.map(
                     (file: any, index: number) => (
                       <div
                         key={index}
-                        className="group relative rounded-md border"
+                        className="group relative shrink-0 w-20 h-20 rounded-lg border border-gray-200 overflow-hidden bg-gray-50 cursor-pointer"
+                        onClick={handleSelectImage(
+                          file,
+                          data.ticket_detail.td_support,
+                        )}
                       >
-                        <div className="p-2 w-20 h-20 rounded-md">
-                          {isImage(file) ? (
-                            <Image
-                              src={Storage(file)}
-                              alt={file}
-                              width={100}
-                              height={100}
-                              className="w-full h-full object-cover"
-                            />
-                          ) : (
-                            <FileSpreadsheet className="w-full h-full" />
-                          )}
-
-                          <p className="text-xs truncate">
-                            {file?.split("/").pop()}
-                          </p>
-                        </div>
-
-                        <div className="w-20 h-full group-hover:block hidden bg-black/60 absolute top-0 rounded-md z-50">
-                          <Button
-                            type="button"
-                            className="w-full p-0 h-full hover:bg-transparent bg-transparent"
-                            onClick={handleSelectImage(
-                              file,
-                              data?.ticket_detail?.td_support
-                            )}
-                          >
-                            <Eye className="w-full h-full" />
-                          </Button>
+                        {isImage(file) ? (
+                          <Image
+                            src={Storage(file)}
+                            alt={file}
+                            width={80}
+                            height={80}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex flex-col items-center justify-center gap-1 p-1">
+                            <FileSpreadsheet className="w-8 h-8 text-gray-400" />
+                            <p className="text-[10px] text-gray-500 truncate w-full text-center px-1">
+                              {file?.split("/").pop()}
+                            </p>
+                          </div>
+                        )}
+                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg">
+                          <Eye className="w-5 h-5 text-white" />
                         </div>
                       </div>
-                    )
+                    ),
                   )}
                 </div>
               </div>
             )}
-            <div className="p-2 border rounded-lg flex flex-col gap-4">
-              <div className="text-gray-600 font-bold text-xl text-center">
-                Other details
-              </div>
-              <div className="flex justify-evenly gap-4">
-                {data?.approve_head && (
-                  <div className="flex flex-col gap-1">
-                    <span className="font-bold text-gray-600">Approved By</span>
-                    <span className="text-xs">
-                      {data?.approve_head?.full_name}
-                    </span>
-                  </div>
-                )}
-                {data?.last_approver && (
-                  <div className="flex flex-col gap-1">
-                    <span className="font-bold text-gray-600">
-                      Last Approver
-                    </span>
-                    <span className="text-xs">
-                      {data?.last_approver?.full_name}
-                    </span>
-                  </div>
-                )}
-                {data?.assigned_person && (
-                  <div className="flex flex-col gap-1">
-                    <span className="font-bold text-gray-600">Assigned To</span>
-                    <span className="text-xs">
-                      {data?.assigned_person?.full_name}
-                    </span>
-                  </div>
-                )}
-              </div>
+
+            <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm space-y-4">
+              <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide block">
+                Other Details
+              </span>
+
+              {(data?.approve_head ||
+                data?.last_approver ||
+                data?.assigned_person) && (
+                <div className="flex flex-wrap gap-6">
+                  {data?.approve_head && (
+                    <div className="flex flex-col gap-1">
+                      <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide flex items-center gap-1">
+                        <CheckCircle2 className="w-3 h-3" /> Approved By
+                      </span>
+                      <span className="text-sm font-medium text-gray-700">
+                        {data.approve_head.full_name}
+                      </span>
+                    </div>
+                  )}
+                  {data?.last_approver && (
+                    <div className="flex flex-col gap-1">
+                      <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide flex items-center gap-1">
+                        <User className="w-3 h-3" /> Last Approver
+                      </span>
+                      <span className="text-sm font-medium text-gray-700">
+                        {data.last_approver.full_name}
+                      </span>
+                    </div>
+                  )}
+                  {data?.assigned_person && (
+                    <div className="flex flex-col gap-1">
+                      <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide flex items-center gap-1">
+                        <Users className="w-3 h-3" /> Assigned To
+                      </span>
+                      <span className="text-sm font-medium text-gray-700">
+                        {data.assigned_person.full_name}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )}
+
               <div className="grid grid-cols-3 gap-4">
-                {Array.isArray(data?.ticket_detail?.td_purpose)
-                  ? Array.from(data?.ticket_detail?.td_purpose).length > 0
-                  : data?.ticket_detail?.td_purpose && (
-                      <div className="flex flex-col gap-1">
-                        <span className="font-bold text-gray-600">Purpose</span>
-                        <Tooltip>
-                          <TooltipTrigger className="text-sm truncate" asChild>
-                            <span>{data?.ticket_detail?.td_purpose}</span>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <TooltipArrow />
-                            {data?.ticket_detail?.td_purpose}
-                          </TooltipContent>
-                        </Tooltip>
-                      </div>
-                    )}
-                {Array.isArray(data?.ticket_detail?.td_from)
-                  ? Array.from(data?.ticket_detail?.td_from).length > 0
-                  : data?.ticket_detail?.td_from && (
-                      <div className="flex flex-col gap-1">
-                        <span className="font-bold text-gray-600">From</span>
-                        <Tooltip>
-                          <TooltipTrigger className="text-sm truncate" asChild>
-                            <span>{data?.ticket_detail?.td_from}</span>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <TooltipArrow />
-                            {data?.ticket_detail?.td_from}
-                          </TooltipContent>
-                        </Tooltip>
-                      </div>
-                    )}
-                {Array.isArray(data?.ticket_detail?.td_to)
-                  ? Array.from(data?.ticket_detail?.td_to).length > 0
-                  : data?.ticket_detail?.td_to && (
-                      <div className="flex flex-col gap-1">
-                        <span className="font-bold text-gray-600">To</span>
-                        <Tooltip>
-                          <TooltipTrigger className="text-sm truncate" asChild>
-                            <span>{data?.ticket_detail?.td_to}</span>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <TooltipArrow />
-                            {data?.ticket_detail?.td_to}
-                          </TooltipContent>
-                        </Tooltip>
-                      </div>
-                    )}
+                {!Array.isArray(data?.ticket_detail?.td_purpose) &&
+                  data?.ticket_detail?.td_purpose && (
+                    <InfoField
+                      label="Purpose"
+                      value={data.ticket_detail.td_purpose}
+                    />
+                  )}
+                {!Array.isArray(data?.ticket_detail?.td_from) &&
+                  data?.ticket_detail?.td_from && (
+                    <InfoField
+                      label="From"
+                      value={data.ticket_detail.td_from}
+                    />
+                  )}
+                {!Array.isArray(data?.ticket_detail?.td_to) &&
+                  data?.ticket_detail?.td_to && (
+                    <InfoField label="To" value={data.ticket_detail.td_to} />
+                  )}
               </div>
             </div>
           </div>
-          <DialogFooter>
+
+          <DialogFooter className="px-6 py-4 border-t bg-gray-50/80 flex items-center gap-2">
             <DialogClose asChild>
-              <Button variant="secondary">Close</Button>
+              <Button variant="outline" className="rounded-lg md:w-auto w-full">
+                Close
+              </Button>
             </DialogClose>
             {(isApprovers(role) || isAccountingStaffApprover(role)) &&
               isYourPendingTicket &&
@@ -403,36 +343,33 @@ export function ViewTicketDetails({
                 <>
                   <Button
                     type="button"
-                    variant={"outline"}
                     onClick={handleReviseTicket(
                       data?.ticket_code,
-                      data?.ticket_details_id
+                      data?.ticket_details_id,
                     )}
-                    className="bg-red-500 hover:bg-red-600 text-white hover:text-white"
+                    className="rounded-lg bg-red-500 hover:bg-red-600 text-white md:w-auto w-full"
                   >
                     Revise
                   </Button>
                   {isAutomation(role) && !AUTOMATION_MANAGER ? (
                     <Button
                       type="button"
-                      variant={"outline"}
                       onClick={handleEditTicket(
                         data?.ticket_code,
-                        data?.ticket_details_id
+                        data?.ticket_details_id,
                       )}
-                      className="bg-blue-500 hover:bg-blue-600 text-white hover:text-white"
+                      className="rounded-lg bg-blue-500 hover:bg-blue-600 text-white md:w-auto w-full"
                     >
-                      Mark as edited
+                      Mark as Edited
                     </Button>
                   ) : (
                     <Button
                       type="button"
-                      variant={"outline"}
                       onClick={handleApproveTicket(
                         data?.ticket_code,
-                        data?.ticket_details_id
+                        data?.ticket_details_id,
                       )}
-                      className="bg-green-500 hover:bg-green-600 text-white hover:text-white"
+                      className="rounded-lg bg-green-500 hover:bg-green-600 text-white md:w-auto w-full"
                     >
                       Approve
                     </Button>
@@ -442,6 +379,7 @@ export function ViewTicketDetails({
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
       <Dialog onOpenChange={setOpenImage} open={openImage}>
         <DialogContent
           showCloseButton={false}

@@ -142,11 +142,6 @@ export default function BasicForm({
           <small className="text-red-500">{errors?.ticket_category[0]}</small>
         )}
       </div>
-      <SqlForm
-        formInput={formInput}
-        errors={errors}
-        handleInputChange={handleInputChange}
-      />
       {ticketSubCategories?.length > 0 && (
         <div className="flex flex-col gap-3">
           <Label htmlFor="ticket_sub_category" className="px-1">
@@ -187,6 +182,11 @@ export default function BasicForm({
           )}
         </div>
       )}
+      <SqlForm
+        formInput={formInput}
+        errors={errors}
+        handleInputChange={handleInputChange}
+      />
       {formInput?.ticket_type === "sql_ticket" && (
         <div className="flex flex-col gap-3">
           <Label htmlFor="ticket_reference_number" className="px-1">

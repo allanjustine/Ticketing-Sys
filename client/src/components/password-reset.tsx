@@ -3,6 +3,8 @@ import { api } from "@/lib/api";
 import { FormEvent, useState } from "react";
 import { Button } from "./ui/button";
 import ButtonLoader from "./ui/button-loader";
+import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
+import { MessageCircleWarning } from "lucide-react";
 
 type FormInputType = {
   password: string;
@@ -53,6 +55,13 @@ export default function PasswordReset() {
             account.
           </p>
         </div>
+        {error && (
+          <Alert variant="destructive">
+            <MessageCircleWarning />
+            <AlertTitle>Error!</AlertTitle>
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
             <label

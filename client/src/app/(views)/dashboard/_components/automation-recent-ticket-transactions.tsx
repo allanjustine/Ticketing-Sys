@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import formatDateAndTime from "@/utils/format-date-and-time";
 import statusColor from "@/utils/ticket-status-color";
 import ticketTypeUpperCase from "@/utils/ticket-type-upper-case";
+import { TicketX } from "lucide-react";
 import Link from "next/link";
 
 export default function AutomationRecentTicketTransactions({
@@ -70,7 +71,7 @@ export default function AutomationRecentTicketTransactions({
                   </p>
                   <p className="text-xs text-gray-500">
                     {formatDateAndTime(
-                      ticket.ticket_detail.ticket_transaction_date
+                      ticket.ticket_detail.ticket_transaction_date,
                     )}
                   </p>
                 </div>
@@ -82,9 +83,12 @@ export default function AutomationRecentTicketTransactions({
               </div>
             ))
           ) : (
-            <p className="text-center text-sm font-bold text-gray-600">
-              No recent {title} ticket transactions
-            </p>
+            <div className="flex items-center justify-center flex-col">
+              <TicketX size={80} className="text-gray-200" />
+              <p className="text-center text-sm font-bold text-gray-500">
+                No recent {title} ticket transactions
+              </p>
+            </div>
           )}
         </div>
       </CardContent>

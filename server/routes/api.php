@@ -264,7 +264,9 @@ Route::get('/change-password-to-all-user', function () {
 
             $users_to_update[] = [
                 'login_id'        => $user->login_id,
-                'password'        => Hash::make(Str::of($user->userDetail->lname ?: $user->userDetail->fname)->substr(0, 3)->append('_123456')->lower()),
+                'password'        => Hash::make(Str::of($user->userDetail->lname ?: $user->userDetail->fname)->substr(0, 3)->append('_123456')->lower(), [
+                    'rounds' => 5
+                ]),
                 'user_details_id' => $user->user_details_id,
                 'username'        => $user->username,
                 'user_role_id'    => $user->user_role_id,

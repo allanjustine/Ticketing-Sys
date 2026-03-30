@@ -18,10 +18,13 @@ class CategoryController extends Controller
      */
     public function index()
     {
+        $category_type = request('category_type');
+
         $categories = TicketCategory::query()
             ->with('subCategories')
             ->withCount('subCategories')
             ->where('show_hide', 'show')
+            ->where('category_type', $category_type)
             ->orderBy('category_shortcut', 'asc')
             ->get();
 
@@ -66,7 +69,8 @@ class CategoryController extends Controller
                     $q->whereAny([
                         'category_shortcut',
                         'category_name',
-                        'show_hide'
+                        'show_hide',
+                        'category_type'
                     ], 'LIKE', "%$search%")
                 )
                     ->orWhereRelation(
@@ -123,7 +127,8 @@ class CategoryController extends Controller
                 'category_shortcut' => $request->category_shortcut,
                 'category_name'     => $request->category_name,
                 'group_code'        => $groupCodeId,
-                'show_hide'         => $request->show_hide
+                'show_hide'         => $request->show_hide,
+                'category_type'     => $request->category_type
             ]);
 
         return response()->json([
@@ -173,7 +178,8 @@ class CategoryController extends Controller
             'category_shortcut' => $request->category_shortcut,
             'category_name'     => $request->category_name,
             'group_code'        => $groupCodeId,
-            'show_hide'         => $request->show_hide
+            'show_hide'         => $request->show_hide,
+            'category_type'     => $request->category_type
         ]);
 
         return response()->json([

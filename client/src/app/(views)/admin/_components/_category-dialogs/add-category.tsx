@@ -161,6 +161,28 @@ export function AddCategory({
             )}
           </div>
           <div className="flex gap-2 flex-col">
+            <Label htmlFor="category_type">Category type</Label>
+            <Select
+              value={String(formInput.category_type)}
+              onValueChange={handleSelectChange("category_type")}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select category type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Category type</SelectLabel>
+                  <SelectItem value="Select category type" disabled>Select category type</SelectItem>
+                  <SelectItem value="netsuite_ticket">Netsuite Ticket</SelectItem>
+                  <SelectItem value="sql_ticket">SQL Ticket</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            {errors?.category_type && (
+              <small className="text-red-500">{errors?.category_type[0]}</small>
+            )}
+          </div>
+          <div className="flex gap-2 flex-col">
             <Label htmlFor="group_code">Group code</Label>
             <Select
               value={String(formInput.group_code)}

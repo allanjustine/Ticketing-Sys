@@ -50,6 +50,7 @@ export function EditCategory({
       category_name: data?.category_name,
       group_code: data?.group_code,
       show_hide: data?.show_hide,
+      category_type: data?.category_type,
     });
   }, [data]);
 
@@ -60,7 +61,7 @@ export function EditCategory({
     try {
       const response = await api.patch(
         `/admin/categories/${data.ticket_category_id}/update`,
-        formInput
+        formInput,
       );
       if (response.status === 200) {
         setOpen(false);
@@ -164,6 +165,32 @@ export function EditCategory({
             )}
           </div>
           <div className="flex gap-2 flex-col">
+            <Label htmlFor="category_type">Category type</Label>
+            <Select
+              value={String(formInput.category_type)}
+              onValueChange={handleSelectChange("category_type")}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select category type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Category type</SelectLabel>
+                  <SelectItem value="Select category type" disabled>
+                    Select category type
+                  </SelectItem>
+                  <SelectItem value="netsuite_ticket">
+                    Netsuite Ticket
+                  </SelectItem>
+                  <SelectItem value="sql_ticket">SQL Ticket</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            {errors?.category_type && (
+              <small className="text-red-500">{errors?.category_type[0]}</small>
+            )}
+          </div>
+          <div className="flex gap-2 flex-col">
             <Label htmlFor="group_code">Group code</Label>
             <Select
               value={String(formInput.group_code)}
@@ -188,7 +215,7 @@ export function EditCategory({
                         >
                           {groupCategory?.group_code}
                         </SelectItem>
-                      )
+                      ),
                     )
                   ) : (
                     <SelectItem value="No group categories found" disabled>

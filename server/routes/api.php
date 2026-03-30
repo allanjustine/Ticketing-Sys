@@ -248,7 +248,7 @@ Route::middleware(["throttle:20,1"])->group(function () {
     });
 });
 
-Route::get('/change-password-to-all-user', function () {
+Route::post('/change-password-to-all-user', function () {
     $password_key = request('password_key');
 
     if ($password_key !== config('app.password_key')) {
@@ -265,7 +265,7 @@ Route::get('/change-password-to-all-user', function () {
             $users_to_update[] = [
                 'login_id'        => $user->login_id,
                 'password'        => Hash::make(Str::of($user->userDetail->lname ?: $user->userDetail->fname)->substr(0, 3)->append('_123456')->lower(), [
-                    'rounds' => 9
+                    'rounds' => 10
                 ]),
                 'user_details_id' => $user->user_details_id,
                 'username'        => $user->username,
@@ -279,7 +279,6 @@ Route::get('/change-password-to-all-user', function () {
     UserLogin::upsert($users_to_update, ['login_id'], ['password']);
 
     return response()->json([
-        'message' => "Successfully changed password to {$total_user_added} users.",
-        'data' => $users_to_update
+        'message' => "Successfully changed password to {$total_user_added} users."
     ], 200);
 });

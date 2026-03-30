@@ -83,7 +83,7 @@ function SubCategories() {
               </TooltipContent>
             </Tooltip>
             <Gauge size={18} />
-            <span className="text-xs md:text-lg truncate">Sub Categories</span>
+            <span className="text-xs md:text-lg truncate">Sub Categories of {`"${data?.category_name ?? "Unknown Category"}"`}</span>
           </CardTitle>
           <div className="flex items-center gap-2">
             <SearchInput onChange={handleSearchTerm(1000)} />

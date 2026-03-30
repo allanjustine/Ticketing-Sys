@@ -176,9 +176,6 @@ export function EditCategory({
               <SelectContent>
                 <SelectGroup>
                   <SelectLabel>Category type</SelectLabel>
-                  <SelectItem value="Select category type" disabled>
-                    Select category type
-                  </SelectItem>
                   <SelectItem value="netsuite_ticket">
                     Netsuite Ticket
                   </SelectItem>

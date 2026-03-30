@@ -233,7 +233,7 @@ export function CreateTicket({
           <Plus className="h-4 w-4" /> Create Ticket
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-2xl">
         <form className="space-y-5" onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>Create Ticket</DialogTitle>

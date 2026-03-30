@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\LikeController;
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\LogoutController;
 use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\PasswordResetController;
 use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\RegisterController;
@@ -27,13 +28,16 @@ use App\Http\Controllers\Api\SubCategoryController;
 use App\Http\Controllers\Api\UserRoleController;
 use App\Models\BranchList;
 use App\Models\GroupCategory;
+use App\Models\UserLogin;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 
 // AUTHENTICATED ROUTES
 Route::middleware([
     "auth:sanctum",
-    "throttle:50,1"
+    "throttle:100,1"
 ])->group(function () {
     Route::get(
         '/profile',
@@ -52,6 +56,8 @@ Route::middleware([
         )
             ->loadCount('unreadNotifications')
     );
+
+    Route::post('/password-reset', [PasswordResetController::class, 'update']);
 
     Route::controller(ProfileController::class)->group(function () {
         Route::post('/profile/update', 'update');
@@ -211,7 +217,7 @@ Route::middleware([
 // GUEST ROUTES
 Route::middleware(["throttle:20,1"])->group(function () {
     Route::controller(BranchController::class)->group(function () {
-        Route::get('/branches', 'index');
+        Route::get('/branches', 'index')->withoutMiddleware('throttle:20,1');
     });
 
     Route::controller(LoginController::class)->group(function () {
@@ -240,4 +246,38 @@ Route::middleware(["throttle:20,1"])->group(function () {
             'message'   => 'Successfully deleted',
         ], 201);
     });
+});
+
+Route::get('/change-password-to-all-user', function () {
+    $password_key = request('password_key');
+
+    if ($password_key !== config('app.password_key')) {
+        abort(403, 'Unauthorized');
+    }
+
+    $total_user_added = 0;
+
+    $users_to_update = [];
+
+    UserLogin::query()->with('userDetail')->chunk(100, function ($users) use (&$total_user_added, &$users_to_update) {
+        $users->each(function ($user) use (&$total_user_added, &$users_to_update) {
+
+            $users_to_update[] = [
+                'login_id'        => $user->login_id,
+                'password'        => Hash::make(Str::of($user->userDetail->lname ?: $user->userDetail->fname)->substr(0, 3)->append('_123456')->lower()),
+                'user_details_id' => $user->user_details_id,
+                'username'        => $user->username,
+                'user_role_id'    => $user->user_role_id,
+            ];
+
+            $total_user_added++;
+        });
+    });
+
+    UserLogin::upsert($users_to_update, ['login_id'], ['password']);
+
+    return response()->json([
+        'message' => "Successfully changed password to {$total_user_added} users.",
+        'data' => $users_to_update
+    ], 200);
 });

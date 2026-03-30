@@ -1,5 +1,6 @@
 import Unauthorized from "@/app/unauthorized";
 import PreLoader from "@/components/loaders/pre-loader";
+import PasswordReset from "@/components/password-reset";
 import { ROLE } from "@/constants/roles";
 import { useAuth } from "@/context/auth-context";
 import { redirect } from "next/navigation";
@@ -38,6 +39,10 @@ export default function withAuthPage(
       });
 
       return redirect("/login");
+    }
+
+    if (user?.requesting_password) {
+      return <PasswordReset />;
     }
 
     return <WrappedComponent {...props} />;

@@ -38,11 +38,10 @@ export default function AuthContextProvider({
   const [totalUnreadNotifications, setTotalUnreadNotifications] =
     useState<number>(0);
   const isAdminOrAutomationAdmin = [ROLE.ADMIN, ROLE.AUTOMATION_ADMIN];
-  const pathname = usePathname();
 
   useEffect(() => {
     fetchUserProfile();
-  }, [pathname]);
+  }, []);
 
   useEffect(() => {
     if (!echo || !user) return;
@@ -174,6 +173,7 @@ export default function AuthContextProvider({
     <AuthContext.Provider
       value={{
         user,
+        setUser,
         isLoading,
         isAuthenticated,
         isAdmin,

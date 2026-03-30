@@ -67,12 +67,15 @@ export function CreateTicket({
     setFormInput((formData) => ({
       ...formData,
       [title]: value,
-      ticket_category: is_ticket_type ? "" : value,
     }));
 
     if (is_ticket_type) {
       setIsRefreshCategories(true);
       setTicketType(value);
+      setFormInput((formData) => ({
+        ...formData,
+        ticket_category: "",
+      }));
     }
   };
 

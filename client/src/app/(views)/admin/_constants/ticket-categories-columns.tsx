@@ -12,6 +12,11 @@ export const TICKET_CATEGORIES_COLUMNS = [
     sortable: false,
   },
   {
+    name: "Type",
+    cell: (row: any) => row?.category_type.split("_")[0].toUpperCase(),
+    sortable: false,
+  },
+  {
     name: "Total sub categories",
     cell: (row: any) =>
       row?.sub_categories_count > 0 ? (

@@ -8,7 +8,7 @@ export interface CredentialType {
 
 export interface AuthContextType {
   user: any | null;
-  setUser?: () => Dispatch<SetStateAction<any>>;
+  setUser: Dispatch<SetStateAction<any | null>>;
   isAuthenticated: boolean;
   setIsAuthenticated?: () => Dispatch<SetStateAction<boolean>>;
   isLoading: boolean;

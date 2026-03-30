@@ -46,6 +46,9 @@ import { TICKET_STATUS } from "@/constants/ticket-status";
 function Tickets() {
   const { user, isAdmin } = useAuth();
   const { isRefresh, setIsRefresh: refresh } = useIsRefresh();
+  const [ticketType, setTicketType] = useState<
+    "netsuite_ticket" | "sql_ticket"
+  >("netsuite_ticket");
   const {
     data,
     isLoading,
@@ -64,11 +67,15 @@ function Tickets() {
     filters: TICKETS_FILTER,
     canBeRefreshGlobal: isRefresh,
   });
-  const { data: categories, isLoading: isLoadingCategories } = useFetch({
-    url: "/categories",
+  const {
+    data: categories,
+    isLoading: isLoadingCategories,
+    setIsRefresh: setIsRefreshCategories,
+  } = useFetch({
+    url: `/categories?category_type=${ticketType}`,
   });
   const [selectedTicketData, setSelectedTicketData] = useState<null | any>(
-    null
+    null,
   );
   const [isOpenDialog, setIsOpenDialog] = useState<boolean>(false);
   const [isOpenView, setIsOpenView] = useState<boolean>(false);
@@ -229,7 +236,7 @@ function Tickets() {
           try {
             const response = await api.patch(
               `/mark-as-edited-ticket/${ticketDetailsId}/mark-as-edited`,
-              formData
+              formData,
             );
             if (response.status === 200) {
               setIsOpenView(false);
@@ -299,7 +306,7 @@ function Tickets() {
           try {
             const response = await api.patch(
               `/approve-ticket/${ticketDetailsId}/approve`,
-              formData
+              formData,
             );
             if (response.status === 200) {
               setIsOpenView(false);
@@ -375,7 +382,7 @@ function Tickets() {
           try {
             const response = await api.patch(
               `/revise-ticket/${ticketDetailsId}/revise`,
-              formData
+              formData,
             );
             if (response.status === 200) {
               setIsOpenView(false);
@@ -501,6 +508,8 @@ function Tickets() {
                 setIsRefresh={setIsRefresh}
                 categories={categories}
                 user={user}
+                setTicketType={setTicketType}
+                setIsRefreshCategories={setIsRefreshCategories}
               />
             )}
           </div>
@@ -531,6 +540,8 @@ function Tickets() {
           user={user}
           setIsOpenDialog={setIsOpenDialog}
           open={isOpenDialog}
+          setTicketType={setTicketType}
+          setIsRefreshCategories={setIsRefreshCategories}
         />
       )}
 

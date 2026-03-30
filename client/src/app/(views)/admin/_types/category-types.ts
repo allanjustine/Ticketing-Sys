@@ -6,6 +6,7 @@ export interface CategoryFormDataType {
   group_code: string;
   show_hide: string;
   other_category?: string;
+  category_type: string;
 }
 
 export interface CategoryDataType {
@@ -14,6 +15,7 @@ export interface CategoryDataType {
   category_name: string;
   group_code: string;
   show_hide: string;
+  category_type: string;
 }
 
 export interface GroupCategoryDataType {

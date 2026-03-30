@@ -145,7 +145,7 @@ export default function LoginAsCode() {
                   <MessageCircleWarning />
                   <AlertTitle>Success!</AlertTitle>
                   <AlertDescription className="text-green-500">
-                    Login code sent to your email {email}
+                    Login code sent to your email {email}. Code will expire in 30 minutes.
                   </AlertDescription>
                 </Alert>
               )}

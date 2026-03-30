@@ -16,6 +16,7 @@ export const CATEGORY_DATA = {
   group_code: "",
   show_hide: "hide",
   others: "",
+  category_type: "",
 };
 
 export const BRANCH_DATA = {

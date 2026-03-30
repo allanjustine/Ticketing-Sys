@@ -21,6 +21,7 @@ import Storage from "@/utils/storage";
 import { CalendarIcon, FileSpreadsheet, X } from "lucide-react";
 import Image from "next/image";
 import { useMemo } from "react";
+import SqlForm from "./sql-form";
 
 export default function BasicForm({
   formInput,
@@ -43,7 +44,7 @@ export default function BasicForm({
     return categories?.data?.find(
       (category: any) =>
         Number(category.ticket_category_id) ===
-        Number(formInput.ticket_category)
+        Number(formInput.ticket_category),
     )?.sub_categories;
   }, [formInput.ticket_category]);
 
@@ -141,6 +142,11 @@ export default function BasicForm({
           <small className="text-red-500">{errors?.ticket_category[0]}</small>
         )}
       </div>
+      <SqlForm
+        formInput={formInput}
+        errors={errors}
+        handleInputChange={handleInputChange}
+      />
       {ticketSubCategories?.length > 0 && (
         <div className="flex flex-col gap-3">
           <Label htmlFor="ticket_sub_category" className="px-1">
@@ -168,7 +174,7 @@ export default function BasicForm({
                       <SelectItem key={index} value={String(sub_category.id)}>
                         {sub_category.sub_category_name}
                       </SelectItem>
-                    )
+                    ),
                   )
                 )}
               </SelectGroup>

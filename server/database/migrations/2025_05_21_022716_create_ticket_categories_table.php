@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('category_name')->nullable();
             $table->foreignId('group_code')->nullable()->constrained('group_categories')->onDelete('cascade');
             $table->string('show_hide')->nullable()->default('show');
+            $table->string('category_type')->default('netsuite_ticket')->nullable();
             $table->timestamps();
         });
     }

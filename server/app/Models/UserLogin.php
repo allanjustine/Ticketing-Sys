@@ -31,6 +31,7 @@ class UserLogin extends Authenticatable
     {
         return [
             'password' => 'hashed',
+            'requesting_password' => 'boolean'
         ];
     }
 

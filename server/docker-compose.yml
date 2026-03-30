@@ -17,6 +17,7 @@ services:
       - ./docker-compose/nginx/default.conf:/etc/nginx/nginx.conf
       - ./:/var/www
       - /mnt/nvme0n1/ticketing-v2-uploads:/mnt/nvme0n1/ticketing-v2-uploads
+      - ./php.ini:/usr/local/etc/php/php.ini
     networks:
       - ticketing-netsuite-server-v2
 
@@ -30,6 +31,7 @@ services:
       - ./docker-compose/nginx/default.conf:/etc/nginx/nginx.conf
       - ./:/var/www
       - /mnt/nvme0n1/ticketing-v2-uploads:/mnt/nvme0n1/ticketing-v2-uploads
+      - ./php.ini:/usr/local/etc/php/php.ini
 
     networks:
       - ticketing-netsuite-server-v2

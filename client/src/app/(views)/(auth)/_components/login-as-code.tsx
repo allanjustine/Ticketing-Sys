@@ -145,7 +145,8 @@ export default function LoginAsCode() {
                   <MessageCircleWarning />
                   <AlertTitle>Success!</AlertTitle>
                   <AlertDescription className="text-green-500">
-                    Login code sent to your email {email}. Code will expire in 30 minutes.
+                    Login code sent to your email {email}. Code will expire in
+                    30 minutes.
                   </AlertDescription>
                 </Alert>
               )}
@@ -167,12 +168,12 @@ export default function LoginAsCode() {
                 maxLength={[0, 1, 2, 3, 4, 5].length}
                 onChange={handleChangeEventOtp}
               >
-                <InputOTPGroup>
+                <InputOTPGroup className="flex justify-between w-full">
                   {[0, 1, 2, 3, 4, 5].map((index) => (
                     <InputOTPSlot
                       index={index}
-                      className="w-[67px] h-16"
                       key={index}
+                      className="flex-1 h-16 text-2xl text-center"
                     />
                   ))}
                 </InputOTPGroup>

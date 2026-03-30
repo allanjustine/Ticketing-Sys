@@ -20,7 +20,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import BasicForm from "./basic-form";
 import SqlForm from "./sql-form";
 
-export function CreateTicket({ setIsRefresh, categories, user }: any) {
+export function CreateTicket({
+  setIsRefresh,
+  categories,
+  user,
+  setTicketType,
+  setIsRefreshCategories,
+}: any) {
   const [formInput, setFormInput] =
     useState<TicketFormDataType>(TICKET_FORM_DATA);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -57,10 +63,17 @@ export function CreateTicket({ setIsRefresh, categories, user }: any) {
     };
 
   const handleChange = (title: string) => (value: string) => {
+    const is_ticket_type = title === "ticket_type";
     setFormInput((formData) => ({
       ...formData,
       [title]: value,
+      ticket_category: is_ticket_type ? "" : value,
     }));
+
+    if (is_ticket_type) {
+      setIsRefreshCategories(true);
+      setTicketType(value);
+    }
   };
 
   const handleDateChange = (value: Date) => {
@@ -78,7 +91,7 @@ export function CreateTicket({ setIsRefresh, categories, user }: any) {
       const formData = new FormData();
       formData.append(
         "ticket_transaction_date",
-        formInput.ticket_transaction_date
+        formInput.ticket_transaction_date,
       );
       formData.append("ticket_category", formInput.ticket_category);
       formInput.ticket_support.forEach((support) => {
@@ -112,7 +125,7 @@ export function CreateTicket({ setIsRefresh, categories, user }: any) {
       if (formInput?.ticket_reference_number) {
         formData.append(
           "ticket_reference_number",
-          formInput.ticket_reference_number
+          formInput.ticket_reference_number,
         );
       }
 
@@ -175,7 +188,7 @@ export function CreateTicket({ setIsRefresh, categories, user }: any) {
     setFormInput((formData) => ({
       ...formData,
       ticket_support: formData.ticket_support.filter(
-        (_, index) => index !== key
+        (_, index) => index !== key,
       ),
     }));
 
@@ -244,14 +257,14 @@ export function CreateTicket({ setIsRefresh, categories, user }: any) {
                 errors={errors}
                 handleDateChange={handleDateChange}
               />
-              <TabsContent value="netsuite_ticket"></TabsContent>
+              {/* <TabsContent value="netsuite_ticket"></TabsContent>
               <TabsContent value="sql_ticket" className="space-y-4">
                 <SqlForm
                   formInput={formInput}
                   errors={errors}
                   handleInputChange={handleInputChange}
                 />
-              </TabsContent>
+              </TabsContent> */}
             </div>
             {error && (
               <div className="w-full">

@@ -26,6 +26,8 @@ export function EditTicket({
   user,
   setIsOpenDialog,
   open,
+  setTicketType,
+  setIsRefreshCategories,
 }: any) {
   const [formInput, setFormInput] =
     useState<TicketFormDataType>(TICKET_FORM_DATA);
@@ -41,7 +43,7 @@ export function EditTicket({
         if (formInput?.removed_file) {
           return !formInput?.removed_file.includes(item);
         }
-      })
+      }),
     );
   }, [open, formInput.removed_file]);
 
@@ -49,7 +51,7 @@ export function EditTicket({
     if (!open) return;
     setFormInput({
       ticket_transaction_date: formattedDateFull(
-        ticketData.ticket_detail.ticket_transaction_date
+        ticketData.ticket_detail.ticket_transaction_date,
       ),
       ticket_category: String(ticketData.ticket_detail.ticket_category_id),
       ticket_support: TICKET_FORM_DATA.ticket_support,
@@ -89,10 +91,17 @@ export function EditTicket({
     };
 
   const handleChange = (title: string) => (value: string) => {
+    const is_ticket_type = title === "ticket_type";
     setFormInput((formData) => ({
       ...formData,
       [title]: value,
+      ticket_category: is_ticket_type ? "" : value,
     }));
+
+    if (is_ticket_type) {
+      setIsRefreshCategories(true);
+      setTicketType(value);
+    }
   };
 
   const handleDateChange = (value: Date) => {
@@ -117,7 +126,7 @@ export function EditTicket({
       const formData = new FormData();
       formData.append(
         "ticket_transaction_date",
-        formInput.ticket_transaction_date
+        formInput.ticket_transaction_date,
       );
       formData.append("ticket_category", formInput.ticket_category);
       formInput.ticket_support.forEach((support) => {
@@ -153,13 +162,13 @@ export function EditTicket({
       if (formInput?.ticket_reference_number) {
         formData.append(
           "ticket_reference_number",
-          formInput.ticket_reference_number
+          formInput.ticket_reference_number,
         );
       }
 
       const response = await api.post(
         `/update-ticket/${ticketData.ticket_details_id}/update`,
-        formData
+        formData,
       );
       if (response.status === 200) {
         setError(null);
@@ -216,7 +225,7 @@ export function EditTicket({
     setFormInput((formData) => ({
       ...formData,
       ticket_support: formData.ticket_support.filter(
-        (_, index) => index !== key
+        (_, index) => index !== key,
       ),
     }));
 

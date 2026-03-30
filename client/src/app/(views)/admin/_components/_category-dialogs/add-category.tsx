@@ -172,7 +172,6 @@ export function AddCategory({
               <SelectContent>
                 <SelectGroup>
                   <SelectLabel>Category type</SelectLabel>
-                  <SelectItem value="Select category type" disabled>Select category type</SelectItem>
                   <SelectItem value="netsuite_ticket">Netsuite Ticket</SelectItem>
                   <SelectItem value="sql_ticket">SQL Ticket</SelectItem>
                 </SelectGroup>

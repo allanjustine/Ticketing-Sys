@@ -1,9 +1,19 @@
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { TooltipArrow } from "@radix-ui/react-tooltip";
+import { useState } from "react";
 
 function InfoField({
   label,
@@ -14,6 +24,7 @@ function InfoField({
   value: string;
   icon?: React.ReactNode;
 }) {
+  const [open, setOpen] = useState<boolean>(false);
   return (
     <div className="flex flex-col gap-1">
       <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide flex items-center gap-1">
@@ -22,8 +33,9 @@ function InfoField({
       </span>
       <Tooltip>
         <TooltipTrigger
-          className="text-sm truncate text-left text-gray-700 font-medium"
+          className="text-sm truncate text-left text-gray-700 font-medium cursor-pointer"
           asChild
+          onClick={() => setOpen(true)}
         >
           <span>{value}</span>
         </TooltipTrigger>
@@ -32,6 +44,21 @@ function InfoField({
           {value}
         </TooltipContent>
       </Tooltip>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{label}</DialogTitle>
+          </DialogHeader>
+          <div className="break-all">{value}</div>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button type="button" variant="secondary">
+                Close
+              </Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

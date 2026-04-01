@@ -95,7 +95,7 @@ export const TICKETS_COLUMNS = [
             variant="outline"
             className={`${statusColor(
               row.status,
-            )} capitalize text-[11px] font-bold`}
+            )} capitalize text-[11px] font-bold cursor-pointer`}
           >
             {row.status.toLowerCase()}
           </Badge>

@@ -45,6 +45,7 @@ import {
 import Image from "next/image";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { InfoField, NoteCard } from "./view-ticket-details-items";
+import { Spinner } from "@/components/ui/spinner";
 
 export function ViewTicketDetails({
   data,
@@ -302,6 +303,16 @@ export function ViewTicketDetails({
                       </span>
                       <span className="text-sm font-medium text-gray-700">
                         {data.assigned_person.full_name}
+                      </span>
+                    </div>
+                  )}
+                  {data?.pending_user && (
+                    <div className="flex flex-col gap-1">
+                      <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide flex items-center gap-1">
+                        <Spinner className="w-3 h-3" /> Pending With
+                      </span>
+                      <span className="text-sm font-medium text-gray-700">
+                        {data.pending_user.full_name}
                       </span>
                     </div>
                   )}

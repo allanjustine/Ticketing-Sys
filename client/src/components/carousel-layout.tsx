@@ -11,7 +11,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import { isImage } from "@/utils/image-format";
-import { useEffect, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { Button } from "./ui/button";
 
 interface CarouselProps {
@@ -19,7 +19,15 @@ interface CarouselProps {
   image?: string;
 }
 
-function ZoomableImage({ src, alt }: { src: string; alt: string }) {
+function ZoomableImage({
+  src,
+  alt,
+  setIsZoom,
+}: {
+  src: string;
+  alt: string;
+  setIsZoom: Dispatch<SetStateAction<boolean>>;
+}) {
   const [scale, setScale] = useState(1);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const isDragging = useRef(false);
@@ -51,6 +59,7 @@ function ZoomableImage({ src, alt }: { src: string; alt: string }) {
   const handleMouseDown = (e: React.MouseEvent) => {
     if (scale === 1) return;
     isDragging.current = true;
+    setIsZoom(true);
     dragStart.current = { x: e.clientX, y: e.clientY };
     lastPosition.current = position;
   };
@@ -70,6 +79,7 @@ function ZoomableImage({ src, alt }: { src: string; alt: string }) {
 
   const handleMouseUp = () => {
     isDragging.current = false;
+    setIsZoom(false);
   };
 
   const zoom = (delta: number) => {
@@ -152,6 +162,7 @@ function ZoomableImage({ src, alt }: { src: string; alt: string }) {
 
 export default function CarouselLayout({ images, image }: CarouselProps) {
   const [api, setApi] = useState<any>(null);
+  const [isZoom, setIsZoom] = useState<boolean>(false);
 
   useEffect(() => {
     if (!api || !images || !image) return;
@@ -169,7 +180,12 @@ export default function CarouselLayout({ images, image }: CarouselProps) {
   }, [api]);
 
   return (
-    <Carousel setApi={setApi}>
+    <Carousel
+      setApi={setApi}
+      opts={{
+        watchDrag: !isZoom,
+      }}
+    >
       <CarouselContent>
         {images.map((item: any, index: number) => (
           <CarouselItem
@@ -177,7 +193,11 @@ export default function CarouselLayout({ images, image }: CarouselProps) {
             className="flex items-center justify-center"
           >
             {isImage(item) ? (
-              <ZoomableImage src={Storage(item)} alt={`Image ${index}`} />
+              <ZoomableImage
+                src={Storage(item)}
+                alt={`Image ${index}`}
+                setIsZoom={setIsZoom}
+              />
             ) : (
               <div className="relative w-full h-screen">
                 <Tooltip>

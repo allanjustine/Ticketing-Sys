@@ -24,20 +24,25 @@ function ZoomableImage({ src, alt }: { src: string; alt: string }) {
   const isDragging = useRef(false);
   const dragStart = useRef({ x: 0, y: 0 });
   const lastPosition = useRef({ x: 0, y: 0 });
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const clampPosition = (x: number, y: number, currentScale: number) => {
-    const maxOffset = (currentScale - 1) * 200;
+    if (!containerRef.current) return { x, y };
+    const { width, height } = containerRef.current.getBoundingClientRect();
+    const maxX = (width * (currentScale - 1)) / 2;
+    const maxY = (height * (currentScale - 1)) / 2;
     return {
-      x: Math.min(Math.max(x, -maxOffset), maxOffset),
-      y: Math.min(Math.max(y, -maxOffset), maxOffset),
+      x: Math.min(Math.max(x, -maxX), maxX),
+      y: Math.min(Math.max(y, -maxY), maxY),
     };
   };
 
   const handleWheel = (e: React.WheelEvent) => {
     e.preventDefault();
     setScale((prev) => {
-      const next = Math.min(Math.max(prev - e.deltaY * 0.001, 1), 5);
+      const next = Math.min(Math.max(prev - e.deltaY * 0.005, 1), 5);
       if (next === 1) setPosition({ x: 0, y: 0 });
+      else setPosition((pos) => clampPosition(pos.x, pos.y, next));
       return next;
     });
   };
@@ -66,6 +71,7 @@ function ZoomableImage({ src, alt }: { src: string; alt: string }) {
     setScale((prev) => {
       const next = Math.min(Math.max(prev + delta, 1), 5);
       if (next === 1) setPosition({ x: 0, y: 0 });
+      else setPosition((pos) => clampPosition(pos.x, pos.y, next));
       return next;
     });
   };
@@ -76,7 +82,7 @@ function ZoomableImage({ src, alt }: { src: string; alt: string }) {
   };
 
   return (
-    <div className="relative w-full h-screen flex items-center justify-center overflow-hidden">
+    <div ref={containerRef} className="relative w-full h-screen flex items-center justify-center overflow-hidden">
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 bg-black/50 backdrop-blur-sm rounded-full px-4 py-2">
         <button
           onClick={() => zoom(-0.5)}
@@ -112,9 +118,10 @@ function ZoomableImage({ src, alt }: { src: string; alt: string }) {
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
         style={{
-          transform: `scale(${scale}) translate(${position.x / scale}px, ${position.y / scale}px)`,
+          transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
           transition: isDragging.current ? "none" : "transform 0.15s ease",
           cursor: scale > 1 ? (isDragging.current ? "grabbing" : "grab") : "default",
+          transformOrigin: "center center",
         }}
         className="relative w-full h-full"
       >

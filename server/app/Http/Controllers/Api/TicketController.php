@@ -344,7 +344,7 @@ class TicketController extends Controller
     {
         $user = Auth::user();
 
-        $field = $user->isBranchHead() ? 'td_note_bh' : 'td_note';
+        $field = $user->isAutomation() ? 'td_note_bh' : 'td_note';
 
         $validateData = [
             $field => ['required', 'max:5000', 'min:1']

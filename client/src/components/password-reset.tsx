@@ -5,6 +5,8 @@ import { Button } from "./ui/button";
 import ButtonLoader from "./ui/button-loader";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 import { MessageCircleWarning } from "lucide-react";
+import { Label } from "./ui/label";
+import { Input } from "./ui/input";
 
 type FormInputType = {
   password: string;
@@ -64,13 +66,13 @@ export default function PasswordReset() {
         )}
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
-            <label
-              htmlFor="current-password"
+            <Label
+              htmlFor="new-password"
               className="block text-sm font-medium text-gray-700"
             >
-              Current password
-            </label>
-            <input
+              New password
+            </Label>
+            <Input
               onChange={(e) =>
                 setFormInput((prev) => ({ ...prev, password: e.target.value }))
               }
@@ -84,13 +86,13 @@ export default function PasswordReset() {
             )}
           </div>
           <div>
-            <label
+            <Label
               htmlFor="new-password"
               className="block text-sm font-medium text-gray-700"
             >
-              New password
-            </label>
-            <input
+              Confirm new password
+            </Label>
+            <Input
               onChange={(e) =>
                 setFormInput((prev) => ({
                   ...prev,

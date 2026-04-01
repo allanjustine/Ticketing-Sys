@@ -18,6 +18,7 @@ export interface UseFetchType {
   handleReset: () => void;
   setIsRefresh: Dispatch<SetStateAction<boolean>>;
   isRefresh: boolean;
+  setIsLoading: Dispatch<SetStateAction<boolean>>;
 }
 
 export interface FilterByType {

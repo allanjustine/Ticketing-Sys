@@ -189,5 +189,6 @@ export default function useFetch({
     handleReset,
     setIsRefresh,
     isRefresh,
+    setIsLoading
   };
 }

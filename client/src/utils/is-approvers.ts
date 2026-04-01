@@ -17,12 +17,14 @@ export const isAccountingStaffApprover = (role: string) => {
   return approverRoles.includes(role);
 };
 
+export const isAutomationManager = (role: string) => {
+  const automationRoles = [ROLE.AUTOMATION_MANAGER, ROLE.AUTOMATION_ADMIN];
+
+  return automationRoles.includes(role);
+};
+
 export const isAutomation = (role: string) => {
-  const automationRoles = [
-    ROLE.AUTOMATION,
-    ROLE.AUTOMATION_MANAGER,
-    ROLE.AUTOMATION_ADMIN,
-  ];
+  const automationRoles = [ROLE.AUTOMATION];
 
   return automationRoles.includes(role);
 };

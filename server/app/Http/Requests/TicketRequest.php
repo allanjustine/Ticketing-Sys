@@ -29,7 +29,7 @@ class TicketRequest extends FormRequest
             'ticket_support'                           => ['required', 'array'],
             'ticket_support.*'                         => ['file', 'max:5120'],
             'ticket_type'                              => ['nullable'],
-            'purpose'                                  => ['required', 'max:255', 'min:2'],
+            'purpose'                                  => ['required', 'max:1000', 'min:2'],
             'from'                                     => ['required', 'max:255', 'min:2'],
             'to'                                       => ['required', 'max:255', 'min:2'],
             'ticket_reference_number'                  => ['required_if:ticket_type,sql_ticket', 'max:255', 'min:2']

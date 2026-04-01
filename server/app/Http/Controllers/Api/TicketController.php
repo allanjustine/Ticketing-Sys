@@ -372,12 +372,12 @@ class TicketController extends Controller
         $field = $user->isBranchHead() ? 'td_note_bh' : 'td_note';
 
         $validateData = [
-            $field            => [Rule::requiredIf(!$user->isAccountingHead() && !$user->isAccountingStaff()), 'max:255', 'min:1']
+            $field            => ["nullable", Rule::requiredIf(!$user->isAccountingHead() && !$user->isAccountingStaff() && !$user->isBranchHead()), 'max:1000', 'min:1']
         ];
 
         $validateDataMessage = [
             "{$field}.required"   => 'Note is required',
-            "{$field}.max"        => 'Note must be less than 255 characters',
+            "{$field}.max"        => 'Note must be less than 1000 characters',
             "{$field}.min"        => 'Note must be at least 1 character',
         ];
 
@@ -466,7 +466,8 @@ class TicketController extends Controller
         }
 
         $data->update([
-            'assigned_person'       => $request->automation
+            'assigned_person' => $request->automation,
+            'displayTicket'   => $request->automation,
         ]);
 
         $user->notify(new TicketNotification(

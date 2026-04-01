@@ -26,7 +26,9 @@ export const TICKETS_COLUMNS = [
   {
     name: "Ticket Type",
     cell: (row: any) => (
-      <span className="font-extrabold text-xs">{row.ticket_detail.ticket_type?.split("_")[0]?.toUpperCase()}</span>
+      <span className="font-extrabold text-xs">
+        {row.ticket_detail.ticket_type?.split("_")[0]?.toUpperCase()}
+      </span>
     ),
     sortable: false,
     sortField: "ticket_code",
@@ -35,7 +37,9 @@ export const TICKETS_COLUMNS = [
     name: "Requested By",
     cell: (row: any) => (
       <div className="flex flex-col gap-1 py-1.5">
-        <span className="font-extrabold text-xs text-blue-400 border rounded-2xl text-center border-blue-500 w-fit py-0.5 px-1">{row.branch_name}</span>
+        <span className="font-extrabold text-xs text-blue-400 border rounded-2xl border-blue-500 w-fit py-0.5 px-1">
+          {row.branch_name}
+        </span>
         <span
           className={`${row.user_login?.full_name ? "text-gray-600" : "text-red-500"} font-bold text-xs`}
         >
@@ -45,6 +49,8 @@ export const TICKETS_COLUMNS = [
     ),
     sortable: false,
     sortField: "user_details.fname",
+    grow: 0,
+    minWidth: "200px",
   },
   {
     name: "Category",

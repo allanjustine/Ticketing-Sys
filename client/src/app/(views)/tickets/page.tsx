@@ -42,6 +42,7 @@ import Swal from "sweetalert2";
 import { isAutomation } from "@/utils/is-approvers";
 import { api } from "@/lib/api";
 import { TICKET_STATUS } from "@/constants/ticket-status";
+import ButtonLoader from "@/components/ui/button-loader";
 
 function Tickets() {
   const { user, isAdmin } = useAuth();
@@ -61,6 +62,7 @@ function Tickets() {
     handleSelectFilter,
     handleReset,
     setIsRefresh,
+    setIsLoading,
   } = useFetch({
     url: "/tickets",
     isPaginated: true,
@@ -503,15 +505,30 @@ function Tickets() {
               <Ticket size={18} />
               <span>Requested Tickets</span>
             </CardTitle>
-            {canCreateTicket(user?.user_role?.role_name) && (
-              <CreateTicket
-                setIsRefresh={setIsRefresh}
-                categories={categories}
-                user={user}
-                setTicketType={setTicketType}
-                setIsRefreshCategories={setIsRefreshCategories}
-              />
-            )}
+            <div>
+              <div>
+                <ButtonLoader
+                  type="button"
+                  className="bg-yellow-500 hover:bg-yellow-600"
+                  isLoading={isLoading}
+                  onClick={() => {
+                    setIsRefresh(true);
+                    setIsLoading(true);
+                  }}
+                >
+                  Refresh
+                </ButtonLoader>
+              </div>
+              {canCreateTicket(user?.user_role?.role_name) && (
+                <CreateTicket
+                  setIsRefresh={setIsRefresh}
+                  categories={categories}
+                  user={user}
+                  setTicketType={setTicketType}
+                  setIsRefreshCategories={setIsRefreshCategories}
+                />
+              )}
+            </div>
           </div>
         </CardHeader>
         <CardContent>

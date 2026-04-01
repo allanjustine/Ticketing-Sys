@@ -27,9 +27,9 @@ class UpdateTicketRequest extends FormRequest
             'ticket_transaction_date'                  => ['required', 'date', 'before_or_equal:today'],
             'ticket_category'                          => ['required', Rule::exists('ticket_categories', 'ticket_category_id')],
             'ticket_type'                              => ['nullable'],
-            'purpose'                                  => ['required_if:ticket_type,sql_ticket', 'max:255', 'min:2'],
-            'from'                                     => ['required_if:ticket_type,sql_ticket', 'max:255', 'min:2'],
-            'to'                                       => ['required_if:ticket_type,sql_ticket', 'max:255', 'min:2'],
+            'purpose'                                  => ['required', 'max:1000', 'min:2'],
+            'from'                                     => ['required', 'max:255', 'min:2'],
+            'to'                                       => ['required', 'max:255', 'min:2'],
             'ticket_reference_number'                  => ['required_if:ticket_type,sql_ticket', 'max:255', 'min:2']
         ];
     }

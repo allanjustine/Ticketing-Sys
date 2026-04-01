@@ -27,6 +27,7 @@ import {
   isAccountingStaffApprover,
   isApprovers,
   isAutomation,
+  isAutomationManager,
 } from "@/utils/is-approvers";
 import Storage from "@/utils/storage";
 import ticketTypeUpperCase from "@/utils/ticket-type-upper-case";
@@ -74,7 +75,7 @@ export function ViewTicketDetails({
   useEffect(() => {
     if (!open) return;
     setDefaultNote(
-      isAutomation(role)
+      isAutomationManager(role)
         ? (data?.ticket_detail?.td_note ?? "")
         : (data?.ticket_detail?.td_note_bh ?? ""),
     );
@@ -127,16 +128,17 @@ export function ViewTicketDetails({
             </DialogTitle>
           </DialogHeader>
           <div className="max-h-[62vh] overflow-y-auto px-6 py-5 space-y-5">
-            {data?.ticket_detail?.td_note_bh && (
-              <NoteCard
-                label="Branch Head Note"
-                content={data.ticket_detail.td_note_bh}
-              />
-            )}
             {data?.ticket_detail?.td_note && (
               <NoteCard
-                label="Automation Note"
+                label="Automation Manager Note"
                 content={data.ticket_detail.td_note}
+              />
+            )}
+            
+            {data?.ticket_detail?.td_note_bh && (
+              <NoteCard
+                label="Automation Note"
+                content={data.ticket_detail.td_note_bh}
               />
             )}
 
@@ -144,24 +146,26 @@ export function ViewTicketDetails({
               isYourPendingTicket &&
               !TICKET_REJECTED && (
                 <div className="space-y-4">
-                  <div className="rounded-xl border border-gray-200 bg-white p-4 flex flex-col gap-2 shadow-sm">
-                    <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide">
-                      Add Note
-                    </span>
-                    <Textarea
-                      placeholder="Write your note here..."
-                      className="resize-none min-h-20 text-sm border-gray-200 focus-visible:ring-blue-400"
-                      value={defaultNote}
-                      onChange={handleChange}
-                    />
-                    {(error?.td_note ?? error?.td_note_bh) && (
-                      <small className="text-red-500">
-                        {error?.td_note
-                          ? error.td_note[0]
-                          : error.td_note_bh[0]}
-                      </small>
-                    )}
-                  </div>
+                  {(isAutomationManager(role) || isAutomation(role)) && (
+                    <div className="rounded-xl border border-gray-200 bg-white p-4 flex flex-col gap-2 shadow-sm">
+                      <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide">
+                        Add Note
+                      </span>
+                      <Textarea
+                        placeholder="Write your note here..."
+                        className="resize-none min-h-20 text-sm border-gray-200 focus-visible:ring-blue-400"
+                        value={defaultNote}
+                        onChange={handleChange}
+                      />
+                      {(error?.td_note ?? error?.td_note_bh) && (
+                        <small className="text-red-500">
+                          {error?.td_note
+                            ? error.td_note[0]
+                            : error.td_note_bh[0]}
+                        </small>
+                      )}
+                    </div>
+                  )}
 
                   {isAutomation(role) && !AUTOMATION_MANAGER && (
                     <div className="rounded-xl border border-gray-200 bg-white p-4 flex flex-col gap-2 shadow-sm">

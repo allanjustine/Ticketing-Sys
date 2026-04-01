@@ -505,7 +505,7 @@ function Tickets() {
               <Ticket size={18} />
               <span>Requested Tickets</span>
             </CardTitle>
-            <div>
+            <div className="flex gap-1">
               <div>
                 <ButtonLoader
                   type="button"

@@ -49,7 +49,7 @@ function InfoField({
           <DialogHeader>
             <DialogTitle>{label}</DialogTitle>
           </DialogHeader>
-          <div className="break-all">{value}</div>
+          <div className="break-all whitespace-break-spaces max-h-[calc(100vh-200px)] overflow-y-auto">{value}</div>
           <DialogFooter>
             <DialogClose asChild>
               <Button type="button" variant="secondary">
@@ -69,7 +69,7 @@ function NoteCard({ label, content }: { label: string; content: string }) {
       <span className="text-xs font-semibold text-blue-500 uppercase tracking-wide">
         {label}
       </span>
-      <p className="text-sm text-gray-700 wrap-break-word leading-relaxed">
+      <p className="text-sm text-gray-700 break-all whitespace-break-spaces leading-relaxed">
         {content}
       </p>
     </div>

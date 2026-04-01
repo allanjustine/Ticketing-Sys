@@ -347,12 +347,12 @@ class TicketController extends Controller
         $field = $user->isBranchHead() ? 'td_note_bh' : 'td_note';
 
         $validateData = [
-            $field => ['required', 'max:255', 'min:1']
+            $field => ['required', 'max:5000', 'min:1']
         ];
 
         $validateDataMessage = [
             "{$field}.required" => 'Note is required',
-            "{$field}.max"      => 'Note must be less than 255 characters',
+            "{$field}.max"      => 'Note must be less than 5000 characters',
             "{$field}.min"      => 'Note must be at least 1 character',
         ];
 
@@ -372,12 +372,12 @@ class TicketController extends Controller
         $field = $user->isAutomation() ? 'td_note_bh' : 'td_note';
 
         $validateData = [
-            $field            => ["nullable", Rule::requiredIf(!$user->isAccountingHead() && !$user->isAccountingStaff() && !$user->isBranchHead()), 'max:1000', 'min:1']
+            $field            => ["nullable", Rule::requiredIf(!$user->isAccountingHead() && !$user->isAccountingStaff() && !$user->isBranchHead()), 'max:5000', 'min:1']
         ];
 
         $validateDataMessage = [
             "{$field}.required"   => 'Note is required',
-            "{$field}.max"        => 'Note must be less than 1000 characters',
+            "{$field}.max"        => 'Note must be less than 5000 characters',
             "{$field}.min"        => 'Note must be at least 1 character',
         ];
 
@@ -393,13 +393,13 @@ class TicketController extends Controller
     public function markAsEdited(Request $request, TicketService $ticketService, string $id)
     {
         $validateData = [
-            'td_note'               => ['required', 'max:255', 'min:1'],
+            'td_note'               => ['required', 'max:5000', 'min:1'],
             'is_counted'            => ['required']
         ];
 
         $validateDataMessage = [
             'td_note.required'      => 'Note is required',
-            'td_note.max'           => 'Note must be less than 255 characters',
+            'td_note.max'           => 'Note must be less than 5000 characters',
             'td_note.min'           => 'Note must be at least 1 character',
         ];
 

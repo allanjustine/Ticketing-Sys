@@ -41,7 +41,7 @@ class TicketRequest extends FormRequest
         return [
             'ticket_support.required'                  => 'At least one support file is required.',
             'ticket_support.*.file'                    => 'Each support upload must be a valid file.',
-            'ticket_support.*.max'                     => 'Please upload a file less than 1MB.',
+            'ticket_support.*.max'                     => 'Please upload a file less than 5MB.',
             'purpose.required_if'                      => 'Purpose is required.',
             'purpose.max'                              => 'Purpose must be less than 255 characters.',
             'purpose.min'                              => 'Purpose must be at least 2 characters.',

@@ -6,7 +6,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import Storage from "@/utils/storage";
-import { FileInput } from "lucide-react";
+import { FileInput, ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
@@ -18,61 +18,149 @@ interface CarouselProps {
   image?: string;
 }
 
+function ZoomableImage({ src, alt }: { src: string; alt: string }) {
+  const [scale, setScale] = useState(1);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const isDragging = useRef(false);
+  const dragStart = useRef({ x: 0, y: 0 });
+  const lastPosition = useRef({ x: 0, y: 0 });
+
+  const clampPosition = (x: number, y: number, currentScale: number) => {
+    const maxOffset = (currentScale - 1) * 200;
+    return {
+      x: Math.min(Math.max(x, -maxOffset), maxOffset),
+      y: Math.min(Math.max(y, -maxOffset), maxOffset),
+    };
+  };
+
+  const handleWheel = (e: React.WheelEvent) => {
+    e.preventDefault();
+    setScale((prev) => {
+      const next = Math.min(Math.max(prev - e.deltaY * 0.001, 1), 5);
+      if (next === 1) setPosition({ x: 0, y: 0 });
+      return next;
+    });
+  };
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (scale === 1) return;
+    isDragging.current = true;
+    dragStart.current = { x: e.clientX, y: e.clientY };
+    lastPosition.current = position;
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging.current) return;
+    const dx = e.clientX - dragStart.current.x;
+    const dy = e.clientY - dragStart.current.y;
+    setPosition(
+      clampPosition(lastPosition.current.x + dx, lastPosition.current.y + dy, scale)
+    );
+  };
+
+  const handleMouseUp = () => {
+    isDragging.current = false;
+  };
+
+  const zoom = (delta: number) => {
+    setScale((prev) => {
+      const next = Math.min(Math.max(prev + delta, 1), 5);
+      if (next === 1) setPosition({ x: 0, y: 0 });
+      return next;
+    });
+  };
+
+  const reset = () => {
+    setScale(1);
+    setPosition({ x: 0, y: 0 });
+  };
+
+  return (
+    <div className="relative w-full h-screen flex items-center justify-center overflow-hidden">
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 bg-black/50 backdrop-blur-sm rounded-full px-4 py-2">
+        <button
+          onClick={() => zoom(-0.5)}
+          disabled={scale <= 1}
+          className="text-white disabled:opacity-30 hover:text-gray-300 transition-colors"
+        >
+          <ZoomOut size={18} />
+        </button>
+        <span className="text-white text-xs font-semibold w-10 text-center">
+          {Math.round(scale * 100)}%
+        </span>
+        <button
+          onClick={() => zoom(0.5)}
+          disabled={scale >= 5}
+          className="text-white disabled:opacity-30 hover:text-gray-300 transition-colors"
+        >
+          <ZoomIn size={18} />
+        </button>
+        {scale > 1 && (
+          <button
+            onClick={reset}
+            className="text-white hover:text-gray-300 transition-colors ml-1 border-l border-white/30 pl-3"
+          >
+            <RotateCcw size={15} />
+          </button>
+        )}
+      </div>
+
+      <div
+        onWheel={handleWheel}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
+        style={{
+          transform: `scale(${scale}) translate(${position.x / scale}px, ${position.y / scale}px)`,
+          transition: isDragging.current ? "none" : "transform 0.15s ease",
+          cursor: scale > 1 ? (isDragging.current ? "grabbing" : "grab") : "default",
+        }}
+        className="relative w-full h-full"
+      >
+        <Image
+          alt={alt}
+          src={src}
+          fill
+          className="object-contain select-none"
+          loading="lazy"
+          draggable={false}
+        />
+      </div>
+    </div>
+  );
+}
+
 export default function CarouselLayout({ images, image }: CarouselProps) {
   const [api, setApi] = useState<any>(null);
 
   useEffect(() => {
     if (!api || !images || !image) return;
-
     const index = images.findIndex((item) => item === image);
-    if (index >= 0) {
-      api.scrollTo(index);
-    }
+    if (index >= 0) api.scrollTo(index);
   }, [api, images, image]);
 
   useEffect(() => {
     const handleNextPrev = (e: KeyboardEvent) => {
-      if (e.key === "ArrowRight") {
-        api.scrollNext();
-      } else if (e.key === "ArrowLeft") {
-        api.scrollPrev();
-      }
+      if (e.key === "ArrowRight") api.scrollNext();
+      else if (e.key === "ArrowLeft") api.scrollPrev();
     };
-
     window.addEventListener("keydown", handleNextPrev);
-
-    return () => {
-      window.removeEventListener("keydown", handleNextPrev);
-    };
+    return () => window.removeEventListener("keydown", handleNextPrev);
   }, [api]);
 
   return (
     <Carousel setApi={setApi}>
       <CarouselContent>
         {images.map((item: any, index: number) => (
-          <CarouselItem
-            key={index}
-            className="flex items-center justify-center"
-          >
+          <CarouselItem key={index} className="flex items-center justify-center">
             {isImage(item) ? (
-              <div className="relative w-full h-screen">
-                <Image
-                  alt={`Image ${index}`}
-                  src={item && Storage(item)}
-                  fill
-                  className="object-contain"
-                  loading="lazy"
-                />
-              </div>
+              <ZoomableImage src={Storage(item)} alt={`Image ${index}`} />
             ) : (
               <div className="relative w-full h-screen">
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Link
-                      href={Storage(item)}
-                      target="_blank"
-                      title="Download/View"
-                    >
+                    <Link href={Storage(item)} target="_blank" title="Download/View">
                       <FileInput className="text-blue-500 hover:text-blue-600 w-full h-full" />
                     </Link>
                   </TooltipTrigger>

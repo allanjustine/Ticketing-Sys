@@ -163,7 +163,7 @@ function Tickets() {
             </TooltipContent>
           </Tooltip>
           {(user?.login_id === row?.login_id || isAdmin) && (
-            <DeleteTicket data={row} />
+            <DeleteTicket data={row} setIsRefresh={setIsRefresh} />
           )}
           {isAdmin && (
             <Tooltip>

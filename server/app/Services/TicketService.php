@@ -388,7 +388,7 @@ class TicketService
     {
         $ticketDetail = TicketDetail::findOrFail($id);
 
-        if ($this->user->isBranchHead()) {
+        if ($this->user->isAutomation()) {
             $requestData = [
                 'td_note_bh'    => $request->td_note_bh
             ];
@@ -550,7 +550,7 @@ class TicketService
             ];
 
             $requestData = [
-                'td_note'           => $request->td_note,
+                'td_note_bh'        => $request->td_note_bh,
                 'date_completed'    => now(),
                 'time'              => now()->format('h:i:s A'),
             ];

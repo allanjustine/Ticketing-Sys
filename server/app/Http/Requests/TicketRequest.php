@@ -27,7 +27,7 @@ class TicketRequest extends FormRequest
             'ticket_transaction_date'                  => ['required', 'date', 'before_or_equal:today'],
             'ticket_category'                          => ['required', Rule::exists('ticket_categories', 'ticket_category_id')],
             'ticket_support'                           => ['required', 'array'],
-            'ticket_support.*'                         => ['file', 'max:1024'],
+            'ticket_support.*'                         => ['file', 'max:5120'],
             'ticket_type'                              => ['nullable'],
             'purpose'                                  => ['required', 'max:255', 'min:2'],
             'from'                                     => ['required', 'max:255', 'min:2'],

@@ -308,7 +308,7 @@ class TicketService
                 if (count($existingPaths) === count($removedFile) && !$request->hasFile('ticket_support')) {
                     $request->validate([
                         'ticket_support'             => ['required', 'array'],
-                        'ticket_support.*'           => ['file', 'max:1024'],
+                        'ticket_support.*'           => ['file', 'max:5120'],
                     ], [
                         'ticket_support.required'    => 'At least one support file is required.',
                         'ticket_support.*.file'      => 'Each support upload must be a valid file.',

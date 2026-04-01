@@ -42,6 +42,7 @@ export default function withAuthPage(
     }
 
     if (user?.requesting_password) {
+      Swal.close();
       return <PasswordReset />;
     }
 

@@ -299,10 +299,10 @@ function Tickets() {
 
           const formData = isAutomation(role)
             ? {
-                td_note: note,
+                td_note_bh: note,
               }
             : {
-                td_note_bh: note,
+                td_note: note,
               };
 
           try {
@@ -375,10 +375,10 @@ function Tickets() {
 
           const formData = isAutomation(role)
             ? {
-                td_note: note,
+                td_note_bh: note,
               }
             : {
-                td_note_bh: note,
+                td_note: note,
               };
 
           try {

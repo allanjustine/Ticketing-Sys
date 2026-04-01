@@ -18,7 +18,7 @@ services:
       - ./:/var/www
       - /mnt/nvme0n1/ticketing-v2-uploads:/var/www/storage/app/public
       - ./php.ini:/usr/local/etc/php/php.ini
-      - /home/webserver/systems/Ticketing-Sys/server/.env:/var/www/.env
+      - /home/webserver/systems/Ticketing-V2/Ticketing-Sys/server/.env:/var/www/.env
     networks:
       - ticketing-netsuite-server-v2
 
@@ -33,6 +33,7 @@ services:
       - ./:/var/www
       - /mnt/nvme0n1/ticketing-v2-uploads:/var/www/storage/app/public
       - ./php.ini:/usr/local/etc/php/php.ini
+      - /home/webserver/systems/Ticketing-V2/Ticketing-Sys/server/.env:/var/www/.env
 
     networks:
       - ticketing-netsuite-server-v2

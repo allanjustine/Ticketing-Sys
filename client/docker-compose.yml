@@ -8,4 +8,4 @@ services:
     ports:
       - "7030:7030"
     volumes:
-      - /home/webserver/systems/Ticketing-Sys/client/.env:/var/www/.env
+      - /home/webserver/systems/Ticketing-V2/Ticketing-Sys/client/.env:/var/www/.env

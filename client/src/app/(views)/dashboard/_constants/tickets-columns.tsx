@@ -26,17 +26,23 @@ export const TICKETS_COLUMNS = [
   {
     name: "Ticket Type",
     cell: (row: any) => (
-      <span>{row.ticket_detail.ticket_type?.split("_")[0]?.toUpperCase()}</span>
+      <span className="font-extrabold text-xs">{row.ticket_detail.ticket_type?.split("_")[0]?.toUpperCase()}</span>
     ),
     sortable: false,
     sortField: "ticket_code",
   },
   {
     name: "Requested By",
-    cell: (row: any) =>
-      row.user_login?.full_name || (
-        <span className="text-red-500 font-bold text-xs">Deleted Account</span>
-      ),
+    cell: (row: any) => (
+      <div className="flex flex-col gap-1 py-1.5">
+        <span className="font-extrabold text-xs text-blue-400 border rounded-2xl text-center border-blue-500 w-fit py-0.5 px-1">{row.branch_name}</span>
+        <span
+          className={`${row.user_login?.full_name ? "text-gray-600" : "text-red-500"} font-bold text-xs`}
+        >
+          {row.user_login?.full_name || "Deleted Account"}
+        </span>
+      </div>
+    ),
     sortable: false,
     sortField: "user_details.fname",
   },
@@ -149,7 +155,7 @@ export const TICKETS_COLUMNS = [
               </div>
               <div className="border-t pt-2">
                 <p className="text-xs text-gray-700">
-                  <span className="font-bold">Last approver: </span>
+                  <span className="font-bold">Approved by: </span>
                   {row.last_approver ? row.last_approver.full_name : "-"}
                 </p>
               </div>

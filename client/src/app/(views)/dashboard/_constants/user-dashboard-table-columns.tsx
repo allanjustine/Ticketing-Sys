@@ -105,7 +105,7 @@ export const USER_DASHBOARD_TABLE_COLUMNS = [
               </div>
               <div className="border-t pt-2">
                 <p className="text-xs text-gray-700">
-                  <span className="font-bold">Last approver: </span>
+                  <span className="font-bold">Approved by: </span>
                   {row.last_approver ? row.last_approver.full_name : "-"}
                 </p>
               </div>

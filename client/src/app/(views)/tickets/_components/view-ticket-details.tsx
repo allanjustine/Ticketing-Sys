@@ -289,7 +289,7 @@ export function ViewTicketDetails({
                   {data?.last_approver && (
                     <div className="flex flex-col gap-1">
                       <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide flex items-center gap-1">
-                        <User className="w-3 h-3" /> Last Approver
+                        <User className="w-3 h-3" /> Approved By
                       </span>
                       <span className="text-sm font-medium text-gray-700">
                         {data.last_approver.full_name}

@@ -435,7 +435,7 @@ class TicketController extends Controller
     public function editNote(Request $request, TicketService $ticketService, $ticketCode)
     {
         $request->validate([
-            'note'          => ['required', 'max:255', 'min:1']
+            'note'          => ['required', 'max:5000', 'min:1']
         ]);
 
         [$old_data, $new_data, $ticket_code] = $ticketService->editNote($request, $ticketCode);

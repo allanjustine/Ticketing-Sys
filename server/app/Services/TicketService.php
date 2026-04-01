@@ -617,10 +617,10 @@ class TicketService
         $old_note = $ticket->ticketDetail->td_note;
 
         $ticket->ticketDetail->update([
-            'td_note'           => $request->note
+            'td_note_bh'           => $request->note
         ]);
 
-        $new_note = $ticket->ticketDetail->td_note;
+        $new_note = $ticket->ticketDetail->td_note_bh;
 
         return [
             $old_note,

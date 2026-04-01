@@ -277,7 +277,7 @@ Route::post('/change-password-to-all-user', function () {
         });
     });
 
-    UserLogin::upsert($users_to_update, ['login_id'], ['password']);
+    UserLogin::upsert($users_to_update, ['login_id'], ['password', 'requesting_password']);
 
     return response()->json([
         'message' => "Successfully changed password to {$total_user_added} users."

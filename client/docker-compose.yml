@@ -7,3 +7,5 @@ services:
     restart: unless-stopped
     ports:
       - "7030:7030"
+    volumes:
+      - /home/webserver/systems/Ticketing-Sys/client/.env:/var/www/.env

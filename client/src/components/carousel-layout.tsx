@@ -12,6 +12,7 @@ import Link from "next/link";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import { isImage } from "@/utils/image-format";
 import { useEffect, useRef, useState } from "react";
+import { Button } from "./ui/button";
 
 interface CarouselProps {
   images: string[];
@@ -59,7 +60,11 @@ function ZoomableImage({ src, alt }: { src: string; alt: string }) {
     const dx = e.clientX - dragStart.current.x;
     const dy = e.clientY - dragStart.current.y;
     setPosition(
-      clampPosition(lastPosition.current.x + dx, lastPosition.current.y + dy, scale)
+      clampPosition(
+        lastPosition.current.x + dx,
+        lastPosition.current.y + dy,
+        scale,
+      ),
     );
   };
 
@@ -82,32 +87,38 @@ function ZoomableImage({ src, alt }: { src: string; alt: string }) {
   };
 
   return (
-    <div ref={containerRef} className="relative w-full h-screen flex items-center justify-center overflow-hidden">
+    <div
+      ref={containerRef}
+      className="relative w-full h-screen flex items-center justify-center overflow-hidden"
+    >
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 bg-black/50 backdrop-blur-sm rounded-full px-4 py-2">
-        <button
+        <Button
+          variant={"link"}
           onClick={() => zoom(-0.5)}
           disabled={scale <= 1}
           className="text-white disabled:opacity-30 hover:text-gray-300 transition-colors"
         >
           <ZoomOut size={18} />
-        </button>
+        </Button>
         <span className="text-white text-xs font-semibold w-10 text-center">
           {Math.round(scale * 100)}%
         </span>
-        <button
+        <Button
+          variant={"link"}
           onClick={() => zoom(0.5)}
           disabled={scale >= 5}
           className="text-white disabled:opacity-30 hover:text-gray-300 transition-colors"
         >
           <ZoomIn size={18} />
-        </button>
+        </Button>
         {scale > 1 && (
-          <button
+          <Button
+            variant={"link"}
             onClick={reset}
             className="text-white hover:text-gray-300 transition-colors ml-1 border-l border-white/30 pl-3"
           >
             <RotateCcw size={15} />
-          </button>
+          </Button>
         )}
       </div>
 
@@ -120,7 +131,8 @@ function ZoomableImage({ src, alt }: { src: string; alt: string }) {
         style={{
           transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
           transition: isDragging.current ? "none" : "transform 0.15s ease",
-          cursor: scale > 1 ? (isDragging.current ? "grabbing" : "grab") : "default",
+          cursor:
+            scale > 1 ? (isDragging.current ? "grabbing" : "grab") : "default",
           transformOrigin: "center center",
         }}
         className="relative w-full h-full"
@@ -160,14 +172,21 @@ export default function CarouselLayout({ images, image }: CarouselProps) {
     <Carousel setApi={setApi}>
       <CarouselContent>
         {images.map((item: any, index: number) => (
-          <CarouselItem key={index} className="flex items-center justify-center">
+          <CarouselItem
+            key={index}
+            className="flex items-center justify-center"
+          >
             {isImage(item) ? (
               <ZoomableImage src={Storage(item)} alt={`Image ${index}`} />
             ) : (
               <div className="relative w-full h-screen">
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Link href={Storage(item)} target="_blank" title="Download/View">
+                    <Link
+                      href={Storage(item)}
+                      target="_blank"
+                      title="Download/View"
+                    >
                       <FileInput className="text-blue-500 hover:text-blue-600 w-full h-full" />
                     </Link>
                   </TooltipTrigger>

@@ -369,7 +369,7 @@ class TicketController extends Controller
     {
         $user = Auth::user();
 
-        $field = $user->isBranchHead() ? 'td_note_bh' : 'td_note';
+        $field = $user->isAutomation() ? 'td_note_bh' : 'td_note';
 
         $validateData = [
             $field            => ["nullable", Rule::requiredIf(!$user->isAccountingHead() && !$user->isAccountingStaff() && !$user->isBranchHead()), 'max:1000', 'min:1']

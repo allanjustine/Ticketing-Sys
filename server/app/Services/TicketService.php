@@ -489,16 +489,10 @@ class TicketService
             $requestData = [];
 
             if ($this->user->isBranchHead() && $directToAccounting) {
-                $requestData = [
-                    'td_note_bh' => $request->td_note_bh,
-                ];
                 $ticketApprovedData['approveHead'] = $this->user->login_id;
                 $ticketApprovedData['displayTicket'] = $accountingStaff->login_id;
                 $ticketApprovedData['appTBranchHead'] = now()->format('n/j/Y, h:i:s A');
             } elseif ($this->user->isBranchHead()) {
-                $requestData = [
-                    'td_note_bh' => $request->td_note_bh,
-                ];
                 $ticketApprovedData['approveHead'] = $this->user->login_id;
                 $ticketApprovedData['displayTicket'] = $automationManager->login_id;
                 $ticketApprovedData['appTBranchHead'] = now()->format('n/j/Y, h:i:s A');
@@ -507,9 +501,16 @@ class TicketService
             } elseif ($this->user->isAccountingHead()) {
                 $ticketApprovedData['displayTicket'] = $automationManager->login_id;
             } else {
-                $requestData = [
-                    'td_note' => $request->td_note,
-                ];
+                if ($this->user->isAutomation()) {
+                    $requestData = [
+                        'td_note_bh' => $request->td_note_bh,
+                    ];
+                } else {
+
+                    $requestData = [
+                        'td_note'    => $request->td_note,
+                    ];
+                }
                 $ticketApprovedData['displayTicket'] = $ticketDetail->ticket->assignedPerson->login_id;
             }
 

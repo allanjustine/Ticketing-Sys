@@ -115,7 +115,7 @@ export function ViewReportDetails({ data, open, setIsOpen }: any) {
                 "counted",
                 isCounted(row?.isCounted)
                   ? "Mark as not counted"
-                  : "Mark as counted"
+                  : "Mark as counted",
               )}
             >
               {isCounted(row?.isCounted)
@@ -127,7 +127,7 @@ export function ViewReportDetails({ data, open, setIsOpen }: any) {
               onClick={handleOpenDialog(
                 row.ticket_code,
                 "note",
-                row.ticket_detail.td_note
+                row.ticket_detail.td_note,
               )}
               className="bg-indigo-500 hover:bg-indigo-600"
               size="xs"

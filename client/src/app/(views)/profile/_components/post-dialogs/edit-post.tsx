@@ -54,7 +54,7 @@ export function EditPost({
         ...prev,
         content: data.content,
         category: data.category,
-      })
+      }),
     );
   }, [data]);
 
@@ -116,6 +116,51 @@ export function EditPost({
                   </SelectItem>
                   <SelectItem value="😴 Feeling tired">
                     😴 Feeling tired
+                  </SelectItem>
+                  <SelectItem value="😨 Feeling scared">
+                    😨 Feeling scared
+                  </SelectItem>
+                  <SelectItem value="😤 Feeling frustrated">
+                    😤 Feeling frustrated
+                  </SelectItem>
+                  <SelectItem value="🤒 Feeling sick">
+                    🤒 Feeling sick
+                  </SelectItem>
+                  <SelectItem value="😰 Feeling stressed">
+                    😰 Feeling stressed
+                  </SelectItem>
+                  <SelectItem value="🥰 Feeling loved">
+                    🥰 Feeling loved
+                  </SelectItem>
+                  <SelectItem value="😎 Feeling confident">
+                    😎 Feeling confident
+                  </SelectItem>
+                  <SelectItem value="🤩 Feeling excited">
+                    🤩 Feeling excited
+                  </SelectItem>
+                  <SelectItem value="😔 Feeling lonely">
+                    😔 Feeling lonely
+                  </SelectItem>
+                  <SelectItem value="😇 Feeling grateful">
+                    😇 Feeling grateful
+                  </SelectItem>
+                  <SelectItem value="🤗 Feeling blessed">
+                    🤗 Feeling blessed
+                  </SelectItem>
+                  <SelectItem value="😶 Feeling numb">
+                    😶 Feeling numb
+                  </SelectItem>
+                  <SelectItem value="🥺 Feeling hopeful">
+                    🥺 Feeling hopeful
+                  </SelectItem>
+                  <SelectItem value="😏 Feeling playful">
+                    😏 Feeling playful
+                  </SelectItem>
+                  <SelectItem value="🤔 Feeling confused">
+                    🤔 Feeling confused
+                  </SelectItem>
+                  <SelectItem value="😌 Feeling relaxed">
+                    😌 Feeling relaxed
                   </SelectItem>
                 </SelectGroup>
               </SelectContent>

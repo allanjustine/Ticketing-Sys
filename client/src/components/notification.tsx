@@ -31,24 +31,30 @@ interface DataItems {
   };
 }
 
-interface NotificationProps {
-  totalUnreadNotifications: number;
-  notifications: DataItems[];
-}
-
-export default function Notification({
-  totalUnreadNotifications,
-  notifications,
-}: NotificationProps) {
-  const { user, setNotifications, setTotalUnreadNotifications } = useAuth();
+export default function Notification() {
+  const {
+    user,
+    setNotifications,
+    setTotalUnreadNotifications,
+    notifications,
+    totalUnreadNotifications,
+  } = useAuth();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isOpenView, setIsOpenView] = useState<boolean>(false);
   const [, setNote] = useState<string>("");
   const [selectedTicketData, setSelectedTicketData] = useState<null | any>(
-    null
+    null,
   );
   const [open, setOpen] = useState<boolean>(false);
   const toastDisplay = useRef<null>(null);
+  const originalTitle = useRef<string>(document.title);
+
+  useEffect(() => {
+    if (totalUnreadNotifications < 1) return;
+
+    document.title = `(${totalUnreadNotifications}) ${originalTitle.current}`;
+    console.log(totalUnreadNotifications);
+  }, [totalUnreadNotifications]);
 
   useEffect(() => {
     if (!echo || !user) return;
@@ -70,6 +76,7 @@ export default function Notification({
             duration: 5000,
             position: "top-center",
           });
+
           toastDisplay.current = null;
         }
 
@@ -153,7 +160,7 @@ export default function Notification({
           <DropdownMenuSeparator />
           {notifications.length > 0 ? (
             <div className="flex flex-col gap-1 max-h-[400px] overflow-y-auto">
-              {notifications.map((notification, index: number) => (
+              {notifications.map((notification: DataItems, index: number) => (
                 <div
                   key={index}
                   className={`flex gap-3 items-center p-4 relative cursor-pointer ${
@@ -163,7 +170,7 @@ export default function Notification({
                   }`}
                   onClick={markAsReadNotification(
                     notification.id,
-                    notification.data.ticket_code
+                    notification.data.ticket_code,
                   )}
                 >
                   <Avatar>

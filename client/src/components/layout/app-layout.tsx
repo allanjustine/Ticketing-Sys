@@ -8,11 +8,9 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { usePathname } from "next/navigation";
-import { useAuth } from "@/context/auth-context";
 import Notification from "../notification";
 
 const AppLayout = ({ children }: { children: ReactNode }) => {
-  const { notifications, totalUnreadNotifications } = useAuth();
   const { open } = useSidebar();
   const pathname = usePathname();
   const path: any =
@@ -47,10 +45,7 @@ const AppLayout = ({ children }: { children: ReactNode }) => {
                   </Breadcrumb>
                 ))}
               </div>
-              <Notification
-                totalUnreadNotifications={totalUnreadNotifications}
-                notifications={notifications}
-              />
+              <Notification />
             </div>
           </div>
           <div className="p-7 h-[calc(100vh-60px)] overflow-y-auto">

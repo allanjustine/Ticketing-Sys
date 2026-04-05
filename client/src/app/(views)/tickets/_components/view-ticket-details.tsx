@@ -47,7 +47,6 @@ import Image from "next/image";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { InfoField, NoteCard } from "./view-ticket-details-items";
 import { Spinner } from "@/components/ui/spinner";
-import Swal from "sweetalert2";
 
 export function ViewTicketDetails({
   data,
@@ -100,17 +99,34 @@ export function ViewTicketDetails({
     setOpen(value);
   };
 
-  if (!data && open) {
-    Swal.fire({
-      icon: "error",
-      title: "Oops...",
-      text: "Ticket not found or has been deleted by the user.",
-      timer: 5000,
-      timerProgressBar: true,
-      willClose: () => {
-        setOpen(false);
-      },
-    });
+  if (!data) {
+    return (
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="sm:max-w-sm p-0 gap-0 overflow-hidden rounded-2xl">
+          <DialogHeader className="px-6 pt-8 pb-2">
+            <DialogTitle className="sr-only">Ticket Not Found</DialogTitle>
+          </DialogHeader>
+          <div className="flex flex-col items-center gap-4 px-6 pb-6 pt-2 text-center">
+            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
+              <X className="h-8 w-8 text-red-500 stroke-[2.5]" />
+            </div>
+            <div className="space-y-1">
+              <p className="text-base font-bold text-gray-800">
+                Ticket Not Found
+              </p>
+              <p className="text-sm text-muted-foreground">
+                This ticket may have been deleted or no longer exists.
+              </p>
+            </div>
+            <DialogClose asChild>
+              <Button variant="outline" className="w-full rounded-lg mt-2">
+                Close
+              </Button>
+            </DialogClose>
+          </div>
+        </DialogContent>
+      </Dialog>
+    );
   }
 
   return (

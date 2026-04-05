@@ -140,7 +140,7 @@ export function CreatePost({
               className={`${
                 formInput.content.length >= 500
                   ? "text-red-500"
-                  : "text-gray-400"
+                  : "dark:text-white text-gray-400"
               }`}
             >
               {`${formInput.content.length}/500`}

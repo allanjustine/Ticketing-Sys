@@ -13,7 +13,7 @@ export default function PostLoader() {
                 <Skeleton className="h-8 w-8 rounded-full"></Skeleton>
                 <div className="space-y-2">
                   <Skeleton className="text-sm font-semibold h-5 w-46"></Skeleton>
-                  <Skeleton className="text-xs text-gray-500 h-3 w-36"></Skeleton>
+                  <Skeleton className="text-xs dark:text-white text-gray-500 h-3 w-36"></Skeleton>
                 </div>
               </div>
             </div>
@@ -27,7 +27,7 @@ export default function PostLoader() {
               <Skeleton className="w-full h-5"></Skeleton>
             </div>
             <Separator className="my-3" />
-            <div className="flex justify-between text-gray-500">
+            <div className="flex justify-between dark:text-white text-gray-500">
               <Skeleton className="h-8 w-full mr-1"></Skeleton>
               <Skeleton className="h-8 w-full mr-1"></Skeleton>
             </div>

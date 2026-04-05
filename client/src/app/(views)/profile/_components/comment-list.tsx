@@ -84,17 +84,17 @@ export default function CommentList({
           src={Storage(comment?.user?.user_detail?.profile_pic)}
           alt={comment?.user?.full_name}
         />
-        <AvatarFallback className="font-bold text-gray-700">
+        <AvatarFallback className="font-bold dark:text-white text-gray-700">
           {nameShortHand(comment?.user?.full_name)}
         </AvatarFallback>
       </Avatar>
       <div className="flex flex-col px-3 py-1.5 rounded-xl w-full">
         <div className="flex items-center gap-1">
-          <span className="text-gray-500 font-bold">
+          <span className="dark:text-white text-gray-500 font-bold">
             {comment?.user?.full_name}
           </span>
-          <span className="text-gray-500 font-bold text-[8px]">•</span>
-          <small className="text-gray-400 text-[10.3px] italic">
+          <span className="dark:text-white text-gray-500 font-bold text-[8px]">•</span>
+          <small className="dark:text-white text-gray-400 text-[10.3px] italic">
             {formatDistanceToNowStrict(comment?.created_at, {
               addSuffix: true,
             })}
@@ -105,7 +105,7 @@ export default function CommentList({
         </div>
         <span
           ref={commentRef}
-          className={`text-sm text-gray-600 break-all whitespace-break-spaces ${
+          className={`text-sm dark:text-white text-gray-600 break-all whitespace-break-spaces ${
             isExpanded[comment?.id] ? "" : "line-clamp-3"
           }`}
         >
@@ -128,7 +128,7 @@ export default function CommentList({
               type="button"
               size={"xs"}
               variant={"link"}
-              className="!px-1 text-gray-500 text-[10px]"
+              className="!px-1 dark:text-white text-gray-500 text-[10px]"
               onClick={handleOpenEditDialog(comment)}
             >
               Edit
@@ -137,7 +137,7 @@ export default function CommentList({
               type="button"
               size={"xs"}
               variant={"link"}
-              className="!px-1 text-gray-500 text-[10px]"
+              className="!px-1 dark:text-white text-gray-500 text-[10px]"
               onClick={handleOpenDeleteDialog(comment?.id)}
             >
               Delete

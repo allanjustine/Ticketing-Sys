@@ -91,7 +91,7 @@ export function EditNote({
             </AlertDialogDescription>
           </AlertDialogHeader>
           <div>
-            <Label className="text-sm font-medium text-gray-600  leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mb-2">
+            <Label className="text-sm font-medium dark:text-white text-gray-600  leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 mb-2">
               Enter note
             </Label>
             <Textarea

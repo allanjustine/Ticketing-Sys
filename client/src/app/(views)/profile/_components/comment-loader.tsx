@@ -17,14 +17,14 @@ export default function CommentLoader() {
               style={{ animationDelay: `${index * 0.5}s` }}
             ></Skeleton>
             <Skeleton
-              className={`text-xs text-gray-500 ${
+              className={`text-xs dark:text-white text-gray-500 ${
                 index % 2 === 0 ? "w-46 h-3" : "w-68 h-3"
               }`}
               style={{ animationDelay: `${index * 0.5}s` }}
             ></Skeleton>
             {index % 2 === 0 && (
               <Skeleton
-                className={`text-xs text-gray-500 ${
+                className={`text-xs dark:text-white text-gray-500 ${
                   index % 2 === 0 ? "w-36 h-3" : "w-32 h-3"
                 }`}
                 style={{ animationDelay: `${index * 0.5}s` }}
@@ -32,11 +32,11 @@ export default function CommentLoader() {
             )}
             <div className="flex gap-1">
               <Skeleton
-                className={`text-xs text-gray-500 w-12 h-3`}
+                className={`text-xs dark:text-white text-gray-500 w-12 h-3`}
                 style={{ animationDelay: `${index * 0.5}s` }}
               ></Skeleton>
               <Skeleton
-                className={`text-xs text-gray-500 w-12 h-3`}
+                className={`text-xs dark:text-white text-gray-500 w-12 h-3`}
                 style={{ animationDelay: `${index * 0.5}s` }}
               ></Skeleton>
             </div>

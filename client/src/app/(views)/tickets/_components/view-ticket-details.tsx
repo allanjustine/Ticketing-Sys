@@ -103,13 +103,13 @@ export function ViewTicketDetails({
     <>
       <Dialog open={open} onOpenChange={handleOpenChange}>
         <DialogContent className="sm:max-w-2xl p-0 gap-0 overflow-hidden rounded-2xl">
-          <DialogHeader className="px-6 pt-6 pb-4 border-b bg-gray-50/80">
+          <DialogHeader className="px-6 pt-6 pb-4 border-b">
             <DialogTitle className="flex flex-col gap-1">
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-xs font-semibold bg-gray-200 text-gray-600 px-2 py-0.5 rounded-full uppercase tracking-wide">
+                <span className="text-xs font-semibold dark:text-white text-gray-600 px-2 py-0.5 rounded-full uppercase tracking-wide">
                   {ticketTypeUpperCase(data?.ticket_detail?.ticket_type)}
                 </span>
-                <span className="text-base font-bold text-gray-800">
+                <span className="text-base font-bold dark:text-white text-gray-800">
                   {data?.ticket_code}
                 </span>
                 {TICKET_REJECTED && (
@@ -118,9 +118,9 @@ export function ViewTicketDetails({
                   </span>
                 )}
               </div>
-              <p className="text-sm text-gray-500 font-normal">
+              <p className="text-sm dark:text-white text-gray-500 font-normal">
                 Submitted by{" "}
-                <span className="font-semibold text-gray-700">
+                <span className="font-semibold dark:text-white text-gray-700">
                   {data?.user_login?.full_name || "Deleted Account"}
                 </span>{" "}
                 · {data?.branch_name}
@@ -134,7 +134,7 @@ export function ViewTicketDetails({
                 content={data.ticket_detail.td_note}
               />
             )}
-            
+
             {data?.ticket_detail?.td_note_bh && (
               <NoteCard
                 label="Automation Note"
@@ -147,8 +147,8 @@ export function ViewTicketDetails({
               !TICKET_REJECTED && (
                 <div className="space-y-4">
                   {(isAutomationManager(role) || isAutomation(role)) && (
-                    <div className="rounded-xl border border-gray-200 bg-white p-4 flex flex-col gap-2 shadow-sm">
-                      <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide">
+                    <div className="rounded-xl border border-gray-200 p-4 flex flex-col gap-2 shadow-sm">
+                      <span className="text-xs font-semibold dark:text-white text-gray-400 uppercase tracking-wide">
                         Add Note
                       </span>
                       <Textarea
@@ -168,8 +168,8 @@ export function ViewTicketDetails({
                   )}
 
                   {isAutomation(role) && !AUTOMATION_MANAGER && (
-                    <div className="rounded-xl border border-gray-200 bg-white p-4 flex flex-col gap-2 shadow-sm">
-                      <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide">
+                    <div className="rounded-xl border border-gray-200 p-4 flex flex-col gap-2 shadow-sm">
+                      <span className="text-xs font-semibold dark:text-white text-gray-400 uppercase tracking-wide">
                         Is Counted?
                       </span>
                       <Select value={isCounted} onValueChange={setIsCounted}>
@@ -195,8 +195,8 @@ export function ViewTicketDetails({
               )}
 
             {/* Ticket Info Grid */}
-            <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
-              <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide block mb-3">
+            <div className="rounded-xl border border-gray-200 p-4 shadow-sm">
+              <span className="text-xs font-semibold dark:text-white text-gray-400 uppercase tracking-wide block mb-3">
                 Ticket Information
               </span>
               <div className="grid grid-cols-2 gap-x-6 gap-y-4">
@@ -230,8 +230,8 @@ export function ViewTicketDetails({
             </div>
 
             {data?.ticket_detail?.td_support?.length > 0 && (
-              <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
-                <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide block mb-3">
+              <div className="rounded-xl border border-gray-200 p-4 shadow-sm">
+                <span className="text-xs font-semibold dark:text-white text-gray-400 uppercase tracking-wide block mb-3">
                   Support Files
                 </span>
                 <div className="flex gap-3 overflow-x-auto pb-1">
@@ -239,7 +239,7 @@ export function ViewTicketDetails({
                     (file: any, index: number) => (
                       <div
                         key={index}
-                        className="group relative shrink-0 w-20 h-20 rounded-lg border border-gray-200 overflow-hidden bg-gray-50 cursor-pointer"
+                        className="group relative shrink-0 w-20 h-20 rounded-lg border border-gray-200 overflow-hidden cursor-pointer"
                         onClick={handleSelectImage(
                           file,
                           data.ticket_detail.td_support,
@@ -255,8 +255,8 @@ export function ViewTicketDetails({
                           />
                         ) : (
                           <div className="w-full h-full flex flex-col items-center justify-center gap-1 p-1">
-                            <FileSpreadsheet className="w-8 h-8 text-gray-400" />
-                            <p className="text-[10px] text-gray-500 truncate w-full text-center px-1">
+                            <FileSpreadsheet className="w-8 h-8 dark:text-white text-gray-400" />
+                            <p className="text-[10px] dark:text-white text-gray-500 truncate w-full text-center px-1">
                               {file?.split("/").pop()}
                             </p>
                           </div>
@@ -271,8 +271,8 @@ export function ViewTicketDetails({
               </div>
             )}
 
-            <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm space-y-4">
-              <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide block">
+            <div className="rounded-xl border border-gray-200 p-4 shadow-sm space-y-4">
+              <span className="text-xs font-semibold dark:text-white text-gray-400 uppercase tracking-wide block">
                 Other Details
               </span>
 
@@ -282,40 +282,40 @@ export function ViewTicketDetails({
                 <div className="flex flex-wrap gap-6">
                   {data?.approve_head && (
                     <div className="flex flex-col gap-1">
-                      <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide flex items-center gap-1">
+                      <span className="text-xs font-semibold dark:text-white text-gray-400 uppercase tracking-wide flex items-center gap-1">
                         <CheckCircle2 className="w-3 h-3" /> Approved By
                       </span>
-                      <span className="text-sm font-medium text-gray-700">
+                      <span className="text-sm font-medium dark:text-white text-gray-700">
                         {data.approve_head.full_name}
                       </span>
                     </div>
                   )}
                   {data?.last_approver && (
                     <div className="flex flex-col gap-1">
-                      <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide flex items-center gap-1">
+                      <span className="text-xs font-semibold dark:text-white text-gray-400 uppercase tracking-wide flex items-center gap-1">
                         <User className="w-3 h-3" /> Approved By
                       </span>
-                      <span className="text-sm font-medium text-gray-700">
+                      <span className="text-sm font-medium dark:text-white text-gray-700">
                         {data.last_approver.full_name}
                       </span>
                     </div>
                   )}
                   {data?.assigned_person && (
                     <div className="flex flex-col gap-1">
-                      <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide flex items-center gap-1">
+                      <span className="text-xs font-semibold dark:text-white text-gray-400 uppercase tracking-wide flex items-center gap-1">
                         <Users className="w-3 h-3" /> Assigned To
                       </span>
-                      <span className="text-sm font-medium text-gray-700">
+                      <span className="text-sm font-medium dark:text-white text-gray-700">
                         {data.assigned_person.full_name}
                       </span>
                     </div>
                   )}
                   {data?.pending_user && (
                     <div className="flex flex-col gap-1">
-                      <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide flex items-center gap-1">
+                      <span className="text-xs font-semibold dark:text-white text-gray-400 uppercase tracking-wide flex items-center gap-1">
                         <Spinner className="w-3 h-3" /> Pending With
                       </span>
-                      <span className="text-sm font-medium text-gray-700">
+                      <span className="text-sm font-medium dark:text-white text-gray-700">
                         {data.pending_user.full_name}
                       </span>
                     </div>
@@ -346,7 +346,7 @@ export function ViewTicketDetails({
             </div>
           </div>
 
-          <DialogFooter className="px-6 py-4 border-t bg-gray-50/80 flex items-center gap-2">
+          <DialogFooter className="px-6 py-4 border-t flex items-center gap-2">
             <DialogClose asChild>
               <Button variant="outline" className="rounded-lg md:w-auto w-full">
                 Close

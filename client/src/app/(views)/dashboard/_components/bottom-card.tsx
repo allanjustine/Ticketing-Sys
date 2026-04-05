@@ -15,7 +15,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 export default function BottomCard({ data, totalTickets }: any) {
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-      <Card className="hover:shadow hover:bg-gray-50 col-span-1">
+      <Card className="hover:shadow hover:bg-gray-50 dark:hover:bg-gray-800 col-span-1">
         <CardHeader>
           <CardTitle className="flex justify-between">
             <span>User Breakdown</span>
@@ -149,7 +149,7 @@ export default function BottomCard({ data, totalTickets }: any) {
         </CardContent>
       </Card>
 
-      <Card className="hover:shadow hover:bg-gray-50 col-span-1">
+      <Card className="hover:shadow hover:bg-gray-50 dark:hover:bg-gray-800 col-span-1">
         <CardHeader>
           <CardTitle className="flex justify-between">
             <span>Ticket Statistics</span>
@@ -212,7 +212,7 @@ export default function BottomCard({ data, totalTickets }: any) {
         </CardContent>
       </Card>
 
-      <Card className="hover:shadow hover:bg-gray-50 col-span-1">
+      <Card className="hover:shadow hover:bg-gray-50 dark:hover:bg-gray-800 col-span-1">
         <CardHeader>
           <CardTitle className="flex justify-between">
             <span>Quick Actions</span>

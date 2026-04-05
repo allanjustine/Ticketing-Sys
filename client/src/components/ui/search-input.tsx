@@ -12,7 +12,7 @@ export default function SearchInput({ onChange, ...props }: SearchInputProps) {
     <div className="relative w-full">
       <Search
         size={20}
-        className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400"
+        className="absolute left-2 top-1/2 -translate-y-1/2 dark:text-white text-gray-400"
       />
       <Input
         {...props}

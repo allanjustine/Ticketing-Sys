@@ -83,7 +83,7 @@ function Profile() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-12">
+    <div className="min-h-screen pb-12">
       <div className="h-48 bg-linear-to-r from-blue-400 to-purple-500 w-full"></div>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-16">
         <Card className="overflow-hidden">
@@ -100,7 +100,7 @@ function Profile() {
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex items-center">
-                  <CardTitle className="text-2xl capitalize font-bold text-gray-700">
+                  <CardTitle className="text-2xl capitalize font-bold dark:text-white text-gray-700">
                     {user.full_name}
                   </CardTitle>
                 </div>
@@ -134,7 +134,7 @@ function Profile() {
               )}
             </div>
 
-            <div className="flex flex-wrap items-center gap-4 mt-4 text-sm text-gray-500">
+            <div className="flex flex-wrap items-center gap-4 mt-4 text-sm dark:text-white text-gray-500">
               <div className="flex items-center flex-wrap gap-1">
                 <Building className="h-4 w-4 mr-1" />
                 {user?.branch ? (
@@ -211,7 +211,7 @@ function Profile() {
                 <PostList key={index} post={post} setIsRefresh={setIsRefresh} />
               ))
             ) : (
-              <p className="text-gray-500 w-full text-center text-xl font-bold mt-10">
+              <p className="dark:text-white text-gray-500 w-full text-center text-xl font-bold mt-10">
                 No posts yet
               </p>
             )}
@@ -226,7 +226,7 @@ function Profile() {
                   Load more post
                 </ButtonLoader>
               ) : (
-                <span className="text-gray-400">All posts loaded</span>
+                <span className="dark:text-white text-gray-400">All posts loaded</span>
               )}
             </div>
           </div>

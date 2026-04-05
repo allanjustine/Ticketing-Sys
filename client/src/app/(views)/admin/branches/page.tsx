@@ -63,7 +63,7 @@ function Branches() {
     <div className="flex flex-col gap-3">
       <Card className="gap-0">
         <CardHeader className="flex items-center justify-between py-2 px-6">
-          <CardTitle className="font-bold text-lg text-gray-600 flex items-center gap-1">
+          <CardTitle className="font-bold text-lg dark:text-white text-gray-600 flex items-center gap-1">
             <Building size={18} />
             <span>Branches</span>
           </CardTitle>

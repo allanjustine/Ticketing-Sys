@@ -16,7 +16,7 @@ export default function AssignedCategory({ categories }: any) {
               </Badge>
             ))
           ) : (
-            <p className="text-sm text-gray-500 w-full text-center">
+            <p className="text-sm dark:text-white text-gray-500 w-full text-center">
               No assigned categories
             </p>
           )}

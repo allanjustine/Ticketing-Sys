@@ -110,7 +110,7 @@ export function PostComment({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="px-0 pb-0 min-w-1/3">
         <DialogHeader className="mx-5">
-          <DialogTitle className="text-gray-600 font-bold text-xl text-center">
+          <DialogTitle className="dark:text-white text-gray-600 font-bold text-xl text-center">
             {data?.user?.full_name}&apos;s post
           </DialogTitle>
         </DialogHeader>
@@ -131,7 +131,7 @@ export function PostComment({
                     <Button
                       type="button"
                       variant={"link"}
-                      className="text-gray-500"
+                      className="dark:text-white text-gray-500"
                       size="xs"
                       onClick={handleCursor("prev")}
                     >
@@ -154,7 +154,7 @@ export function PostComment({
                     <Button
                       type="button"
                       variant={"link"}
-                      className="text-gray-500"
+                      className="dark:text-white text-gray-500"
                       size="xs"
                       onClick={handleCursor("next")}
                     >
@@ -163,7 +163,7 @@ export function PostComment({
                   </div>
                 ) : (
                   <div className="flex justify-center">
-                    <small className="text-gray-400 text-xs">
+                    <small className="dark:text-white text-gray-400 text-xs">
                       All comments loaded
                     </small>
                   </div>
@@ -199,7 +199,7 @@ export function PostComment({
               src={Storage(user?.user_detail?.profile_pic)}
               alt={user?.full_name}
             />
-            <AvatarFallback className="font-bold text-gray-700">
+            <AvatarFallback className="font-bold dark:text-white text-gray-700">
               {nameShortHand(user?.full_name)}
             </AvatarFallback>
           </Avatar>
@@ -228,7 +228,7 @@ export function PostComment({
               <div className="absolute bottom-1 right-4">
                 <small
                   className={`${
-                    comment.length >= 500 ? "text-red-500" : "text-gray-400"
+                    comment.length >= 500 ? "text-red-500" : "dark:text-white text-gray-400"
                   } text-xs`}
                 >
                   {comment.length}/500

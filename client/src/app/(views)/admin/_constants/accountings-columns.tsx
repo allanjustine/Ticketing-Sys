@@ -64,7 +64,7 @@ export const ACCOUNTINGS_COLUMNS = [
             <div
               className={`${
                 accountingHead(row) ? "bg-gray-200" : "bg-red-500"
-              } p-1.5 rounded-xl`}
+              } p-1.5 rounded-xl text-center`}
             >
               <span
                 className={`wrap-break-word ${

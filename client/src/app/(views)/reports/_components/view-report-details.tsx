@@ -183,7 +183,7 @@ export function ViewReportDetails({ data, open, setIsOpen }: any) {
         <DrawerContent>
           <DrawerHeader>
             <DrawerTitle>
-              <span className="text-gray-700 text-sm">
+              <span className="dark:text-white text-gray-700 text-sm">
                 Viewing{" "}
                 <span className="font-bold">
                   {data.branch_name} - {data.branch_code}

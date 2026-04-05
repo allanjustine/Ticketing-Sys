@@ -12,6 +12,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useSettings } from "@/context/settings-context";
 import { TooltipArrow } from "@radix-ui/react-tooltip";
 import { useState } from "react";
 
@@ -27,13 +28,13 @@ function InfoField({
   const [open, setOpen] = useState<boolean>(false);
   return (
     <div className="flex flex-col gap-1">
-      <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide flex items-center gap-1">
+      <span className="text-xs font-semibold dark:text-white text-gray-400 uppercase tracking-wide flex items-center gap-1">
         {icon}
         {label}
       </span>
       <Tooltip>
         <TooltipTrigger
-          className="text-sm truncate text-left text-gray-700 font-medium cursor-pointer"
+          className="text-sm truncate text-left dark:text-white text-gray-700 font-medium cursor-pointer"
           asChild
           onClick={() => setOpen(true)}
         >
@@ -49,7 +50,9 @@ function InfoField({
           <DialogHeader>
             <DialogTitle>{label}</DialogTitle>
           </DialogHeader>
-          <div className="break-all whitespace-break-spaces max-h-[calc(100vh-200px)] overflow-y-auto">{value}</div>
+          <div className="break-all whitespace-break-spaces max-h-[calc(100vh-200px)] overflow-y-auto">
+            {value}
+          </div>
           <DialogFooter>
             <DialogClose asChild>
               <Button type="button" variant="secondary">
@@ -64,12 +67,15 @@ function InfoField({
 }
 
 function NoteCard({ label, content }: { label: string; content: string }) {
+  const { theme } = useSettings();
   return (
-    <div className="rounded-xl border border-blue-100 bg-blue-50/60 p-4 flex flex-col gap-1.5">
+    <div
+      className={`rounded-xl border border-blue-100 ${theme !== "dark" && "bg-blue-50/60"} p-4 flex flex-col gap-1.5`}
+    >
       <span className="text-xs font-semibold text-blue-500 uppercase tracking-wide">
         {label}
       </span>
-      <p className="text-sm text-gray-700 break-all whitespace-break-spaces leading-relaxed">
+      <p className="text-sm dark:text-white text-gray-700 break-all whitespace-break-spaces leading-relaxed">
         {content}
       </p>
     </div>

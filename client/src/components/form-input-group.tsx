@@ -16,7 +16,7 @@ export default function FormInputGroup({
     <div className="flex flex-col gap-2">
       <Label htmlFor={title.replace(/ /g, "_").toLowerCase()}>
         {titleUpperCaseFirst}
-        {isOptional && <span className="text-gray-600 text-xs">(Optional)</span>}
+        {isOptional && <span className="dark:text-white text-gray-600 text-xs">(Optional)</span>}
       </Label>
       <div>
         <Input

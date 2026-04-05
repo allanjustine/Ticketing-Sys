@@ -95,7 +95,7 @@ const Login = () => {
             <CardContent>
               <div className="flex flex-col gap-6">
                 <div className="grid gap-2">
-                  <Label htmlFor="usernameOrEmail" className="text-gray-600">
+                  <Label htmlFor="usernameOrEmail" className="dark:text-white text-gray-600">
                     Username/Email
                   </Label>
                   <Input
@@ -114,7 +114,7 @@ const Login = () => {
                 </div>
                 <div className="grid gap-2">
                   <div className="flex items-center">
-                    <Label htmlFor="password" className="text-gray-600">
+                    <Label htmlFor="password" className="dark:text-white text-gray-600">
                       Password
                     </Label>
                   </div>
@@ -134,7 +134,7 @@ const Login = () => {
                   )}
                   <div className="flex gap-1 items-center">
                     <Checkbox onCheckedChange={handleShowPassword} />
-                    <span className="text-sm text-gray-600 select-none">
+                    <span className="text-sm dark:text-white text-gray-600 select-none">
                       {isShowPassword ? "Hide" : "Show"} password
                     </span>
                   </div>
@@ -177,7 +177,7 @@ const Login = () => {
               </Button>
               <div className="flex items-center gap-4 w-full">
                 <hr className="w-full" />
-                <span className="text-gray-700 font-thin">or</span>
+                <span className="dark:text-white text-gray-700 font-thin">or</span>
                 <hr className="w-full" />
               </div>
               <LoginAsCode />

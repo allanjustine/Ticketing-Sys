@@ -72,7 +72,7 @@ export const USER_DASHBOARD_TABLE_COLUMNS = [
                   <h4 className="text-sm font-semibold">
                     {row?.pending_user?.full_name}
                   </h4>
-                  <p className="font-bold italic text-gray-400">
+                  <p className="font-bold italic dark:text-white text-gray-400">
                     {row?.pending_user?.user_role?.role_name}
                   </p>
                   <p className="text-sm">
@@ -104,7 +104,7 @@ export const USER_DASHBOARD_TABLE_COLUMNS = [
                 </div>
               </div>
               <div className="border-t pt-2">
-                <p className="text-xs text-gray-700">
+                <p className="text-xs dark:text-white text-gray-700">
                   <span className="font-bold">Approved by: </span>
                   {row.last_approver ? row.last_approver.full_name : "-"}
                 </p>

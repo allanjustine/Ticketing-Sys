@@ -41,7 +41,7 @@ export const TICKETS_COLUMNS = [
           {row.branch_name}
         </span>
         <span
-          className={`${row.user_login?.full_name ? "text-gray-600" : "text-red-500"} font-bold text-xs`}
+          className={`${row.user_login?.full_name ? "dark:text-white text-gray-600" : "text-red-500"} font-bold text-xs`}
         >
           {row.user_login?.full_name || "Deleted Account"}
         </span>
@@ -128,7 +128,7 @@ export const TICKETS_COLUMNS = [
                   <h4 className="text-sm font-semibold">
                     {row?.pending_user?.full_name}
                   </h4>
-                  <p className="font-bold italic text-gray-400">
+                  <p className="font-bold italic dark:text-white text-gray-400">
                     {row?.pending_user?.user_role?.role_name}
                   </p>
                   <p className="text-sm">
@@ -160,7 +160,7 @@ export const TICKETS_COLUMNS = [
                 </div>
               </div>
               <div className="border-t pt-2">
-                <p className="text-xs text-gray-700">
+                <p className="text-xs dark:text-white text-gray-700">
                   <span className="font-bold">Approved by: </span>
                   {row.last_approver ? row.last_approver.full_name : "-"}
                 </p>

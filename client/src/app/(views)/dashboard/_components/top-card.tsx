@@ -16,7 +16,7 @@ import {
 export default function TopCard({ data, totalTickets }: any) {
   return (
     <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-4">
-      <Card className="hover:shadow hover:bg-gray-50">
+      <Card className="hover:shadow hover:bg-gray-50 dark:hover:bg-gray-800">
         <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
           <CardTitle className="text-sm font-medium">Total Users</CardTitle>
           <Users className="h-4 w-4 text-muted-foreground" />
@@ -60,7 +60,7 @@ export default function TopCard({ data, totalTickets }: any) {
         </CardContent>
       </Card>
 
-      <Card className="hover:shadow hover:bg-gray-50">
+      <Card className="hover:shadow hover:bg-gray-50 dark:hover:bg-gray-800">
         <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
           <CardTitle className="text-sm font-medium">Monthly Tickets</CardTitle>
           <CalendarDays className="h-4 w-4 text-muted-foreground" />
@@ -96,7 +96,7 @@ export default function TopCard({ data, totalTickets }: any) {
         </CardContent>
       </Card>
 
-      <Card className="hover:shadow hover:bg-gray-50">
+      <Card className="hover:shadow hover:bg-gray-50 dark:hover:bg-gray-800">
         <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
           <CardTitle className="text-sm font-medium">Weekly Tickets</CardTitle>
           <CalendarMinus2 className="h-4 w-4 text-muted-foreground" />
@@ -130,7 +130,7 @@ export default function TopCard({ data, totalTickets }: any) {
         </CardContent>
       </Card>
 
-      <Card className="hover:shadow hover:bg-gray-50">
+      <Card className="hover:shadow hover:bg-gray-50 dark:hover:bg-gray-800">
         <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
           <CardTitle className="text-sm font-medium">Ticket Status</CardTitle>
           <FileChartLine className="h-4 w-4 text-muted-foreground" />

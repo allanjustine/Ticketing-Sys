@@ -18,7 +18,7 @@ export default function AutomationTopCards({
       className={`relative border-l-5 min-h-30 hover:bg-${color}-50 border-l-${color}-500 hover:border-l-${color}-600 shadow hover:scale-103 hover:shadow-lg transition-all duration-300 ease-in-out`}
     >
       <CardContent className="z-1">
-        <CardTitle className="text-md font-bold text-gray-600">
+        <CardTitle className="text-md font-bold dark:text-white text-gray-600">
           {title}
         </CardTitle>
         <CardDescription className="font-bold text-3xl">

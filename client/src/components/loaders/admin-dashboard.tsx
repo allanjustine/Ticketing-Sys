@@ -13,7 +13,7 @@ export default function AdminDashboardLoader() {
   return (
     <>
       <div className="flex justify-evenly gap-3">
-        <Card className="w-full hover:shadow hover:bg-gray-50 border-l-5 border-l-green-500">
+        <Card className="w-full hover:shadow hover:bg-gray-50 dark:hover:bg-gray-800 border-l-5 border-l-green-500">
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
             <CardTitle className="text-sm font-medium">
               Total Branches
@@ -24,7 +24,7 @@ export default function AdminDashboardLoader() {
             <Skeleton className="h-9 w-24" />
           </CardContent>
         </Card>
-        <Card className="w-full hover:shadow hover:bg-gray-50 border-l-5 border-l-blue-500">
+        <Card className="w-full hover:shadow hover:bg-gray-50 dark:hover:bg-gray-800 border-l-5 border-l-blue-500">
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
             <CardTitle className="text-sm font-medium">
               Total Suppliers
@@ -37,7 +37,7 @@ export default function AdminDashboardLoader() {
         </Card>
       </div>
       <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-4">
-        <Card className="hover:shadow hover:bg-gray-50">
+        <Card className="hover:shadow hover:bg-gray-50 dark:hover:bg-gray-800">
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
             <CardTitle className="text-sm font-medium">Total Users</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
@@ -47,7 +47,7 @@ export default function AdminDashboardLoader() {
           </CardContent>
         </Card>
 
-        <Card className="hover:shadow hover:bg-gray-50">
+        <Card className="hover:shadow hover:bg-gray-50 dark:hover:bg-gray-800">
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
             <CardTitle className="text-sm font-medium">
               Monthly Tickets
@@ -59,7 +59,7 @@ export default function AdminDashboardLoader() {
           </CardContent>
         </Card>
 
-        <Card className="hover:shadow hover:bg-gray-50">
+        <Card className="hover:shadow hover:bg-gray-50 dark:hover:bg-gray-800">
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
             <CardTitle className="text-sm font-medium">
               Weekly Tickets
@@ -71,7 +71,7 @@ export default function AdminDashboardLoader() {
           </CardContent>
         </Card>
 
-        <Card className="hover:shadow hover:bg-gray-50">
+        <Card className="hover:shadow hover:bg-gray-50 dark:hover:bg-gray-800">
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
             <CardTitle className="text-sm font-medium">Ticket Status</CardTitle>
             <Ticket className="h-4 w-4 text-muted-foreground" />
@@ -82,7 +82,7 @@ export default function AdminDashboardLoader() {
         </Card>
       </div>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <Card className="hover:shadow hover:bg-gray-50 col-span-1">
+        <Card className="hover:shadow hover:bg-gray-50 dark:hover:bg-gray-800 col-span-1">
           <CardHeader>
             <CardTitle className="flex justify-between">
               <span>User Breakdown</span>
@@ -94,7 +94,7 @@ export default function AdminDashboardLoader() {
           </CardContent>
         </Card>
 
-        <Card className="hover:shadow hover:bg-gray-50 col-span-1">
+        <Card className="hover:shadow hover:bg-gray-50 dark:hover:bg-gray-800 col-span-1">
           <CardHeader>
             <CardTitle className="flex justify-between">
               <span>Ticket Statistics</span>
@@ -106,7 +106,7 @@ export default function AdminDashboardLoader() {
           </CardContent>
         </Card>
 
-        <Card className="hover:shadow hover:bg-gray-50 col-span-1">
+        <Card className="hover:shadow hover:bg-gray-50 dark:hover:bg-gray-800 col-span-1">
           <CardHeader>
             <CardTitle className="flex justify-between">
               <span>Quick Actions</span>

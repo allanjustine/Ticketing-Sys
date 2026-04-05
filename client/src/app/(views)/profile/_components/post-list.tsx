@@ -126,7 +126,7 @@ export default function PostList({
                   src={Storage(post.user?.user_detail?.profile_pic)}
                   alt={user?.full_name}
                 />
-                <AvatarFallback className="font-bold text-gray-700">
+                <AvatarFallback className="font-bold dark:text-white text-gray-700">
                   {nameShortHand(post.user?.full_name)}
                 </AvatarFallback>
               </Avatar>
@@ -135,13 +135,13 @@ export default function PostList({
                   <span className="text-sm font-semibold">
                     {post.user?.full_name}
                   </span>
-                  <span className="text-gray-400">-</span>
-                  <span className="text-xs text-gray-500">
+                  <span className="dark:text-white text-gray-400">-</span>
+                  <span className="text-xs dark:text-white text-gray-500">
                     {post?.category}
                   </span>
                 </p>
                 <p className="text-blue-400 text-xs">{`@${post?.user?.username}`}</p>
-                <p className="text-xs text-gray-500 flex items-center gap-1">
+                <p className="text-xs dark:text-white text-gray-500 flex items-center gap-1">
                   {formatDistanceToNowStrict(post.created_at, {
                     addSuffix: true,
                   })}
@@ -171,7 +171,7 @@ export default function PostList({
           {showSeeMore[post?.id] ? (
             <span
               onClick={handleSeeMore(post.id)}
-              className="text-gray-400 font-thin text-sm cursor-pointer hover:text-gray-600"
+              className="dark:text-white text-gray-400 font-thin text-sm cursor-pointer hover:dark:text-white text-gray-600"
             >
               See more
             </span>
@@ -179,14 +179,14 @@ export default function PostList({
             isExpanded[post?.id] && (
               <span
                 onClick={handleSeeMore(post.id)}
-                className="text-gray-400 font-thin text-sm cursor-pointer hover:text-gray-600"
+                className="dark:text-white text-gray-400 font-thin text-sm cursor-pointer hover:dark:text-white text-gray-600"
               >
                 See less
               </span>
             )
           )}
           <Separator className="my-3" />
-          <div className="flex justify-between text-gray-500">
+          <div className="flex justify-between dark:text-white text-gray-500">
             <div className="w-full">
               <Button
                 variant="ghost"

@@ -27,10 +27,10 @@ export default function NotFound() {
                 d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
               />
             </svg>
-            <h2 className="text-xl font-semibold text-gray-800 mt-4">
+            <h2 className="text-xl font-semibold dark:text-white text-gray-800 mt-4">
               Oops! Page Not Found?
             </h2>
-            <p className="text-gray-600 mt-2">
+            <p className="dark:text-white text-gray-600 mt-2">
               The page you're looking for doesn't exist or has been moved. Let's
               get you back on track.
             </p>

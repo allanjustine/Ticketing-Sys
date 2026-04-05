@@ -44,7 +44,7 @@ export default function AutomationDashboard({ data, isLoading }: any) {
         </div>
       </div>
       <div className="space-y-2">
-        <h1 className="text-lg text-gray-700 font-bold">
+        <h1 className="text-lg dark:text-white text-gray-700 font-bold">
           Recent Ticket Transactions
         </h1>
         <div className="grid grid-cols-1 md:grid-cols-1 xl:grid-cols-3 gap-1">

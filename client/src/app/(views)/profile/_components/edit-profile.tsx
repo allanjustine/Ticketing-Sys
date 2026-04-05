@@ -125,7 +125,7 @@ export default function EditProfile({
 
         <div className="max-h-[700px] overflow-y-auto space-y-4">
           <div className="flex flex-col gap-2 px-4">
-            <div className="font-bold text-gray-700 text-lg">
+            <div className="font-bold dark:text-white text-gray-700 text-lg">
               Manage profile picture
             </div>
             <div className="w-full flex items-center gap-3 flex-col">
@@ -165,7 +165,7 @@ export default function EditProfile({
             </div>
           </div>
           <div className="flex flex-col gap-2 px-4">
-            <div className="font-bold text-gray-700 text-lg">
+            <div className="font-bold dark:text-white text-gray-700 text-lg">
               Manage personal details
             </div>
             <div className="grid flex-1 auto-rows-min gap-2">
@@ -220,7 +220,7 @@ export default function EditProfile({
             </div>
           </div>
           <div className="flex flex-col gap-2 px-4 border-t py-4">
-            <div className="font-bold text-gray-700 text-lg">
+            <div className="font-bold dark:text-white text-gray-700 text-lg">
               Manage password
             </div>
             <div className="grid flex-1 auto-rows-min gap-2">

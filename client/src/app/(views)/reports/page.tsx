@@ -357,7 +357,7 @@ function Reports() {
     <div className="flex flex-col gap-3">
       <Card className="gap-0">
         <CardHeader className="flex items-center justify-between">
-          <CardTitle className="font-bold text-lg text-gray-600 flex items-center gap-1">
+          <CardTitle className="font-bold text-lg dark:text-white text-gray-600 flex items-center gap-1">
             <Funnel size={18} />
             <span>Filter</span>
           </CardTitle>
@@ -421,7 +421,7 @@ function Reports() {
       </Card>
       <Card className="gap-0">
         <CardHeader className="flex items-center justify-between">
-          <CardTitle className="font-bold text-lg text-gray-600 flex items-center gap-1">
+          <CardTitle className="font-bold text-lg dark:text-white text-gray-600 flex items-center gap-1">
             <File size={18} />
             <span>Reports</span>
           </CardTitle>

@@ -106,7 +106,7 @@ function ZoomableImage({
           variant={"link"}
           onClick={() => zoom(-0.5)}
           disabled={scale <= 1}
-          className="text-white disabled:opacity-30 hover:text-gray-300 transition-colors"
+          className="text-white disabled:opacity-30 hover:dark:text-white text-gray-300 transition-colors"
         >
           <ZoomOut size={18} />
         </Button>
@@ -117,7 +117,7 @@ function ZoomableImage({
           variant={"link"}
           onClick={() => zoom(0.5)}
           disabled={scale >= 5}
-          className="text-white disabled:opacity-30 hover:text-gray-300 transition-colors"
+          className="text-white disabled:opacity-30 hover:dark:text-white text-gray-300 transition-colors"
         >
           <ZoomIn size={18} />
         </Button>
@@ -125,7 +125,7 @@ function ZoomableImage({
           <Button
             variant={"link"}
             onClick={reset}
-            className="text-white hover:text-gray-300 transition-colors ml-1 border-l border-white/30 pl-3"
+            className="text-white hover:dark:text-white text-gray-300 transition-colors ml-1 border-l border-white/30 pl-3"
           >
             <RotateCcw size={15} />
           </Button>

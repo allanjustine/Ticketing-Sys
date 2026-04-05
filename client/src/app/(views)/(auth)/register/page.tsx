@@ -131,7 +131,7 @@ const Register = () => {
               <div className="flex flex-col gap-2">
                 <div className="flex gap-2">
                   <div className="flex flex-col gap-2 w-full">
-                    <Label htmlFor="fname" className="text-gray-600">
+                    <Label htmlFor="fname" className="dark:text-white text-gray-600">
                       First name
                     </Label>
                     <Input
@@ -147,7 +147,7 @@ const Register = () => {
                     )}
                   </div>
                   <div className="flex flex-col gap-2 w-full">
-                    <Label htmlFor="lname" className="text-gray-600">
+                    <Label htmlFor="lname" className="dark:text-white text-gray-600">
                       Last name
                     </Label>
                     <Input
@@ -165,7 +165,7 @@ const Register = () => {
                 </div>
                 <div className="grid gap-2">
                   <div className="flex items-center">
-                    <Label htmlFor="user_email" className="text-gray-600">
+                    <Label htmlFor="user_email" className="dark:text-white text-gray-600">
                       Email
                     </Label>
                   </div>
@@ -185,7 +185,7 @@ const Register = () => {
                 </div>
                 <div className="grid gap-2">
                   <div className="flex items-center">
-                    <Label htmlFor="blist_id" className="text-gray-600">
+                    <Label htmlFor="blist_id" className="dark:text-white text-gray-600">
                       Branch Code
                     </Label>
                   </div>
@@ -219,7 +219,7 @@ const Register = () => {
                 </div>
                 <div className="grid gap-2">
                   <div className="flex items-center">
-                    <Label htmlFor="user_contact" className="text-gray-600">
+                    <Label htmlFor="user_contact" className="dark:text-white text-gray-600">
                       Contact number
                     </Label>
                   </div>
@@ -239,7 +239,7 @@ const Register = () => {
                 </div>
                 <div className="grid gap-2">
                   <div className="flex items-center">
-                    <Label htmlFor="username" className="text-gray-600">
+                    <Label htmlFor="username" className="dark:text-white text-gray-600">
                       Username
                     </Label>
                   </div>
@@ -259,7 +259,7 @@ const Register = () => {
                 </div>
                 <div className="grid gap-2">
                   <div className="flex items-center">
-                    <Label htmlFor="password" className="text-gray-600">
+                    <Label htmlFor="password" className="dark:text-white text-gray-600">
                       Password
                     </Label>
                   </div>
@@ -282,7 +282,7 @@ const Register = () => {
                   <div className="flex items-center">
                     <Label
                       htmlFor="password_confirmation"
-                      className="text-gray-600"
+                      className="dark:text-white text-gray-600"
                     >
                       Password confirmation
                     </Label>

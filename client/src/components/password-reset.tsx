@@ -49,10 +49,10 @@ export default function PasswordReset() {
     <div className="fixed top-0 bottom-0 left-0 right-0 z-40 flex items-center justify-center bg-white">
       <div className="w-full max-w-md space-y-6 p-6">
         <div className="text-center">
-          <h2 className="text-3xl font-bold tracking-tight text-gray-900">
+          <h2 className="text-3xl font-bold tracking-tight dark:text-white text-gray-900">
             Reset your password
           </h2>
-          <p className="mt-2 text-sm text-gray-600">
+          <p className="mt-2 text-sm dark:text-white text-gray-600">
             To use this new system, you need to reset the password for your
             account.
           </p>
@@ -68,7 +68,7 @@ export default function PasswordReset() {
           <div>
             <Label
               htmlFor="new-password"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium dark:text-white text-gray-700"
             >
               New password
             </Label>
@@ -88,7 +88,7 @@ export default function PasswordReset() {
           <div>
             <Label
               htmlFor="new-password"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium dark:text-white text-gray-700"
             >
               Confirm new password
             </Label>

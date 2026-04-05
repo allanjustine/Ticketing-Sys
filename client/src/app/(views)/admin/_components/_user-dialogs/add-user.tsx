@@ -120,7 +120,7 @@ export function AddUser({
       <DialogContent className="sm:max-w-[425px]">
         <form className="space-y-5" onSubmit={formSubmit}>
           <DialogHeader>
-            <DialogTitle className="font-bold text-gray-700">
+            <DialogTitle className="font-bold dark:text-white text-gray-700">
               Add User
             </DialogTitle>
           </DialogHeader>

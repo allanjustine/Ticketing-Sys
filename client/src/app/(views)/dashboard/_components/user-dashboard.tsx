@@ -37,7 +37,7 @@ export default function UserDashboard({
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           <Card className="relative border-l-5 min-h-30 hover:bg-green-50 border-l-green-500 hover:border-l-green-600 shadow hover:scale-103 hover:shadow-lg transition-all duration-300 ease-in-out">
             <CardContent className="z-1">
-              <CardTitle className="text-md font-bold text-gray-600">
+              <CardTitle className="text-md font-bold dark:text-white text-gray-600">
                 Total Tickets
               </CardTitle>
               <CardDescription className="font-bold text-3xl">
@@ -54,7 +54,7 @@ export default function UserDashboard({
           </Card>
           <Card className="relative border-l-5 min-h-30 hover:bg-blue-50 border-l-blue-500 hover:border-l-blue-600 shadow hover:scale-103 hover:shadow-lg transition-all duration-300 ease-in-out">
             <CardContent className="z-1">
-              <CardTitle className="text-md font-bold text-gray-600">
+              <CardTitle className="text-md font-bold dark:text-white text-gray-600">
                 Total Edited Tickets
               </CardTitle>
               <CardDescription className="font-bold text-3xl">
@@ -71,7 +71,7 @@ export default function UserDashboard({
           </Card>
           <Card className="relative border-l-5 min-h-30 hover:bg-red-50 border-l-red-500 hover:border-l-red-600 shadow hover:scale-103 hover:shadow-lg transition-all duration-300 ease-in-out">
             <CardContent className="z-1">
-              <CardTitle className="text-md font-bold text-gray-600">
+              <CardTitle className="text-md font-bold dark:text-white text-gray-600">
                 Total Rejected Tickets
               </CardTitle>
               <CardDescription className="font-bold text-3xl">
@@ -88,7 +88,7 @@ export default function UserDashboard({
           </Card>
           <Card className="relative border-l-5 min-h-30 hover:bg-yellow-50 border-l-yellow-500 hover:border-l-yellow-600 shadow hover:scale-103 hover:shadow-lg transition-all duration-300 ease-in-out">
             <CardContent className="z-1">
-              <CardTitle className="text-md font-bold text-gray-600">
+              <CardTitle className="text-md font-bold dark:text-white text-gray-600">
                 Total Pending Tickets
               </CardTitle>
               <CardDescription className="font-bold text-3xl">

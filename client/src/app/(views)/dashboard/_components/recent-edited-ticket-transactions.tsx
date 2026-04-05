@@ -37,11 +37,11 @@ export default function RecentEditedTicketTransactions({
                     {ticket.ticket_detail.ticket_category.category_name}
                   </p>
                   <p className="flex gap-1 items-center text-xs">
-                    <span className="font-bold text-gray-600">Edited by: </span>{" "}
+                    <span className="font-bold dark:text-white text-gray-600">Edited by: </span>{" "}
                     <span>{ticket?.edited_by?.full_name}</span>
                   </p>
                   <p className="flex gap-1 items-center text-xs">
-                    <span className="font-bold text-gray-600">
+                    <span className="font-bold dark:text-white text-gray-600">
                       Ticket type:{" "}
                     </span>{" "}
                     <span
@@ -54,7 +54,7 @@ export default function RecentEditedTicketTransactions({
                       {ticketTypeUpperCase(ticket?.ticket_detail?.ticket_type)}
                     </span>
                   </p>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs dark:text-white text-gray-500">
                     {formatDateAndTime(
                       ticket.ticket_detail.ticket_transaction_date,
                     )}
@@ -69,8 +69,8 @@ export default function RecentEditedTicketTransactions({
             ))
           ) : (
             <div className="flex items-center justify-center flex-col">
-              <TicketX size={80} className="text-gray-200" />
-              <p className="text-center text-sm font-bold text-gray-500">
+              <TicketX size={80} className="dark:text-white text-gray-200" />
+              <p className="text-center text-sm font-bold dark:text-white text-gray-500">
                 No recent edited ticket transactions
               </p>
             </div>

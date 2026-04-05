@@ -77,7 +77,7 @@ export function EditComment({
                   src={Storage(user?.user_detail?.profile_pic)}
                   alt={user?.full_name}
                 />
-                <AvatarFallback className="font-bold text-gray-700">
+                <AvatarFallback className="font-bold dark:text-white text-gray-700">
                   {nameShortHand(user?.full_name)}
                 </AvatarFallback>
               </Avatar>
@@ -107,7 +107,7 @@ export function EditComment({
                       className={`${
                         commentValue.length >= 500
                           ? "text-red-500"
-                          : "text-gray-400"
+                          : "dark:text-white text-gray-400"
                       } text-xs`}
                     >
                       {commentValue.length}/500

@@ -9,6 +9,8 @@ import {
 } from "@/components/ui/breadcrumb";
 import { usePathname } from "next/navigation";
 import Notification from "../notification";
+import ProfileDropdown from "../profile-dropdown";
+import SettingsSheet from "../settings-sheet";
 
 const AppLayout = ({ children }: { children: ReactNode }) => {
   const { open } = useSidebar();
@@ -17,10 +19,11 @@ const AppLayout = ({ children }: { children: ReactNode }) => {
     pathname === "/"
       ? ["Home"]
       : pathname.replace(/-/g, " ").split("/").slice(1);
+
   return (
     <>
       <AppSidebar />
-      <main className="w-full h-screen overflow-hidden">
+      <main className={`w-full h-screen overflow-hidden`}>
         <div className="flex flex-col">
           <div className={`${open ? "p-[13px]" : "p-1.5"} border-b`}>
             <div className="flex justify-between items-center">
@@ -35,7 +38,7 @@ const AppLayout = ({ children }: { children: ReactNode }) => {
                             path?.length - 1 === index
                               ? "font-bold"
                               : "font-semibold"
-                          } text-gray-600`}
+                          } dark:text-white text-gray-600`}
                         >
                           {p}
                         </span>
@@ -45,7 +48,10 @@ const AppLayout = ({ children }: { children: ReactNode }) => {
                   </Breadcrumb>
                 ))}
               </div>
-              <Notification />
+              <div className="flex items-center gap-3">
+                <Notification />
+                <ProfileDropdown />
+              </div>
             </div>
           </div>
           <div className="p-7 h-[calc(100vh-60px)] overflow-y-auto">
@@ -53,6 +59,7 @@ const AppLayout = ({ children }: { children: ReactNode }) => {
           </div>
         </div>
       </main>
+      <SettingsSheet />
     </>
   );
 };

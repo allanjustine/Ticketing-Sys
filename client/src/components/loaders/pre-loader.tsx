@@ -1,8 +1,10 @@
+import { useSettings } from "@/context/settings-context";
 import React from "react";
 
 const PreLoader = () => {
+  const { theme } = useSettings()
   return (
-    <div className="fixed top-0 bottom-0 left-0 right-0 z-[999] flex items-center justify-center bg-white">
+    <div className={`fixed top-0 bottom-0 left-0 right-0 z-999 flex items-center justify-center bg-white`}>
       <iframe
         src="https://smctdevt.github.io/smctloder/"
         frameBorder="0"

@@ -47,6 +47,7 @@ import Image from "next/image";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { InfoField, NoteCard } from "./view-ticket-details-items";
 import { Spinner } from "@/components/ui/spinner";
+import Swal from "sweetalert2";
 
 export function ViewTicketDetails({
   data,
@@ -98,6 +99,19 @@ export function ViewTicketDetails({
     setNote(defaultNote ?? "");
     setOpen(value);
   };
+
+  if (!data && open) {
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: "Ticket not found or has been deleted by the user.",
+      timer: 5000,
+      timerProgressBar: true,
+      willClose: () => {
+        setOpen(false);
+      },
+    });
+  }
 
   return (
     <>

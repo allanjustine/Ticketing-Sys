@@ -54,7 +54,6 @@ export default function Notification() {
     if (totalUnreadNotifications < 1) return;
 
     document.title = `(${totalUnreadNotifications}) ${originalTitle.current}`;
-    console.log(totalUnreadNotifications);
   }, [totalUnreadNotifications]);
 
   useEffect(() => {

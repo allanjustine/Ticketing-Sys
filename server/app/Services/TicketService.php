@@ -11,6 +11,7 @@ use App\Models\Ticket;
 use App\Models\TicketDetail;
 use App\Models\UserLogin;
 use App\Notifications\TicketNotification;
+use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -381,6 +382,10 @@ class TicketService
 
         $ticketDetail->delete();
 
+        DatabaseNotification::query()
+            ->where('data->ticket_code', $ticketDetail->ticket->ticket_code)
+            ->delete();
+
         return $ticketDetail;
     }
 
@@ -404,8 +409,10 @@ class TicketService
             'status'        => TicketStatus::REJECTED
         ]);
 
+        $this->readNotificationOnAction($ticketDetail->ticket->ticket_code);
+
         $ticketDetail->ticket->userLogin->notify(new TicketNotification(
-            "Hello, your ticket {$ticketDetail->ticket->ticket_code} has been rejected",
+            "Hello, your ticket {$ticketDetail->ticketCategory?->category_name} has been rejected",
             $ticketDetail->ticket->ticket_code,
             $this->user->userDetail->profile_pic,
             $this->user->full_name,
@@ -518,8 +525,10 @@ class TicketService
 
             $ticketDetail->ticket->update($ticketApprovedData);
 
+            $this->readNotificationOnAction($ticketDetail->ticket->ticket_code);
+
             $ticketDetail->ticket->userLogin->notify(new TicketNotification(
-                "Hello, your ticket {$ticketDetail->ticket->ticket_code} has been approved",
+                "Hello, your ticket {$ticketDetail->ticketCategory?->category_name} has been approved",
                 $ticketDetail->ticket->ticket_code,
                 $this->user->userDetail->profile_pic,
                 $this->user->full_name,
@@ -565,8 +574,10 @@ class TicketService
 
             $ticketDetail->ticket->update($ticketApprovedData);
 
+            $this->readNotificationOnAction($ticketDetail->ticket->ticket_code);
+
             $ticketDetail->ticket->userLogin->notify(new TicketNotification(
-                "Hello, your ticket {$ticketDetail->ticket->ticket_code} has been edited",
+                "Hello, your ticket {$ticketDetail->ticketCategory?->category_name} has been edited",
                 $ticketDetail->ticket->ticket_code,
                 $this->user->userDetail->profile_pic,
                 $this->user->full_name,
@@ -627,5 +638,14 @@ class TicketService
             $new_note,
             $ticket->ticket_code
         ];
+    }
+
+    private function readNotificationOnAction($ticket_code)
+    {
+        return $this->user->notifications()
+            ->where('data->ticket_code', $ticket_code)
+            ->update([
+                'read_at' => now()
+            ]);
     }
 }

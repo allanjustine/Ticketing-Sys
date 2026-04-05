@@ -1,16 +1,13 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { Geist, Geist_Mono } from "next/font/google";
 import BaseLayout from "@/components/layout/base-layout";
 import AuthContextProvider from "@/context/auth-context";
 import { IsRefreshProvider } from "@/context/is-refresh-context";
+import { SettingsProvider } from "@/context/settings-context";
 import logo from "@/assets/logo.png";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
+const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
@@ -50,7 +47,9 @@ export default function RootLayout({
       >
         <IsRefreshProvider>
           <AuthContextProvider>
-            <BaseLayout>{children}</BaseLayout>
+            <SettingsProvider>
+              <BaseLayout>{children}</BaseLayout>
+            </SettingsProvider>
           </AuthContextProvider>
         </IsRefreshProvider>
       </body>

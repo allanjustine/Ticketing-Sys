@@ -1,5 +1,5 @@
 import Logo from "@/assets/logo.png";
-import { ChevronRight, MenuIcon } from "lucide-react";
+import { ChevronRight, LogOut, MenuIcon, Settings, User } from "lucide-react";
 import Image from "next/image";
 import {
   Sidebar,
@@ -48,6 +48,7 @@ import {
 } from "@/constants/sidebar-items";
 import { usePathname } from "next/navigation";
 import Storage from "@/utils/storage";
+import { useSettings } from "@/context/settings-context";
 
 export function AppSidebar() {
   const { open } = useSidebar();
@@ -55,6 +56,7 @@ export function AppSidebar() {
   const [isCollapsibleOpen, setIsCollapsibleOpen] = useState<boolean>(true);
   const { isAdmin } = useAuth();
   const pathname = usePathname();
+  const { setIsOpen } = useSettings();
 
   const handleLogout = () => {
     Swal.fire({
@@ -132,7 +134,7 @@ export function AppSidebar() {
                       <SidebarMenuButton asChild tooltip="Others">
                         <Button
                           variant="ghost"
-                          className="w-full justify-between text-left !p-2"
+                          className="w-full justify-between text-left p-2!"
                         >
                           <span className="flex gap-2 items-center">
                             <MenuIcon className="w-4 h-4" />
@@ -227,13 +229,34 @@ export function AppSidebar() {
             </div>
           </DropdownMenuTrigger>
           <DropdownMenuContent side="top" align="start" className="w-48">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuLabel className="flex flex-col">
+              <span className="font-semibold text-sm">{user?.full_name}</span>
+              <span className="text-xs text-muted-foreground font-normal truncate">
+                {user?.user_detail?.user_email}
+              </span>
+            </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-              <Link href="/profile">Profile</Link>
+            <DropdownMenuItem className="cursor-pointer gap-2" asChild>
+              <Link href={"/profile"}>
+                <User className="h-4 w-4" />
+                Profile
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="cursor-pointer gap-2"
+              onClick={() => setIsOpen(true)}
+            >
+              <Settings className="h-4 w-4" />
+              Settings
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
+            <DropdownMenuItem
+              className="cursor-pointer gap-2 text-red-600 focus:text-red-600"
+              onClick={handleLogout}
+            >
+              <LogOut className="h-4 w-4" />
+              Logout
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarFooter>

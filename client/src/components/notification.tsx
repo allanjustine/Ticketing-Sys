@@ -2,6 +2,7 @@ import { BellDotIcon, BellOffIcon, Loader2 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
@@ -153,21 +154,17 @@ export default function Notification() {
             )}
           </div>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="min-w-[350px] mr-5">
-          <DropdownMenuLabel className="text-gray-600 font-bold text-md">
+        <DropdownMenuContent align="end" className="min-w-[350px]">
+          <DropdownMenuLabel className="dark:text-white dark:text-white text-gray-600 font-bold text-md">
             Notifications
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           {notifications.length > 0 ? (
-            <div className="flex flex-col gap-1 max-h-[400px] overflow-y-auto">
+            <div className="flex flex-col gap-2 max-h-[400px] overflow-y-auto">
               {notifications.map((notification: DataItems, index: number) => (
-                <div
+                <DropdownMenuItem
                   key={index}
-                  className={`flex gap-3 items-center p-4 relative cursor-pointer ${
-                    notification.read_at
-                      ? " hover:bg-gray-100"
-                      : "bg-gray-100 hover:bg-gray-200"
-                  }`}
+                  className={`flex gap-3 items-center p-4 relative cursor-pointer`}
                   onClick={markAsReadNotification(
                     notification.id,
                     notification.data.ticket_code,
@@ -182,25 +179,25 @@ export default function Notification() {
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex flex-col">
-                    <p className="text-sm font-bold text-gray-700">
+                    <p className="text-sm font-bold dark:text-white dark:text-white text-gray-700">
                       {notification.data.full_name}
                     </p>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm dark:text-white dark:text-white text-gray-600">
                       {notification.data.message}
                     </p>
                   </div>
-                  <span className="absolute top-0 right-1 text-xs text-gray-400 font-bold">
+                  <span className="absolute top-0 right-1 text-xs dark:text-white dark:text-white text-gray-400 font-bold">
                     {formatDistanceToNowStrict(notification.created_at, {
                       addSuffix: true,
                     })}
                   </span>
-                </div>
+                </DropdownMenuItem>
               ))}
             </div>
           ) : (
             <div className="text-center p-10 space-y-3">
-              <BellOffIcon className="mx-auto size-10 text-gray-500" />
-              <h3 className="text-lg font-bold text-gray-500">
+              <BellOffIcon className="mx-auto size-10 dark:text-white dark:text-white text-gray-500" />
+              <h3 className="text-lg font-bold dark:text-white dark:text-white text-gray-500">
                 No new notifications
               </h3>
             </div>

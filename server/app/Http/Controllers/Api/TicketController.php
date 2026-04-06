@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\TicketRequest;
 use App\Http\Requests\UpdateTicketRequest;
 use App\Models\Ticket;
+use App\Models\TicketDetail;
 use App\Models\UserLogin;
 use App\Notifications\TicketNotification;
 use App\Services\ReportsService;
@@ -537,5 +538,11 @@ class TicketController extends Controller
         return response()->json([
             'message'           => "Ticket with ticket code of {$ticketCode} has been transferred to {$data->assignedPerson->full_name} automation successfully",
         ], 200);
+    }
+
+    public function downloadZip(TicketDetail $ticket_detail, TicketService $ticketService)
+    {
+        $zipPath = $ticketService->downloadZip($ticket_detail->ticket_details_id);
+        return response()->download($zipPath)->deleteFileAfterSend(true);
     }
 }

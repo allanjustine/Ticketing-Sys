@@ -47,6 +47,7 @@ import Image from "next/image";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { InfoField, NoteCard } from "./view-ticket-details-items";
 import { Spinner } from "@/components/ui/spinner";
+import { CONFIG } from "@/config/config";
 
 export function ViewTicketDetails({
   data,
@@ -97,6 +98,10 @@ export function ViewTicketDetails({
   const handleOpenChange = (value: boolean) => {
     setNote(defaultNote ?? "");
     setOpen(value);
+  };
+
+  const handleDownloadAsZip = (id: number) => () => {
+    window.open(`${CONFIG.API_URL}/${id}/download-zip`, "_blank");
   };
 
   if (!data) {
@@ -261,9 +266,21 @@ export function ViewTicketDetails({
 
             {data?.ticket_detail?.td_support?.length > 0 && (
               <div className="rounded-xl border border-gray-200 p-4 shadow-sm">
-                <span className="text-xs font-semibold dark:text-white text-gray-400 uppercase tracking-wide block mb-3">
-                  Support Files
-                </span>
+                <div className="flex justify-between">
+                  <span className="text-xs font-semibold dark:text-white text-gray-400 uppercase tracking-wide block mb-3">
+                    Support Files
+                  </span>
+                  <Button
+                    type="button"
+                    size={"xs"}
+                    onClick={handleDownloadAsZip(
+                      data?.ticket_detail?.ticket_details_id,
+                    )}
+                    className="text-[10px] bg-blue-500 hover:bg-blue-600"
+                  >
+                    Download as Zip
+                  </Button>
+                </div>
                 <div className="flex gap-3 overflow-x-auto pb-1">
                   {data.ticket_detail.td_support.map(
                     (file: any, index: number) => (

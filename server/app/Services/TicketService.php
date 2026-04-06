@@ -16,6 +16,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use ZipArchive;
 
 class TicketService
 {
@@ -647,5 +648,32 @@ class TicketService
             ->update([
                 'read_at' => now()
             ]);
+    }
+
+    public function downloadZip($ticket_detail_id)
+    {
+        $files = TicketDetail::where('ticket_details_id', $ticket_detail_id)
+            ->first()?->td_support;
+
+        $zipFileName = 'attachments.zip';
+        $zipPath = storage_path("app/temp/{$zipFileName}");
+
+        if (!file_exists(storage_path('app/temp'))) {
+            mkdir(storage_path('app/temp'), 0755, true);
+        }
+
+        $zip = new ZipArchive;
+
+        if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === TRUE) {
+            foreach ($files as $file) {
+                $storageFile = storage_path('app/public/' . $file);
+                if (file_exists($storageFile)) {
+                    $zip->addFile($storageFile, basename($storageFile));
+                }
+            }
+            $zip->close();
+        }
+
+        return $zipPath;
     }
 }

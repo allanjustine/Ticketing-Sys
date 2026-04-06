@@ -55,6 +55,7 @@ class ManageUserService
 
             if ($request->password) {
                 $data['password'] = $request->password;
+                $data['requesting_password'] = true;
             }
 
             $user->userLogin->update($data);

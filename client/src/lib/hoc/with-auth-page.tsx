@@ -3,7 +3,7 @@ import PreLoader from "@/components/loaders/pre-loader";
 import PasswordReset from "@/components/password-reset";
 import { ROLE } from "@/constants/roles";
 import { useAuth } from "@/context/auth-context";
-import { redirect } from "next/navigation";
+import { redirect, usePathname } from "next/navigation";
 import Swal from "sweetalert2";
 
 export default function withAuthPage(
@@ -14,6 +14,8 @@ export default function withAuthPage(
   function AppWrappedComponent(props: any) {
     const { isAuthenticated, user, isLoading } = useAuth();
     const isAlreadyAuthenticated = isAuthenticated || user;
+    const pathName = usePathname();
+    const isChatPage = pathName.startsWith("/chats");
     const noAccess =
       isProtected &&
       ![ROLE.ADMIN, ROLE.AUTOMATION_ADMIN].includes(
@@ -21,7 +23,8 @@ export default function withAuthPage(
       ) &&
       isAlreadyAuthenticated;
     const isAuditUser = user?.user_role?.role_name === ROLE.AUDIT;
-    const excludeAudit = isAlreadyAuthenticated && isAudit !== isAuditUser;
+    const excludeAudit =
+      isAlreadyAuthenticated && isAudit !== isAuditUser && !isChatPage;
 
     if (isLoading) {
       return <PreLoader />;

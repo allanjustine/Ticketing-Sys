@@ -41,7 +41,7 @@ export const VIEW_DETAIL_COMLUMNS = [
     cell: (row: any) => row.ticket_detail.td_to,
   },
   {
-    name: "NOTE",
+    name: "AUTOMATION MANAGER NOTE",
     cell: (row: any) => (
       <Tooltip>
         <TooltipTrigger asChild>
@@ -49,6 +49,19 @@ export const VIEW_DETAIL_COMLUMNS = [
         </TooltipTrigger>
         <TooltipContent className="max-w-[400px]">
           <div>{row.ticket_detail.td_note}</div>
+        </TooltipContent>
+      </Tooltip>
+    ),
+  },
+  {
+    name: "AUTOMATION NOTE",
+    cell: (row: any) => (
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <p className="truncate">{row.ticket_detail.td_note_bh}</p>
+        </TooltipTrigger>
+        <TooltipContent className="max-w-[400px]">
+          <div>{row.ticket_detail.td_note_bh}</div>
         </TooltipContent>
       </Tooltip>
     ),

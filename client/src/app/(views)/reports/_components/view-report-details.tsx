@@ -127,7 +127,7 @@ export function ViewReportDetails({ data, open, setIsOpen }: any) {
               onClick={handleOpenDialog(
                 row.ticket_code,
                 "note",
-                row.ticket_detail.td_note,
+                row.ticket_detail.td_note_bh,
               )}
               className="bg-indigo-500 hover:bg-indigo-600"
               size="xs"

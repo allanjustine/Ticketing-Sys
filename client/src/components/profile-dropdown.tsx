@@ -16,10 +16,12 @@ import nameShortHand from "@/utils/name-short-hand";
 import Storage from "@/utils/storage";
 import Link from "next/link";
 import Swal from "sweetalert2";
+import { ROLE } from "@/constants/roles";
 
 export default function ProfileDropdown() {
   const { user, logout } = useAuth();
   const { setIsOpen } = useSettings();
+  const isAudit = user?.user_role?.role_name === ROLE.AUDIT;
 
   const handleLogout = () => {
     Swal.fire({
@@ -54,12 +56,14 @@ export default function ProfileDropdown() {
           </span>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="cursor-pointer gap-2" asChild>
-          <Link href={"/profile"}>
-            <User className="h-4 w-4" />
-            Profile
-          </Link>
-        </DropdownMenuItem>
+        {!isAudit && (
+          <DropdownMenuItem className="cursor-pointer gap-2" asChild>
+            <Link href={"/profile"}>
+              <User className="h-4 w-4" />
+              Profile
+            </Link>
+          </DropdownMenuItem>
+        )}
         <DropdownMenuItem
           className="cursor-pointer gap-2"
           onClick={() => setIsOpen(true)}

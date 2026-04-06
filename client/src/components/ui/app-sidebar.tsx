@@ -49,6 +49,7 @@ import {
 import { usePathname } from "next/navigation";
 import Storage from "@/utils/storage";
 import { useSettings } from "@/context/settings-context";
+import { ROLE } from "@/constants/roles";
 
 export function AppSidebar() {
   const { open } = useSidebar();
@@ -57,6 +58,7 @@ export function AppSidebar() {
   const { isAdmin } = useAuth();
   const pathname = usePathname();
   const { setIsOpen } = useSettings();
+  const isAudit = user?.user_role?.role_name === ROLE.AUDIT;
 
   const handleLogout = () => {
     Swal.fire({
@@ -103,19 +105,24 @@ export function AppSidebar() {
           {open && <SidebarGroupLabel>Applications</SidebarGroupLabel>}
           <SidebarGroupContent>
             <SidebarMenu>
-              {SIDEBAR_ITEMS.map((item, index) => (
-                <SidebarMenuItem
-                  key={index}
-                  className={item.url === pathname ? "bg-muted rounded-md" : ""}
-                >
-                  <SidebarMenuButton asChild tooltip={item.title}>
-                    <Link href={item.url}>
-                      <item.icon className="h-4 w-4" />
-                      {open && <span>{item.title}</span>}
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              {SIDEBAR_ITEMS.map(
+                (item, index) =>
+                  item?.isAudit === isAudit && (
+                    <SidebarMenuItem
+                      key={index}
+                      className={
+                        item.url === pathname ? "bg-muted rounded-md" : ""
+                      }
+                    >
+                      <SidebarMenuButton asChild tooltip={item.title}>
+                        <Link href={item.url}>
+                          <item.icon className="h-4 w-4" />
+                          {open && <span>{item.title}</span>}
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ),
+              )}
             </SidebarMenu>
           </SidebarGroupContent>
           {open && isAdmin && (
@@ -236,12 +243,14 @@ export function AppSidebar() {
               </span>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="cursor-pointer gap-2" asChild>
-              <Link href={"/profile"}>
-                <User className="h-4 w-4" />
-                Profile
-              </Link>
-            </DropdownMenuItem>
+            {!isAudit && (
+              <DropdownMenuItem className="cursor-pointer gap-2" asChild>
+                <Link href={"/profile"}>
+                  <User className="h-4 w-4" />
+                  Profile
+                </Link>
+              </DropdownMenuItem>
+            )}
             <DropdownMenuItem
               className="cursor-pointer gap-2"
               onClick={() => setIsOpen(true)}

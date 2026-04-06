@@ -15,6 +15,7 @@ import {
 
 export const SIDEBAR_ITEMS = [
   { title: "Dashboard", url: "/dashboard", icon: Home },
+  { title: "Dashboard", url: "/audit-dashboard", icon: Home, isAudit: true },
   { title: "Tickets", url: "/tickets", icon: TicketCheck },
   { title: "Reports", url: "/reports", icon: Notebook },
 ];

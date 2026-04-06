@@ -228,11 +228,11 @@ function Tickets() {
 
           const formData = isAutomation(role)
             ? {
-                td_note: note,
+                td_note_bh: note,
                 is_counted: isCounted,
               }
             : {
-                td_note_bh: note,
+                td_note: note,
               };
 
           try {

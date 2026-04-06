@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\BranchController;
 use App\Http\Controllers\Api\BranchListController;
 use App\Http\Controllers\Api\CasController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\ExportReportsController;
@@ -91,6 +92,7 @@ Route::middleware([
 
     Route::controller(TicketController::class)->group(function () {
         Route::get('/tickets', 'index');
+        Route::get('/audit-dashboard-tickets', 'auditIndex');
         Route::get('/reports', 'reports');
         Route::put('/update-notif/{id}', 'updateNotif');
         Route::post('/submit-ticket', 'store');
@@ -104,6 +106,7 @@ Route::middleware([
         Route::patch('/counted-or-not-counted/{ticket_code}/counted-or-not-counted', 'markAsCountedOrNotCounted');
         Route::patch('/edit-note/{ticket_code}/update', 'editNote');
         Route::patch('/transfer-ticket/{ticket_code}/to-automation', 'transferTicketToAutomation');
+        Route::get('/{ticket_detail}/download-zip', 'downloadZip');
     });
 
     Route::controller(CategoryController::class)->group(function () {
@@ -212,6 +215,8 @@ Route::middleware([
         Route::patch('sub-categories/{id}/update', 'update');
         Route::delete('sub-categories/{id}/delete', 'destroy');
     });
+
+    Route::resource('chats', ChatController::class)->only(['show', 'store']);
 });
 
 // GUEST ROUTES

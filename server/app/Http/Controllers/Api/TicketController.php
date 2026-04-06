@@ -450,14 +450,14 @@ class TicketController extends Controller
     public function markAsEdited(Request $request, TicketService $ticketService, string $id)
     {
         $validateData = [
-            'td_note'               => ['required', 'max:5000', 'min:1'],
-            'is_counted'            => ['required']
+            'td_note_bh'         => ['required', 'max:5000', 'min:1'],
+            'is_counted'         => ['required']
         ];
 
         $validateDataMessage = [
-            'td_note.required'      => 'Note is required',
-            'td_note.max'           => 'Note must be less than 5000 characters',
-            'td_note.min'           => 'Note must be at least 1 character',
+            'td_note_bh.required'=> 'Note is required',
+            'td_note_bh.max'     => 'Note must be less than 5000 characters',
+            'td_note_bh.min'     => 'Note must be at least 1 character',
         ];
 
         $request->validate($validateData, $validateDataMessage);

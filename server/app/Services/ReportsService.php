@@ -7,6 +7,7 @@ use App\Enums\UserRoles;
 use App\Models\BranchList;
 use App\Models\Ticket;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class ReportsService
@@ -89,8 +90,8 @@ class ReportsService
                     'ticketDetail',
                     fn($subQuery)
                     =>
-                    $subQuery->whereBetween('date_completed', [$edited_start_date, $edited_end_date])
-                        ->orWhereBetween('date_completed', [$edited_end_date, $edited_start_date])
+                    $subQuery->whereBetween('date_completed', [Carbon::parse($edited_start_date)->startOfDay(), Carbon::parse($edited_end_date)->endOfDay()])
+                        ->orWhereBetween('date_completed', [Carbon::parse($edited_end_date)->endOfDay(), Carbon::parse($edited_start_date)->startOfDay()])
                 )
             )
             ->when(
@@ -103,8 +104,8 @@ class ReportsService
                     'ticketDetail',
                     fn($subQuery)
                     =>
-                    $subQuery->whereBetween('date_created', [$created_start_date, $created_end_date])
-                        ->orWhereBetween('date_created', [$created_end_date, $created_start_date])
+                    $subQuery->whereBetween('date_completed', [Carbon::parse($created_start_date)->startOfDay(), Carbon::parse($created_end_date)->endOfDay()])
+                        ->orWhereBetween('date_completed', [Carbon::parse($created_end_date)->endOfDay(), Carbon::parse($created_start_date)->startOfDay()])
                 )
             )
             ->when(
@@ -117,8 +118,8 @@ class ReportsService
                     'ticketDetail',
                     fn($subQuery)
                     =>
-                    $subQuery->whereBetween('ticket_transaction_date', [$edited_transaction_start_date, $edited_transaction_end_date])
-                        ->orWhereBetween('ticket_transaction_date', [$edited_transaction_end_date, $edited_transaction_start_date])
+                    $subQuery->whereBetween('date_completed', [Carbon::parse($edited_transaction_start_date)->startOfDay(), Carbon::parse($edited_transaction_end_date)->endOfDay()])
+                        ->orWhereBetween('date_completed', [Carbon::parse($edited_transaction_end_date)->endOfDay(), Carbon::parse($edited_transaction_start_date)->startOfDay()])
                 )
             )
             ->when($branchCode !== "ALL", fn($query) => $query->where('branch_id', $branchCode))
@@ -286,8 +287,8 @@ class ReportsService
                     'ticketDetail',
                     fn($subQuery)
                     =>
-                    $subQuery->whereBetween('date_completed', [$edited_start_date, $edited_end_date])
-                        ->orWhereBetween('date_completed', [$edited_end_date, $edited_start_date])
+                    $subQuery->whereBetween('date_completed', [Carbon::parse($edited_start_date)->startOfDay(), Carbon::parse($edited_end_date)->endOfDay()])
+                        ->orWhereBetween('date_completed', [Carbon::parse($edited_end_date)->endOfDay(), Carbon::parse($edited_start_date)->startOfDay()])
                 )
             )
             ->when(
@@ -300,8 +301,8 @@ class ReportsService
                     'ticketDetail',
                     fn($subQuery)
                     =>
-                    $subQuery->whereBetween('date_created', [$created_start_date, $created_end_date])
-                        ->orWhereBetween('date_created', [$created_end_date, $created_start_date])
+                    $subQuery->whereBetween('date_completed', [Carbon::parse($created_start_date)->startOfDay(), Carbon::parse($created_end_date)->endOfDay()])
+                        ->orWhereBetween('date_completed', [Carbon::parse($created_end_date)->endOfDay(), Carbon::parse($created_start_date)->startOfDay()])
                 )
             )
             ->when(
@@ -314,8 +315,8 @@ class ReportsService
                     'ticketDetail',
                     fn($subQuery)
                     =>
-                    $subQuery->whereBetween('ticket_transaction_date', [$edited_transaction_start_date, $edited_transaction_end_date])
-                        ->orWhereBetween('ticket_transaction_date', [$edited_transaction_end_date, $edited_transaction_start_date])
+                    $subQuery->whereBetween('date_completed', [Carbon::parse($edited_transaction_start_date)->startOfDay(), Carbon::parse($edited_transaction_end_date)->endOfDay()])
+                        ->orWhereBetween('date_completed', [Carbon::parse($edited_transaction_end_date)->endOfDay(), Carbon::parse($edited_transaction_start_date)->startOfDay()])
                 )
             )
             ->when($branchCode !== "ALL", fn($query) => $query->where('branch_id', $branchCode))

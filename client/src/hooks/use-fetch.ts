@@ -30,6 +30,7 @@ export default function useFetch({
   });
   const [isFiltered, setIsFiltered] = useState<boolean>(false);
   const [isRefresh, setIsRefresh] = useState<boolean>(false);
+  const [errorStatus, setErrorStatus] = useState<number | null>(null);
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
   const { setIsRefresh: setRefresh } = useIsRefresh();
   const router = useRouter();
@@ -58,6 +59,7 @@ export default function useFetch({
       } catch (error: any) {
         console.error("Error fetching data:", error);
         setError(error.response.data);
+        setErrorStatus(error.response.status);
       } finally {
         setIsLoading(false);
         setIsRefresh(false);
@@ -189,6 +191,7 @@ export default function useFetch({
     handleReset,
     setIsRefresh,
     isRefresh,
-    setIsLoading
+    setIsLoading,
+    errorStatus,
   };
 }

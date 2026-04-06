@@ -1,9 +1,13 @@
 "use client";
 
+import { ROLE } from "@/constants/roles";
 import { useAuth } from "@/context/auth-context";
 import Link from "next/link";
 
 export default function Unauthorized() {
+  const { user } = useAuth();
+  const isAudit = user?.user_role?.role_name === ROLE.AUDIT;
+
   return (
     <div className="fixed top-0 bottom-0 left-0 right-0 z-50 flex items-center justify-center bg-white">
       <div className="max-w-md w-full rounded-xl overflow-hidden">
@@ -32,7 +36,7 @@ export default function Unauthorized() {
           </div>
           <div className="space-y-4">
             <Link
-              href="/dashboard"
+              href={isAudit ? "/audit-dashboard" : "/dashboard"}
               className="block w-full px-4 py-3 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white font-medium rounded-lg text-center transition duration-200"
             >
               Return to Dashboard

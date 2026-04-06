@@ -6,7 +6,7 @@ export interface UseFetchType {
   isLoading: boolean;
   error: any;
   handleSearchTerm: (
-    debounce?: number
+    debounce?: number,
   ) => (e: ChangeEvent<HTMLInputElement>) => void;
   handlePageChange: (newPage: number | string) => void;
   handlePerPageChange: (perPage: number | string) => void;
@@ -19,6 +19,7 @@ export interface UseFetchType {
   setIsRefresh: Dispatch<SetStateAction<boolean>>;
   isRefresh: boolean;
   setIsLoading: Dispatch<SetStateAction<boolean>>;
+  errorStatus: number | null;
 }
 
 export interface FilterByType {

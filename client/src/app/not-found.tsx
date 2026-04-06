@@ -1,11 +1,13 @@
 "use client";
 
 import PreLoader from "@/components/loaders/pre-loader";
+import { ROLE } from "@/constants/roles";
 import { useAuth } from "@/context/auth-context";
 import Link from "next/link";
 
 export default function NotFound() {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading, user } = useAuth();
+  const isAudit = user?.user_role?.role_name === ROLE.AUDIT;
 
   if (isLoading) return <PreLoader />;
   return (
@@ -38,7 +40,7 @@ export default function NotFound() {
           <div className="space-y-4">
             {isLoading ? null : isAuthenticated ? (
               <Link
-                href="/dashboard"
+                href={isAudit ? "/audit-dashboard" : "/dashboard"}
                 className="block w-full px-4 py-3 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white font-medium rounded-lg text-center transition duration-200"
               >
                 Return to Dashboard

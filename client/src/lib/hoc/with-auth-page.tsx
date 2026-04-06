@@ -9,6 +9,7 @@ import Swal from "sweetalert2";
 export default function withAuthPage(
   WrappedComponent: any,
   isProtected = false,
+  isAudit = false,
 ) {
   function AppWrappedComponent(props: any) {
     const { isAuthenticated, user, isLoading } = useAuth();
@@ -19,12 +20,14 @@ export default function withAuthPage(
         user?.user_role?.role_name,
       ) &&
       isAlreadyAuthenticated;
+    const isAuditUser = user?.user_role?.role_name === ROLE.AUDIT;
+    const excludeAudit = isAlreadyAuthenticated && isAudit !== isAuditUser;
 
     if (isLoading) {
       return <PreLoader />;
     }
 
-    if (noAccess) {
+    if (noAccess || excludeAudit) {
       return <Unauthorized />;
     }
 

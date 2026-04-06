@@ -104,7 +104,7 @@ class TicketController extends Controller
                         case UserRoles::AUTOMATION_MANAGER:
                             $subQuery->whereNot('status', TicketStatus::EDITED)
                                 ->where('displayTicket', Auth::id());
-                                // ->orWhere('last_approver', Auth::id());
+                            // ->orWhere('last_approver', Auth::id());
                             break;
                         case UserRoles::BRANCH_HEAD:
                             $subQuery->whereNot('status', TicketStatus::EDITED)
@@ -158,6 +158,62 @@ class TicketController extends Controller
                 =>
                 $query->whereNot('status', TicketStatus::EDITED)
             )
+            ->orderBy('ticket_id', 'desc')
+            ->paginate($take);
+
+        return response()->json([
+            "message"       => "Tickets fetched successfully",
+            "data"          => $tickets
+        ], 200);
+    }
+
+    public function auditIndex()
+    {
+        $bcode = request('bcode');
+
+        $ticket_category = request('ticket_category');
+
+        $take = request('limit');
+
+        $search = request('search');
+
+        $ticket_type = request('ticket_type');
+
+        $tickets = Ticket::with(
+            'userLogin.userDetail',
+            'userLogin.userRole',
+            'userLogin.branch',
+            'ticketDetail.ticketCategory',
+            'ticketDetail.supplier',
+            'ticketDetail.subCategory',
+            'assignedPerson.userDetail',
+            'assignedPerson.userRole',
+            'assignedPerson.branch',
+            'approveAcctgStaff.userDetail',
+            'approveAcctgStaff.userRole',
+            'approveAcctgStaff.branch',
+            'approveHead.userDetail',
+            'approveHead.userRole',
+            'approveHead.branch',
+            'approveAutm.userDetail',
+            'approveAutm.userRole',
+            'approveAutm.branch',
+            'approveAcctgSup.userDetail',
+            'approveAcctgSup.userRole',
+            'approveAcctgSup.branch',
+            'pendingUser.userDetail',
+            'pendingUser.userRole',
+            'pendingUser.branch',
+            'lastApprover.userDetail',
+            'lastApprover.userRole',
+            'lastApprover.branch',
+            'branch',
+        )
+            ->search($search)
+            ->when($ticket_type !== 'ALL', fn($query) => $query->whereRelation('ticketDetail', 'ticket_type', $ticket_type))
+            ->when($ticket_category, fn($query) => $query->whereHas('ticketDetail', fn($subQuery) => $subQuery->where('ticket_category_id', $ticket_category)))
+            ->when($bcode, fn($query) => $query->where('branch_id', $bcode))
+            ->where('status', TicketStatus::EDITED)
             ->orderBy('ticket_id', 'desc')
             ->paginate($take);
 

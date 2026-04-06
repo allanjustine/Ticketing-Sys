@@ -625,7 +625,7 @@ class TicketService
     {
         $ticket = Ticket::where('ticket_code', $ticketCode)->first();
 
-        $old_note = $ticket->ticketDetail->td_note;
+        $old_note = $ticket->ticketDetail->td_note_bh;
 
         $ticket->ticketDetail->update([
             'td_note_bh'           => $request->note

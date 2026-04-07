@@ -153,7 +153,7 @@ export default function BasicForm({
             onValueChange={handleChange("branch_head_id")}
             value={String(formInput.branch_head_id)}
           >
-            <SelectTrigger className="w-full">
+            <SelectTrigger className="w-full min-h-15">
               <SelectValue placeholder="Select branch head" />
             </SelectTrigger>
             <SelectContent>
@@ -166,8 +166,14 @@ export default function BasicForm({
                 ) : (
                   branchHeads?.map((branchHead: any, index: number) => (
                     <SelectItem key={index} value={String(branchHead.login_id)}>
-                      {branchHead.full_name}
-                      {branchHead.user_email}
+                      <div className="flex flex-col gap-1">
+                        <span className="font-bold">
+                          {branchHead.full_name}
+                        </span>
+                        <span className="italic text-xs">
+                          {branchHead.email}
+                        </span>
+                      </div>
                     </SelectItem>
                   ))
                 )}

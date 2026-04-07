@@ -18,7 +18,7 @@ export default function withAuthPage(
     const isChatPage = pathName.startsWith("/chats");
     const noAccess =
       isProtected &&
-      ![ROLE.ADMIN, ROLE.AUTOMATION_ADMIN].includes(
+      ![ROLE.ADMIN, ROLE.AUTOMATION_ADMIN, ROLE.AUTOMATION_MANAGER].includes(
         user?.user_role?.role_name,
       ) &&
       isAlreadyAuthenticated;

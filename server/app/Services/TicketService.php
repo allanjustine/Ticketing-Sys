@@ -173,6 +173,10 @@ class TicketService
             ->whereRaw("FIND_IN_SET(?, blist_id)", [$branchId])
             ->first();
 
+        if (!$assignedBranchHead) {
+            return abort(400, 'No branch head assigned to your branch. Please contact your administrator.');
+        }
+
         $assignedAccountingStaff = UserLogin::query()
             ->with('assignedCategories.categoryGroupCode.ticketCategories')
             ->has('assignedCategories')
@@ -496,12 +500,12 @@ class TicketService
                             =>
                             $category->where('group_code', $ticketDetail->ticketCategory->group_code)
                         )
-                        ->whereHas(
-                            'accountingAssignedBranches',
-                            fn($query)
-                            =>
-                            $query->where('assigned_accounting_branches.blist_id', $ticketDetail->ticket->branch_id)
-                        )
+                    // ->whereHas(
+                    //     'accountingAssignedBranches',
+                    //     fn($query)
+                    //     =>
+                    //     $query->where('assigned_accounting_branches.blist_id', $ticketDetail->ticket->branch_id)
+                    // )
                 )
                 ->first();
 

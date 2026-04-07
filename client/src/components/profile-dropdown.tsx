@@ -42,7 +42,7 @@ export default function ProfileDropdown() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Avatar className="h-7 w-7 cursor-pointer">
-          <AvatarImage src={Storage(user?.profile)} />
+          <AvatarImage src={Storage(user?.user_detail?.profile_pic)} />
           <AvatarFallback className="font-bold text-sm">
             {nameShortHand(user?.full_name ?? "")}
           </AvatarFallback>

@@ -139,7 +139,7 @@ export const TICKETS_COLUMNS = [
                       <span
                         className={`px-2 py-1 text-[10px] font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-700 dark:text-blue-300`}
                       >
-                        ({row.pending_user?.branch?.b_code}) -
+                        ({row.pending_user?.branch?.b_code}) -{" "}
                         {row.pending_user?.branch?.b_name}
                       </span>
                     ) : (

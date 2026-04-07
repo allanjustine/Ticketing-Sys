@@ -521,6 +521,7 @@ function Tickets() {
                   onClick={() => {
                     setIsRefresh(true);
                     setIsLoading(true);
+                    setIsRefreshBranchHeads(true);
                   }}
                 >
                   Refresh

@@ -286,7 +286,7 @@ class TicketController extends Controller
         $data = $ticketService->storeTicket($request);
 
         return response()->json([
-            "message"   => "Ticket with ticket code of {$data->ticket_code} created successfully",
+            "message"   => "Ticket with ticket code of {$data?->ticket_code} created successfully",
         ], 201);
     }
 
@@ -450,14 +450,14 @@ class TicketController extends Controller
     public function markAsEdited(Request $request, TicketService $ticketService, string $id)
     {
         $validateData = [
-            'td_note_bh'         => ['required', 'max:5000', 'min:1'],
-            'is_counted'         => ['required']
+            'td_note_bh'          => ['required', 'max:5000', 'min:1'],
+            'is_counted'          => ['required']
         ];
 
         $validateDataMessage = [
-            'td_note_bh.required'=> 'Note is required',
-            'td_note_bh.max'     => 'Note must be less than 5000 characters',
-            'td_note_bh.min'     => 'Note must be at least 1 character',
+            'td_note_bh.required' => 'Note is required',
+            'td_note_bh.max'      => 'Note must be less than 5000 characters',
+            'td_note_bh.min'      => 'Note must be at least 1 character',
         ];
 
         $request->validate($validateData, $validateDataMessage);
@@ -522,10 +522,15 @@ class TicketController extends Controller
             abort(200, 'Nothing changed');
         }
 
-        $data->update([
+        $itemToUpdate = [
             'assigned_person' => $request->automation,
-            'displayTicket'   => $request->automation,
-        ]);
+        ];
+
+        if ($data->pendingUser->isAutomation()) {
+            $itemToUpdate['displayTicket'] = $request->automation;
+        }
+
+        $data->update($itemToUpdate);
 
         $user->notify(new TicketNotification(
             "Hello, new ticket {$data->ticket_code} has been assigned to you",

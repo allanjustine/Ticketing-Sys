@@ -242,8 +242,8 @@ export function CreateTicket({
           <Plus className="h-4 w-4" /> Create Ticket
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-2xl">
-        <form className="space-y-5" onSubmit={handleSubmit}>
+      <DialogContent className="sm:max-w-2xl flex flex-col">
+        <form className="flex flex-col flex-1 gap-5 min-h-0" onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>Create Ticket</DialogTitle>
           </DialogHeader>
@@ -255,7 +255,7 @@ export function CreateTicket({
               <TabsTrigger value="netsuite_ticket">Netsuite</TabsTrigger>
               <TabsTrigger value="sql_ticket">SQL</TabsTrigger>
             </TabsList>
-            <div className="flex flex-col gap-4 max-h-[calc(100vh-250px)] overflow-y-auto p-3">
+            <div className="flex flex-col gap-4 max-h-[calc(100vh-270px)] overflow-y-auto min-h-0 flex-1 p-3">
               <BasicForm
                 formInput={formInput}
                 handleInputChange={handleInputChange}

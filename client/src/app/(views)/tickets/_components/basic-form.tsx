@@ -316,10 +316,10 @@ export default function BasicForm({
                 Remove all
               </Button>
             </div>
-            <div className="flex gap-2 overflow-x-auto w-90 h-32 overflow-y-hidden">
+            <div className="flex gap-2 overflow-x-auto overflow-y-hidden h-32">
               {oldFilesLength > 0 &&
                 oldFiles?.map((item: any, index: number) => (
-                  <div key={index} className="group relative rounded-md border">
+                  <div key={index} className="group relative rounded-md border shrink-0 w-20 h-full">
                     <div className="p-2 w-20 h-20 rounded-md">
                       {isImage(item) ? (
                         <Image
@@ -347,7 +347,7 @@ export default function BasicForm({
                   </div>
                 ))}
               {formInput.ticket_support.map((file: any, index: number) => (
-                <div key={index} className="group relative rounded-md border">
+                <div key={index} className="group relative rounded-md border shrink-0 w-20 h-full">
                   <div className="p-2 w-20 h-20 rounded-md">
                     {file?.type?.startsWith("image") ? (
                       <Image

@@ -26,6 +26,8 @@ export function CreateTicket({
   user,
   setTicketType,
   setIsRefreshCategories,
+  branchHeads,
+  setIsRefreshBranchHeads,
 }: any) {
   const [formInput, setFormInput] =
     useState<TicketFormDataType>(TICKET_FORM_DATA);
@@ -71,6 +73,7 @@ export function CreateTicket({
 
     if (is_ticket_type) {
       setIsRefreshCategories(true);
+      setIsRefreshBranchHeads(true);
       setTicketType(value);
       setFormInput((formData) => ({
         ...formData,
@@ -90,6 +93,7 @@ export function CreateTicket({
     e.preventDefault();
     setIsLoading(true);
     setIsRefresh(true);
+    setIsRefreshBranchHeads(true);
     try {
       const formData = new FormData();
       formData.append(
@@ -132,6 +136,10 @@ export function CreateTicket({
         );
       }
 
+      if (formInput?.branch_head_id) {
+        formData.append("branch_head_id", formInput.branch_head_id);
+      }
+
       const response = await api.post("/submit-ticket", formData);
       if (response.status === 201) {
         const { ticket_for, ...ONLY_RESET } = TICKET_FORM_DATA;
@@ -159,6 +167,7 @@ export function CreateTicket({
     } finally {
       setIsLoading(false);
       setIsRefresh(false);
+      setIsRefreshBranchHeads(true);
     }
   };
 
@@ -259,6 +268,7 @@ export function CreateTicket({
                 inputRef={inputRef}
                 errors={errors}
                 handleDateChange={handleDateChange}
+                branchHeads={branchHeads}
               />
               {/* <TabsContent value="netsuite_ticket"></TabsContent>
               <TabsContent value="sql_ticket" className="space-y-4">

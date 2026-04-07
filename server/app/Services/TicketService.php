@@ -25,6 +25,23 @@ class TicketService
         $this->user = Auth::user();
     }
 
+    private function branchHeads()
+    {
+        $ids = explode(',', Auth::user()->blist_id);
+
+        return UserLogin::query()
+            ->where(function ($query) use ($ids) {
+                $query->whereRelation('userRole', 'role_name', UserRoles::BRANCH_HEAD)
+                    ->whereNot('login_id', Auth::id())
+                    ->where(function ($sQ) use ($ids) {
+                        foreach ($ids as $id) {
+                            $sQ->orWhereRaw('FIND_IN_SET(?, blist_id)', [$id]);
+                        }
+                    });
+            })
+            ->count();
+    }
+
     public function getDashboardData()
     {
         return Ticket::with(
@@ -118,7 +135,7 @@ class TicketService
     {
         $user = Auth::user();
 
-        $branchId = $user->hasMultipleBranches() ? $request->ticket_for :  $user->blist_id;
+        $branchId = $user->hasMultipleBranches() ? $request->ticket_for : $user->blist_id;
 
         $automationAdmin = UserLogin::query()
             ->whereHas(
@@ -236,7 +253,7 @@ class TicketService
                 );
 
                 $ticketToBeDisplay = match (true) {
-                    $user->isStaff()                                => $assignedBranchHead->login_id,
+                    $user->isStaff()                                => $this->branchHeads() > 1 ? $request->branch_head_id : $assignedBranchHead->login_id,
                     $user->isBranchHead() && $directToAccounting    => $assignedAccountingStaff->login_id,
                     $user->isBranchHead()                           => $automationManager->login_id,
                     $user->isAccountingStaff()                      => $assignedAccountingHead->login_id,
@@ -281,8 +298,19 @@ class TicketService
 
     public function updateTicket($request, $id)
     {
+        $assignedBranchHead = UserLogin::query()
+            ->whereHas(
+                'userRole',
+                fn($query)
+                =>
+                $query->where('role_name', UserRoles::BRANCH_HEAD)
+            )
+            ->whereRaw("FIND_IN_SET(?, blist_id)", [Auth::user()->blist_id])
+            ->first();
+
         $data = DB::transaction(
-            function () use ($request, $id) {
+            function () use ($request, $id, $assignedBranchHead) {
+
                 $branch = BranchList::find($request->ticket_for);
 
                 $ticketDetail = TicketDetail::findOrFail($id);
@@ -342,11 +370,10 @@ class TicketService
                     'td_ref_number'             => $request->ticket_reference_number,
                 ]);
 
-                $ticketDetail->ticket->update(
-                    [
-                        'status'            => TicketStatus::PENDING,
-                    ]
-                );
+                $ticketDetail->ticket->update([
+                    'status'                    => TicketStatus::PENDING,
+                    'displayTicket'             => $this->branchHeads() > 1 ? $request->branch_head_id : $assignedBranchHead->login_id
+                ]);
 
                 $ticketDetail->ticket->pendingUser->notify(new TicketNotification(
                     "Ticket from {$ticketDetail->ticket->branch->b_name} - ({$ticketDetail->ticket->branch->b_code}) has been updated",

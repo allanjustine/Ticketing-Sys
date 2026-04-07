@@ -12,6 +12,7 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -20,7 +21,7 @@ import { isImage } from "@/utils/image-format";
 import Storage from "@/utils/storage";
 import { CalendarIcon, FileSpreadsheet, X } from "lucide-react";
 import Image from "next/image";
-import { useMemo } from "react";
+import { Activity, useMemo } from "react";
 import SqlForm from "./sql-form";
 
 export default function BasicForm({
@@ -37,6 +38,7 @@ export default function BasicForm({
   handleDateChange,
   handleRemoveFile,
   oldFiles,
+  branchHeads,
 }: any) {
   const oldFilesLength = oldFiles?.length ?? 0;
 
@@ -142,6 +144,41 @@ export default function BasicForm({
           <small className="text-red-500">{errors?.ticket_category[0]}</small>
         )}
       </div>
+      <Activity mode={branchHeads?.length > 1 ? "visible" : "hidden"}>
+        <div className="flex flex-col gap-3">
+          <Label htmlFor="branch_head_id" className="px-1">
+            Branch Head
+          </Label>
+          <Select
+            onValueChange={handleChange("branch_head_id")}
+            value={String(formInput.branch_head_id)}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select branch head" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Select branch head</SelectLabel>
+                {branchHeads?.length === 0 ? (
+                  <SelectItem value="No branch heads found">
+                    No branch heads found
+                  </SelectItem>
+                ) : (
+                  branchHeads?.map((branchHead: any, index: number) => (
+                    <SelectItem key={index} value={String(branchHead.login_id)}>
+                      {branchHead.full_name}
+                      {branchHead.user_email}
+                    </SelectItem>
+                  ))
+                )}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          {errors?.branch_head_id && (
+            <small className="text-red-500">{errors?.branch_head_id[0]}</small>
+          )}
+        </div>
+      </Activity>
       {ticketSubCategories?.length > 0 && (
         <div className="flex flex-col gap-3">
           <Label htmlFor="ticket_sub_category" className="px-1">

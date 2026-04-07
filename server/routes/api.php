@@ -133,6 +133,7 @@ Route::middleware([
         Route::post('/users', 'store');
         Route::patch('/users/{id}/update', 'update');
         Route::delete('/users/{id}/delete', 'destroy');
+        Route::get('/user-branch-heads', 'displayBranchHeads');
     });
 
     Route::controller(AutomationController::class)->group(function () {

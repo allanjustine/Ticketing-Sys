@@ -28,6 +28,8 @@ export function EditTicket({
   open,
   setTicketType,
   setIsRefreshCategories,
+  branchHeads,
+  setIsRefreshBranchHeads,
 }: any) {
   const [formInput, setFormInput] =
     useState<TicketFormDataType>(TICKET_FORM_DATA);
@@ -62,6 +64,7 @@ export function EditTicket({
       from: ticketData.ticket_detail.td_from,
       to: ticketData.ticket_detail.td_to,
       ticket_reference_number: ticketData.ticket_detail.td_ref_number,
+      branch_head_id: String(ticketData?.displayTicket),
     });
 
     setTimeout(() => {
@@ -125,6 +128,7 @@ export function EditTicket({
     e.preventDefault();
     setIsLoading(true);
     setIsRefresh(true);
+    setIsRefreshBranchHeads(true);
     try {
       const formData = new FormData();
       formData.append(
@@ -169,6 +173,10 @@ export function EditTicket({
         );
       }
 
+      if (formInput?.branch_head_id) {
+        formData.append("branch_head_id", formInput.branch_head_id);
+      }
+
       const response = await api.post(
         `/update-ticket/${ticketData.ticket_details_id}/update`,
         formData,
@@ -195,6 +203,7 @@ export function EditTicket({
     } finally {
       setIsLoading(false);
       setIsRefresh(false);
+      setIsRefreshBranchHeads(false);
     }
   };
 
@@ -276,7 +285,7 @@ export function EditTicket({
               <TabsTrigger value="netsuite_ticket">Netsuite</TabsTrigger>
               <TabsTrigger value="sql_ticket">SQL</TabsTrigger>
             </TabsList>
-            <div className="flex flex-col gap-4 max-h-[calc(100vh-400px)] overflow-y-auto p-3">
+            <div className="flex flex-col gap-4 max-h-[calc(100vh-250px)] overflow-y-auto p-3">
               <BasicForm
                 formInput={formInput}
                 handleInputChange={handleInputChange}
@@ -291,6 +300,7 @@ export function EditTicket({
                 handleDateChange={handleDateChange}
                 oldFiles={oldFiles}
                 handleRemoveFile={handleRemoveFile}
+                branchHeads={branchHeads}
               />
             </div>
             {error && (

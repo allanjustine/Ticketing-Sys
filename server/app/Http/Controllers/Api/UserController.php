@@ -106,4 +106,33 @@ class UserController extends Controller
             "message"       => "User \"{$data->user_email}\" deleted successfully",
         ], 200);
     }
+
+    public function displayBranchHeads()
+    {
+        $ids = explode(',', Auth::user()->blist_id);
+
+        $branch_heads = UserLogin::query()
+            ->where(function ($query) use ($ids) {
+                $query->whereRelation('userRole', 'role_name', UserRoles::BRANCH_HEAD)
+                    ->whereNot('login_id', Auth::id())
+                    ->where(function ($sQ) use ($ids) {
+                        foreach ($ids as $id) {
+                            $sQ->orWhereRaw('FIND_IN_SET(?, blist_id)', [$id]);
+                        }
+                    });
+            })
+            ->get()
+            ->map(function ($branch_head) {
+                return [
+                    'login_id'  => $branch_head->login_id,
+                    'full_name' => $branch_head->full_name,
+                    'email'     => $branch_head->userDetail->user_email,
+                ];
+            });
+
+        return response()->json([
+            'message' => "Branch heads fetched successfully",
+            'data'    => $branch_heads
+        ], 200);
+    }
 }

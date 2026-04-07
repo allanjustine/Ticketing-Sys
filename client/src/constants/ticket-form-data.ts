@@ -12,4 +12,5 @@ export const TICKET_FORM_DATA = {
   to: "",
   ticket_sub_category: "",
   ticket_reference_number: "",
+  branch_head_id: "",
 };

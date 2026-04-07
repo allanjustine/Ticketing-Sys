@@ -76,6 +76,13 @@ function Tickets() {
   } = useFetch({
     url: `/categories?category_type=${ticketType}`,
   });
+  const {
+    data: branchHeads,
+    isLoading: isLoadingBranchHeads,
+    setIsRefresh: setIsRefreshBranchHeads,
+  } = useFetch({
+    url: `user-branch-heads`,
+  });
   const [selectedTicketData, setSelectedTicketData] = useState<null | any>(
     null,
   );
@@ -526,6 +533,8 @@ function Tickets() {
                   user={user}
                   setTicketType={setTicketType}
                   setIsRefreshCategories={setIsRefreshCategories}
+                  branchHeads={branchHeads?.data}
+                  setIsRefreshBranchHeads={setIsRefreshBranchHeads}
                 />
               )}
             </div>
@@ -559,6 +568,8 @@ function Tickets() {
           open={isOpenDialog}
           setTicketType={setTicketType}
           setIsRefreshCategories={setIsRefreshCategories}
+          branchHeads={branchHeads?.data}
+          setIsRefreshBranchHeads={setIsRefreshBranchHeads}
         />
       )}
 

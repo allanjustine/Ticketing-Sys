@@ -37,7 +37,7 @@ export default function AuthContextProvider({
   const [notifications, setNotifications] = useState<any | null>(null);
   const [totalUnreadNotifications, setTotalUnreadNotifications] =
     useState<number>(0);
-  const isAdminOrAutomationAdmin = [ROLE.ADMIN, ROLE.AUTOMATION_ADMIN];
+  const isAdminOrAutomationAdmin = [ROLE.ADMIN, ROLE.AUTOMATION_ADMIN, ROLE.AUTOMATION_MANAGER];
 
   useEffect(() => {
     fetchUserProfile();

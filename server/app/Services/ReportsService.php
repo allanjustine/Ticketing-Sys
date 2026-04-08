@@ -79,6 +79,7 @@ class ReportsService
                     =>
                     $user->search($search)
                 )
+                    ->orWhere('ticket_code', 'LIKE', "%{$search}%")
             )
             ->when(
                 $edited_start_date
@@ -276,6 +277,7 @@ class ReportsService
                     =>
                     $user->search($search)
                 )
+                    ->orWhere('ticket_code', 'LIKE', "%{$search}%")
             )
             ->when(
                 $edited_start_date

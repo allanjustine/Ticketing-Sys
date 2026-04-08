@@ -38,7 +38,7 @@ export const TICKETS_COLUMNS = [
     cell: (row: any) => (
       <div className="flex flex-col gap-1 py-1.5">
         <span className="font-extrabold text-xs text-blue-400 border rounded-2xl border-blue-500 w-fit py-0.5 px-1">
-          {row.branch_name}
+          {`(${row?.branch?.b_code}) ${row?.branch?.branch_name || row?.branch_name}`}
         </span>
         <span
           className={`${row.user_login?.full_name ? "dark:text-white text-gray-600" : "text-red-500"} font-bold text-xs`}
@@ -50,7 +50,7 @@ export const TICKETS_COLUMNS = [
     sortable: false,
     sortField: "user_details.fname",
     grow: 0,
-    minWidth: "200px",
+    minWidth: "270px",
   },
   {
     name: "Category",

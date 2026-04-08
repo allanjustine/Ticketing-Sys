@@ -18,3 +18,7 @@ Broadcast::channel('approver-of-ticket-{login_id}', function ($user, $login_id) 
 Broadcast::channel('updated-user-{login_id}', function ($user, $login_id) {
     return (int) $user->login_id === (int) $login_id;
 });
+
+Broadcast::channel('chats.{login_id}', function ($user, $login_id) {
+    return (int) $user->login_id === (int) $login_id;
+});

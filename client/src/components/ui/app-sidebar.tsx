@@ -50,11 +50,14 @@ import { usePathname } from "next/navigation";
 import Storage from "@/utils/storage";
 import { useSettings } from "@/context/settings-context";
 import { ROLE } from "@/constants/roles";
+import { useChat } from "@/context/chat-context";
+import { Badge } from "./badge";
 
 export function AppSidebar() {
   const { open } = useSidebar();
   const { logout, user } = useAuth();
   const [isCollapsibleOpen, setIsCollapsibleOpen] = useState<boolean>(true);
+  const { messageReceivedCount } = useChat();
   const { isAdmin } = useAuth();
   const pathname = usePathname();
   const { setIsOpen } = useSettings();
@@ -110,9 +113,9 @@ export function AppSidebar() {
                   item?.isAudit === isAudit && (
                     <SidebarMenuItem
                       key={index}
-                      className={
+                      className={`${
                         item.url === pathname ? "bg-muted rounded-md" : ""
-                      }
+                      } flex justify-between items-center`}
                     >
                       <SidebarMenuButton asChild tooltip={item.title}>
                         <Link href={item.url}>
@@ -120,6 +123,11 @@ export function AppSidebar() {
                           {open && <span>{item.title}</span>}
                         </Link>
                       </SidebarMenuButton>
+                      {item.url === "/chats" && messageReceivedCount > 0 && (
+                        <Badge variant={"destructive"} className="rounded-full">
+                          {messageReceivedCount}
+                        </Badge>
+                      )}
                     </SidebarMenuItem>
                   ),
               )}

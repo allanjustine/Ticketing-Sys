@@ -217,7 +217,7 @@ Route::middleware([
         Route::delete('sub-categories/{id}/delete', 'destroy');
     });
 
-    Route::resource('chats', ChatController::class)->only(['show', 'store']);
+    Route::resource('chats', ChatController::class)->only(['show', 'store', 'index']);
 });
 
 // GUEST ROUTES

@@ -46,6 +46,8 @@
 :root {
   --radius: 0.625rem;
   --background: oklch(1 0 0);
+  --chat-background: oklch(74.443% 0.00008 271.152);
+  --chat-receiver-background: oklch(85.142% 0.0001 271.152);
   --foreground: oklch(0.129 0.042 264.695);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.129 0.042 264.695);
@@ -80,6 +82,8 @@
 
 .dark {
   --background: oklch(0.129 0.042 264.695);
+  --chat-background: oklch(37.15% 0.00004 271.152);
+  --chat-receiver-background: oklch(53.128% 0.00006 271.152 / 0.319);
   --foreground: oklch(0.984 0.003 247.858);
   --card: oklch(0.208 0.042 265.755);
   --card-foreground: oklch(0.984 0.003 247.858);
@@ -149,6 +153,8 @@ button {
 /* ── Color Themes ── */
 .theme-rose {
   --background: oklch(0.99 0.005 350);
+  --chat-background: oklch(79.46% 0.11577 332.074);
+  --chat-receiver-background: oklch(69.03% 0.16956 327.195 / 0.319);
   --foreground: oklch(0.15 0.04 350);
   --card: oklch(0.99 0.005 350);
   --card-foreground: oklch(0.15 0.04 350);
@@ -177,6 +183,8 @@ button {
 
 .theme-violet {
   --background: oklch(0.99 0.005 280);
+  --chat-background: oklch(59.884% 0.15258 307.867);
+  --chat-receiver-background: oklch(53.934% 0.14919 305.808 / 0.319);
   --foreground: oklch(0.15 0.04 280);
   --card: oklch(0.99 0.005 280);
   --card-foreground: oklch(0.15 0.04 280);
@@ -205,6 +213,8 @@ button {
 
 .theme-orange {
   --background: oklch(0.99 0.005 60);
+  --chat-background: oklch(65.926% 0.09771 40.553);
+  --chat-receiver-background: oklch(62.993% 0.08802 56.359 / 0.319);
   --foreground: oklch(0.15 0.04 60);
   --card: oklch(0.99 0.005 60);
   --card-foreground: oklch(0.15 0.04 60);
@@ -233,6 +243,8 @@ button {
 
 .theme-green {
   --background: oklch(0.99 0.005 145);
+  --chat-background: oklch(74.192% 0.16316 143.355);
+  --chat-receiver-background: oklch(68.469% 0.15591 144.635 / 0.319);
   --foreground: oklch(0.15 0.04 145);
   --card: oklch(0.99 0.005 145);
   --card-foreground: oklch(0.15 0.04 145);
@@ -261,6 +273,8 @@ button {
 
 .theme-blue {
   --background: oklch(0.99 0.005 230);
+  --chat-background: oklch(60.563% 0.11192 266.576);
+  --chat-receiver-background: oklch(52.733% 0.12402 272.265 / 0.319);
   --foreground: oklch(0.15 0.04 230);
   --card: oklch(0.99 0.005 230);
   --card-foreground: oklch(0.15 0.04 230);
@@ -289,6 +303,8 @@ button {
 
 .theme-pink {
   --background: oklch(98.978% 0.00663 339.475);
+  --chat-background: oklch(64.796% 0.16946 329.223);
+  --chat-receiver-background: oklch(59.512% 0.17066 327.437 / 0.319);
   --foreground: oklch(0.15 0.04 350);
   --card: oklch(99.006% 0.0075 331.365);
   --card-foreground: oklch(0.15 0.04 350);

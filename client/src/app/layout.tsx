@@ -6,6 +6,7 @@ import AuthContextProvider from "@/context/auth-context";
 import { IsRefreshProvider } from "@/context/is-refresh-context";
 import { SettingsProvider } from "@/context/settings-context";
 import logo from "@/assets/logo.png";
+import { ChatProvider } from "@/context/chat-context";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({
@@ -45,13 +46,15 @@ export default function RootLayout({
       <body
         className={`${geistSans.style} ${geistMono.style} antialiased max-h-screen scroll-smooth`}
       >
-        <IsRefreshProvider>
-          <AuthContextProvider>
-            <SettingsProvider>
-              <BaseLayout>{children}</BaseLayout>
-            </SettingsProvider>
-          </AuthContextProvider>
-        </IsRefreshProvider>
+        <AuthContextProvider>
+          <ChatProvider>
+            <IsRefreshProvider>
+              <SettingsProvider>
+                <BaseLayout>{children}</BaseLayout>
+              </SettingsProvider>
+            </IsRefreshProvider>
+          </ChatProvider>
+        </AuthContextProvider>
       </body>
     </html>
   );

@@ -6,6 +6,7 @@ use App\Enums\UserRoles;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\HasApiTokens;
 
 class UserLogin extends Authenticatable
@@ -272,5 +273,17 @@ class UserLogin extends Authenticatable
     public function accountingAssignedBranches()
     {
         return $this->belongsToMany(BranchList::class, 'assigned_accounting_branches', 'login_id', 'blist_id');
+    }
+
+    public function receivedMessages()
+    {
+        return $this->hasMany(Message::class, 'sender_id', 'login_id')
+            ->where('receiver_id', Auth::id());
+    }
+
+    public function sentMessages()
+    {
+        return $this->hasMany(Message::class, 'receiver_id', 'login_id')
+            ->where('sender_id', Auth::id());
     }
 }

@@ -521,7 +521,7 @@ class TicketService
 
             $errorForNoBranchesOrAccountingStaff = $isLastMonth && $isSql && !$accountingStaff;
 
-            if ($errorForNoBranchesOrAccountingStaff) {
+            if ($errorForNoBranchesOrAccountingStaff && $this->user->isBranchHead()) {
                 abort(400, 'No assigned accounting staff for this branch and category.');
             }
 

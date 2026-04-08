@@ -14,18 +14,19 @@ class ManageUserService
     {
         $userCreated = DB::transaction(function () use ($request) {
             $user = UserDetail::create([
-                'fname'             => Str::title($request->first_name),
-                'lname'             => Str::title($request->last_name),
-                'user_contact'      => $request->contact_number,
-                'user_email'        => Str::lower($request->email),
+                'fname'               => Str::title($request->first_name),
+                'lname'               => Str::title($request->last_name),
+                'user_contact'        => $request->contact_number,
+                'user_email'          => Str::lower($request->email),
             ]);
 
             $user->userLogin()->create([
-                'user_details_id'   => $user->user_details_id,
-                'password'          => $request->password,
-                'username'          => Str::lower(Str::slug($request->username, '')),
-                'user_role_id'      => $request->role,
-                'blist_id'          => implode(',', $request->branch_code)
+                'user_details_id'     => $user->user_details_id,
+                'password'            => $request->password,
+                'username'            => Str::lower(Str::slug($request->username, '')),
+                'user_role_id'        => $request->role,
+                'blist_id'            => implode(',', $request->branch_code),
+                'requesting_password' => true
             ]);
 
             return $user;

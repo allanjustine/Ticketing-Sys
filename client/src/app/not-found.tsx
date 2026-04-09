@@ -11,7 +11,7 @@ export default function NotFound() {
 
   if (isLoading) return <PreLoader />;
   return (
-    <div className="fixed top-0 bottom-0 left-0 right-0 z-40 flex items-center justify-center bg-white">
+    <div className="fixed top-0 bottom-0 left-0 right-0 z-40 flex items-center justify-center bg-background">
       <div className="max-w-md w-full rounded-xl overflow-hidden">
         <div className="p-8">
           <div className="text-center mb-6">
@@ -29,7 +29,7 @@ export default function NotFound() {
                 d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
               />
             </svg>
-            <h2 className="text-xl font-semibold dark:text-white text-gray-800 mt-4">
+            <h2 className="text-xl font-semibold mt-4">
               Oops! Page Not Found?
             </h2>
             <p className="dark:text-white text-gray-600 mt-2">

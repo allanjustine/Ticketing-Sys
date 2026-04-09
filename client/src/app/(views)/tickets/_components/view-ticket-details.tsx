@@ -38,6 +38,7 @@ import {
   FileSpreadsheet,
   Hash,
   Layers,
+  MessageCircle,
   Tag,
   User,
   Users,
@@ -48,6 +49,7 @@ import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { InfoField, NoteCard } from "./view-ticket-details-items";
 import { Spinner } from "@/components/ui/spinner";
 import { CONFIG } from "@/config/config";
+import Link from "next/link";
 
 export function ViewTicketDetails({
   data,
@@ -64,6 +66,7 @@ export function ViewTicketDetails({
 }: any) {
   const { user } = useAuth();
   const isYourPendingTicket = user?.login_id === data?.pending_user?.login_id;
+  const isYourTicket = user?.login_id === data?.user_login?.login_id;
   const [openImage, setOpenImage] = useState<boolean>(false);
   const [images, setImages] = useState<string[]>([]);
   const [image, setImage] = useState<string>("");
@@ -141,10 +144,10 @@ export function ViewTicketDetails({
           <DialogHeader className="px-6 pt-6 pb-4 border-b">
             <DialogTitle className="flex flex-col gap-1">
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-xs font-semibold dark:text-white text-gray-600 px-2 py-0.5 rounded-full uppercase tracking-wide">
+                <span className="text-xs font-bold px-2 py-0.5 rounded-full uppercase tracking-wide">
                   {ticketTypeUpperCase(data?.ticket_detail?.ticket_type)}
                 </span>
-                <span className="text-base font-bold dark:text-white text-gray-800">
+                <span className="text-base font-extrabold">
                   {data?.ticket_code}
                 </span>
                 {TICKET_REJECTED && (
@@ -399,6 +402,19 @@ export function ViewTicketDetails({
                 Close
               </Button>
             </DialogClose>
+            {(isYourTicket || isYourPendingTicket) && (
+              <Link
+                href={`/chats/${isYourTicket ? data?.pending_user?.login_id : data?.pending_user?.login_id}?ticket_code=${data?.ticket_code}`}
+                className="flex gap-1 text-blue-500 hover:text-blue-600"
+              >
+                <Button
+                  type="button"
+                  className="bg-chat-background hover:bg-chat-background/50"
+                >
+                  <MessageCircle /> Chat Now
+                </Button>
+              </Link>
+            )}
             {(isApprovers(role) || isAccountingStaffApprover(role)) &&
               isYourPendingTicket &&
               !TICKET_REJECTED && (

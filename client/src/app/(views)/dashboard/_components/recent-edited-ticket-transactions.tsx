@@ -25,7 +25,7 @@ export default function RecentEditedTicketTransactions({
         <div className="space-y-4">
           {isLoading ? (
             <RecentTicketTransactionsLoader />
-          ) : recentTickets.length > 0 ? (
+          ) : recentTickets?.length > 0 ? (
             recentTickets.map((ticket: any, index: number) => (
               <div
                 key={index}

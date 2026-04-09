@@ -80,7 +80,7 @@ export default function AuthContextProvider({
     setTotalUnreadNotifications(profile.data.unread_notifications_count);
     setIsAuthenticated(true);
     setIsAdmin(
-      isAdminOrAutomationAdmin.includes(response?.data.user_role?.role_name),
+      isAdminOrAutomationAdmin.includes(profile?.data.user_role?.role_name),
     );
 
     return response;
@@ -139,10 +139,9 @@ export default function AuthContextProvider({
     setNotifications(profile.data.unread_notifications);
     setTotalUnreadNotifications(profile.data.unread_notifications_count);
     setIsAuthenticated(true);
-
-    if (isAdminOrAutomationAdmin.includes(profile.data.user_role.role_name)) {
-      setIsAdmin(true);
-    }
+    setIsAdmin(
+      isAdminOrAutomationAdmin.includes(profile.data.user_role.role_name),
+    );
 
     return response;
   }
@@ -156,14 +155,11 @@ export default function AuthContextProvider({
         response.data.data.unread_notifications_count,
       );
       setIsAuthenticated(true);
-
-      if (
+      setIsAdmin(
         isAdminOrAutomationAdmin.includes(
           response.data.data.user_role.role_name,
-        )
-      ) {
-        setIsAdmin(true);
-      }
+        ),
+      );
     }
     return response;
   };

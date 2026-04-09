@@ -134,6 +134,7 @@ class Ticket extends Model
                                 ->orWhereRaw('CONCAT(lname, " ", fname) LIKE ?', ["%{$search}%"])
                         )
                     )
+                    ->orWhereRelation('branch', 'b_code', 'LIKE', "%{$search}%")
             )
         );
     }

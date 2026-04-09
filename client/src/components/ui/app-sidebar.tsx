@@ -62,8 +62,6 @@ export function AppSidebar() {
   const { setIsOpen } = useSettings();
   const isAudit = user?.user_role?.role_name === ROLE.AUDIT;
 
-  console.log(isAdmin, user)
-
   const handleLogout = () => {
     Swal.fire({
       title: "Are you sure you want to Logout?",

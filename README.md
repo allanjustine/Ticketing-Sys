@@ -178,7 +178,7 @@ All authenticated routes are protected by `auth:sanctum` with a `throttle:100,1`
 #### 1. Clone the repository
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/allanjustine/Ticketing-Sys
 cd ticketing-sys
 ```
 

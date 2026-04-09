@@ -39,7 +39,7 @@ class ManageUserService
     {
         $user = UserDetail::findOrFail($id);
 
-        $userCreated = DB::transaction(function () use ($request, $user) {
+        $userUpdated = DB::transaction(function () use ($request, $user) {
             $user->update([
                 'fname'             => Str::title($request->first_name),
                 'lname'             => Str::title($request->last_name),
@@ -70,7 +70,7 @@ class ManageUserService
 
         $userData->notify(new UserUpdatedNotification($userData));
 
-        return $userCreated;
+        return $userUpdated;
     }
 
     public function deleteUser($id)

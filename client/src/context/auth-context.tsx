@@ -19,7 +19,6 @@ import { api } from "@/lib/api";
 import { ROLE } from "@/constants/roles";
 import echo from "@/lib/echo";
 import { toast } from "sonner";
-import { usePathname } from "next/navigation";
 
 export const AuthContext = createContext<AuthContextType | undefined>(
   undefined,
@@ -37,7 +36,11 @@ export default function AuthContextProvider({
   const [notifications, setNotifications] = useState<any | null>(null);
   const [totalUnreadNotifications, setTotalUnreadNotifications] =
     useState<number>(0);
-  const isAdminOrAutomationAdmin = [ROLE.ADMIN, ROLE.AUTOMATION_ADMIN, ROLE.AUTOMATION_MANAGER];
+  const isAdminOrAutomationAdmin = [
+    ROLE.ADMIN,
+    ROLE.AUTOMATION_ADMIN,
+    ROLE.AUTOMATION_MANAGER,
+  ];
 
   useEffect(() => {
     fetchUserProfile();
@@ -76,10 +79,9 @@ export default function AuthContextProvider({
     setNotifications(profile.data.unread_notifications);
     setTotalUnreadNotifications(profile.data.unread_notifications_count);
     setIsAuthenticated(true);
-
-    if (isAdminOrAutomationAdmin.includes(profile.data.user_role.role_name)) {
-      setIsAdmin(true);
-    }
+    setIsAdmin(
+      isAdminOrAutomationAdmin.includes(response?.data.user_role?.role_name),
+    );
 
     return response;
   }
@@ -94,12 +96,9 @@ export default function AuthContextProvider({
       setNotifications(response.data.unread_notifications);
       setTotalUnreadNotifications(response.data.unread_notifications_count);
       setIsAuthenticated(true);
-
-      if (
-        isAdminOrAutomationAdmin.includes(response?.data.user_role?.role_name)
-      ) {
-        setIsAdmin(true);
-      }
+      setIsAdmin(
+        isAdminOrAutomationAdmin.includes(response?.data.user_role?.role_name),
+      );
     } catch (error: any) {
       console.error(error);
       if (error.response.status === 401) {

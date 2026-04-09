@@ -55,13 +55,14 @@ import { Badge } from "./badge";
 
 export function AppSidebar() {
   const { open } = useSidebar();
-  const { logout, user } = useAuth();
+  const { logout, user, isAdmin } = useAuth();
   const [isCollapsibleOpen, setIsCollapsibleOpen] = useState<boolean>(true);
   const { messageReceivedCount } = useChat();
-  const { isAdmin } = useAuth();
   const pathname = usePathname();
   const { setIsOpen } = useSettings();
   const isAudit = user?.user_role?.role_name === ROLE.AUDIT;
+
+  console.log(isAdmin, user)
 
   const handleLogout = () => {
     Swal.fire({

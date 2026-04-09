@@ -6,6 +6,8 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-chat-background: var(--chat-background);
+  --color-chat-receiver-background: var(--chat-receiver-background);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --color-sidebar-ring: var(--sidebar-ring);
@@ -273,7 +275,7 @@ button {
 
 .theme-blue {
   --background: oklch(0.99 0.005 230);
-  --chat-background: oklch(60.563% 0.11192 266.576);
+  --chat-background: oklch(0.55 0.22 230);
   --chat-receiver-background: oklch(52.733% 0.12402 272.265 / 0.319);
   --foreground: oklch(0.15 0.04 230);
   --card: oklch(0.99 0.005 230);

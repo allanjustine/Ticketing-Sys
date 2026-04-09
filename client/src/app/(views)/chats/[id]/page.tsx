@@ -40,6 +40,7 @@ function ChatsPage() {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const convoRef = useRef<HTMLDivElement>(null);
   const [isButtonUp, setIsButtonUp] = useState<boolean>(false);
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     setMessageRecords((prev) =>
@@ -73,12 +74,17 @@ function ChatsPage() {
   }, [data]);
 
   useEffect(() => {
-    if (!newMessage || messageRef.current?.id === newMessage?.id) return;
+    if (
+      !newMessage ||
+      messageRef.current?.id === newMessage?.id ||
+      newMessage?.sender_id !== Number(id)
+    )
+      return;
 
     messageRef.current = newMessage;
 
     setMessages((prev) => [newMessage, ...prev]);
-  }, [newMessage]);
+  }, [newMessage, id]);
 
   const handleSubmit = async (
     e: FormEvent<HTMLFormElement | HTMLTextAreaElement>,
@@ -95,6 +101,7 @@ function ChatsPage() {
       if (response.status === 201) {
         setMessage("");
         setMessages((prev) => [response.data.data, ...prev]);
+        textAreaRef.current?.focus();
       }
     } catch (error: any) {
       console.error(error);
@@ -160,7 +167,7 @@ function ChatsPage() {
               </span>
             </div>
           </div>
-          <Separator className="bg-white/5" />
+          <Separator className="bg-background/5" />
           <div className="relative h-[calc(100vh-290px)]">
             <div
               className="space-y-4 flex flex-col-reverse px-6 py-4 overflow-y-auto h-full"
@@ -174,7 +181,7 @@ function ChatsPage() {
                         <div className="flex justify-end items-end gap-2">
                           <div className="max-w-xs lg:max-w-sm">
                             <div
-                              className="px-4 py-2.5 rounded-2xl rounded-br-sm text-sm break-all whitespace-break-spaces leading-relaxed bg-(--chat-background) dark:text-white shadow-lg shadow-violet-500/20"
+                              className="px-4 py-2.5 rounded-2xl rounded-br-sm text-sm break-all whitespace-break-spaces leading-relaxed bg-chat-background dark:text-white shadow-lg shadow-violet-500/20"
                               dangerouslySetInnerHTML={{
                                 __html: message?.body,
                               }}
@@ -196,7 +203,7 @@ function ChatsPage() {
                           </Avatar>
                           <div className="max-w-xs lg:max-w-sm">
                             <div
-                              className="px-4 py-2.5 rounded-2xl rounded-bl-sm text-sm break-all whitespace-break-spaces bg-(--chat-receiver-background) leading-relaxed dark:text-white border border-white/10 backdrop-blur-sm"
+                              className="px-4 py-2.5 rounded-2xl rounded-bl-sm text-sm break-all whitespace-break-spaces bg-chat-receiver-background leading-relaxed dark:text-white border border-white/10 backdrop-blur-sm"
                               dangerouslySetInnerHTML={{
                                 __html: message?.body,
                               }}
@@ -249,7 +256,7 @@ function ChatsPage() {
             <Button
               type="button"
               variant={"link"}
-              className={`${isButtonUp ? "bottom-5 opacity-100" : "-bottom-12 opacity-0 pointer-events-none"} absolute w-fit left-1/2 -translate-x-1/2 bg-(--chat-receiver-background) rounded-full transition-all duration-300 ease-in-out`}
+              className={`${isButtonUp ? "bottom-5 opacity-100" : "-bottom-12 opacity-0 pointer-events-none"} absolute w-fit left-1/2 -translate-x-1/2 bg-chat-receiver-background rounded-full transition-all duration-300 ease-in-out`}
               onClick={() =>
                 convoRef.current?.scrollTo(0, convoRef.current?.scrollHeight)
               }
@@ -257,9 +264,9 @@ function ChatsPage() {
               <ArrowDown />
             </Button>
           </div>
-          <div className="px-6 py-4 border-t border-white/5 bg-white/2 shrink-0">
+          <div className="px-6 py-4 border-t border-white/5 bg-background/2 shrink-0">
             <form onSubmit={handleSubmit} className="flex items-center gap-3">
-              <div className="flex-1 flex items-center gap-3 bg-white/5 border border-white/10 rounded-2xl px-4 py-2.5 focus-within:border-violet-500/50 focus-within:bg-white/8 transition">
+              <div className="flex-1 flex items-center gap-3 bg-background/5 border border-white/10 rounded-2xl px-4 py-2.5 focus-within:border-violet-500/50 focus-within:bg-background/8 transition">
                 <Textarea
                   placeholder="Type a message..."
                   value={message}
@@ -269,6 +276,7 @@ function ChatsPage() {
                   onKeyDown={(e) =>
                     e.key === "Enter" && !message.trim() && e.preventDefault()
                   }
+                  ref={textAreaRef}
                 />
               </div>
               <Button

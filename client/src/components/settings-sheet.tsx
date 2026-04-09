@@ -17,7 +17,7 @@ const themes: ThemeType[] = [
   {
     value: "light",
     label: "Light",
-    color: "bg-white border-2 border-gray-200",
+    color: "bg-background border-2 border-gray-200",
   },
   { value: "dark", label: "Dark", color: "bg-gray-900" },
   { value: "rose", label: "Rose", color: "bg-rose-500" },

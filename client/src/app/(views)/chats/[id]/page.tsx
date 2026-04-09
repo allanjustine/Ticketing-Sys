@@ -180,7 +180,7 @@ function ChatsPage() {
                         <div className="flex justify-end items-end gap-2">
                           <div className="max-w-xs lg:max-w-sm">
                             <div
-                              className="px-4 py-2.5 rounded-2xl rounded-br-sm text-sm break-all whitespace-break-spaces leading-relaxed bg-chat-background dark:text-white shadow-lg shadow-violet-500/20"
+                              className="px-4 py-2.5 rounded-2xl rounded-br-sm text-sm break-all whitespace-break-spaces leading-relaxed bg-chat-background dark:text-white shadow-lg shadow-chat-background/50"
                               dangerouslySetInnerHTML={{
                                 __html: message?.body,
                               }}
@@ -202,7 +202,7 @@ function ChatsPage() {
                           </Avatar>
                           <div className="max-w-xs lg:max-w-sm">
                             <div
-                              className="px-4 py-2.5 rounded-2xl rounded-bl-sm text-sm break-all whitespace-break-spaces bg-chat-receiver-background leading-relaxed dark:text-white border border-white/10 backdrop-blur-sm"
+                              className="px-4 py-2.5 rounded-2xl rounded-bl-sm text-sm break-all whitespace-break-spaces bg-chat-receiver-background leading-relaxed dark:text-white border border-white/10 backdrop-blur-sm shadow-lg shadow-chat-receiver-background/50"
                               dangerouslySetInnerHTML={{
                                 __html: message?.body,
                               }}

@@ -68,7 +68,7 @@ function ChatsPage() {
   ];
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 m-7">
       <Card className="gap-0">
         <CardHeader className="flex items-center justify-between py-2 px-6">
           <CardTitle className="font-bold text-lg dark:text-white text-gray-600 flex items-center gap-1">

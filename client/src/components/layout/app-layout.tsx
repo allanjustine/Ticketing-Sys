@@ -54,7 +54,9 @@ const AppLayout = ({ children }: { children: ReactNode }) => {
               </div>
             </div>
           </div>
-          <div className="p-7 h-[calc(100vh-60px)] overflow-y-auto">
+          <div
+            className={`${!pathname.startsWith("/chats") && "p-7"} h-[calc(100vh-60px)] overflow-y-auto`}
+          >
             {children}
           </div>
         </div>

@@ -153,8 +153,7 @@ function ChatsPage() {
         </div>
       ) : (
         <>
-          {/* Header */}
-          <div className="flex items-center gap-3 px-6 py-4 border-b">
+          <div className="flex items-center gap-3 px-6 py-4 border-b shadow-xl shadow-chat-background/15">
             <Avatar className="w-9 h-9">
               <AvatarImage src={Storage(data?.user?.profile_picture)} />
               <AvatarFallback className="text-xs font-bold">
@@ -168,7 +167,7 @@ function ChatsPage() {
             </div>
           </div>
           <Separator className="bg-background/5" />
-          <div className="relative h-[calc(100vh-290px)]">
+          <div className="relative h-[calc(100vh-230px)]">
             <div
               className="space-y-4 flex flex-col-reverse px-6 py-4 overflow-y-auto h-full"
               ref={convoRef}
@@ -264,9 +263,12 @@ function ChatsPage() {
               <ArrowDown />
             </Button>
           </div>
-          <div className="px-6 py-4 border-t border-white/5 bg-background/2 shrink-0">
-            <form onSubmit={handleSubmit} className="flex items-center gap-3">
-              <div className="flex-1 flex items-center gap-3 bg-background/5 border border-white/10 rounded-2xl px-4 py-2.5 focus-within:border-violet-500/50 focus-within:bg-background/8 transition">
+          <div className="border-t border-white/5 bg-background/2 shrink-0">
+            <form
+              onSubmit={handleSubmit}
+              className="flex items-center px-4 py-2.5 gap-1"
+            >
+              <div className="flex-1 flex items-center gap-3 bg-background border border-white/10 rounded-2xl focus-within:bg-background/8 transition shadow-xl shadow-chat-background/15">
                 <Textarea
                   placeholder="Type a message..."
                   value={message}
@@ -282,7 +284,7 @@ function ChatsPage() {
               <Button
                 type="submit"
                 disabled={!message.trim() || isSubmitting || isLoading}
-                className="self-end w-11 h-11 rounded-2xl bg-linear-to-br from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 flex items-center justify-center shadow-lg shadow-violet-500/25 transition-all hover:-translate-y-0.5 active:translate-y-0 shrink-0"
+                className="self-end w-11 h-11 rounded-2xl bg-chat-background flex items-center justify-center shadow-lg shadow-violet-500/25 transition-all hover:-translate-y-0.5 active:translate-y-0 shrink-0"
               >
                 <svg
                   className="w-4 h-4 dark:text-white"

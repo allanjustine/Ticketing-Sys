@@ -1,11 +1,10 @@
 import { Skeleton } from "@/components/ui/skeleton";
-import { ScrollArea } from "./ui/scroll-area";
 import { Separator } from "./ui/separator";
 
 export function ChatSkeleton() {
   return (
     <div className="flex flex-col h-full">
-      <div className="flex items-center gap-3 px-6 py-4 border-b border-white/5">
+      <div className="flex items-center gap-3 px-6 py-4 border-b shadow-xl shadow-chat-background/15">
         <Skeleton className="w-9 h-9 rounded-full" />
         <div className="flex flex-col gap-1.5">
           <Skeleton className="w-24 h-3 rounded" />
@@ -14,12 +13,19 @@ export function ChatSkeleton() {
       </div>
 
       <Separator className="bg-background/5" />
-      <ScrollArea className="flex-1 px-6 py-4">
+      <div className="flex flex-col-reverse h-full px-6 py-4">
         <div className="space-y-4">
           <div className="flex justify-start items-end gap-2">
             <Skeleton className="w-7 h-7 rounded-xl shrink-0 mb-1" />
             <div className="space-y-1">
               <Skeleton className="w-48 h-9 rounded-2xl rounded-bl-sm" />
+              <Skeleton className="w-10 h-2 rounded" />
+            </div>
+          </div>
+          <div className="flex justify-start items-end gap-2">
+            <Skeleton className="w-7 h-7 rounded-xl shrink-0 mb-1" />
+            <div className="space-y-1">
+              <Skeleton className="w-65 h-9 rounded-2xl rounded-bl-sm" />
               <Skeleton className="w-10 h-2 rounded" />
             </div>
           </div>
@@ -42,10 +48,16 @@ export function ChatSkeleton() {
               <Skeleton className="w-10 h-2 rounded" />
             </div>
           </div>
+          <div className="flex justify-end items-end gap-2">
+            <div className="space-y-1 items-end flex flex-col">
+              <Skeleton className="w-75 h-9 rounded-2xl rounded-br-sm" />
+              <Skeleton className="w-10 h-2 rounded" />
+            </div>
+          </div>
         </div>
-      </ScrollArea>
+      </div>
 
-      <div className="px-6 py-4 border-t border-white/5 shrink-0 flex items-center gap-3">
+      <div className="px-6 py-4 border-t border-white/5 shrink-0 flex items-center gap-3 border-b shadow-xl shadow-chat-background/15">
         <Skeleton className="flex-1 h-11 rounded-2xl" />
         <Skeleton className="w-11 h-11 rounded-2xl shrink-0" />
       </div>

@@ -13,7 +13,7 @@ export function ChatSkeleton() {
         </div>
       </div>
 
-      <Separator className="bg-white/5" />
+      <Separator className="bg-background/5" />
       <ScrollArea className="flex-1 px-6 py-4">
         <div className="space-y-4">
           <div className="flex justify-start items-end gap-2">

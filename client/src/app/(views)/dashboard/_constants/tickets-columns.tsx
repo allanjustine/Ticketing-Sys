@@ -15,6 +15,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { TooltipArrow } from "@radix-ui/react-tooltip";
+import { FileQuestionMark } from "lucide-react";
 
 export const TICKETS_COLUMNS = [
   {
@@ -55,20 +56,23 @@ export const TICKETS_COLUMNS = [
   {
     name: "Category",
     cell: (row: any) => (
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <span>{row.ticket_detail.ticket_category.category_name}</span>
-        </TooltipTrigger>
+      <div className="flex gap-1">
+        <span>{row.ticket_detail.ticket_category.category_name}</span>
         {row.ticket_detail.sub_category && (
-          <TooltipContent>
-            <TooltipArrow />
-            <span className="text-[10px]">
-              <span className="font-bold">Sub Category:</span>{" "}
-              {row?.ticket_detail?.sub_category?.sub_category_name}
-            </span>
-          </TooltipContent>
+          <Tooltip>
+            <TooltipTrigger asChild className="cursor-help">
+              <FileQuestionMark />
+            </TooltipTrigger>
+            <TooltipContent>
+              <TooltipArrow />
+              <span className="text-[10px]">
+                <span className="font-bold">Sub Category:</span>{" "}
+                {row?.ticket_detail?.sub_category?.sub_category_name}
+              </span>
+            </TooltipContent>
+          </Tooltip>
         )}
-      </Tooltip>
+      </div>
     ),
     sortable: false,
     sortField: "ticket_categories.category_name",

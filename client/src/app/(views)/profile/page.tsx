@@ -84,7 +84,7 @@ function Profile() {
 
   return (
     <div className="min-h-screen pb-12">
-      <div className="h-48 bg-linear-to-r from-blue-400 to-purple-500 w-full"></div>
+      <div className="h-70 bg-chat-background w-full"></div>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-16">
         <Card className="overflow-hidden">
           <CardHeader className="pb-4">

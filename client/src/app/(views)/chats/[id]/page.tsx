@@ -14,9 +14,19 @@ import withAuthPage from "@/lib/hoc/with-auth-page";
 import formattedDateAndTimeStrict from "@/utils/format-date-time-strict";
 import nameShortHand from "@/utils/name-short-hand";
 import Storage from "@/utils/storage";
-import { ArrowDown } from "lucide-react";
+import {
+  ArrowDown,
+  MessageCircleOff,
+  MessageCircleX,
+  SendHorizonal,
+} from "lucide-react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import {
+  useParams,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
 import { FormEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
 
 export type MessageType = {
@@ -33,20 +43,42 @@ function ChatsPage() {
   const { data, isLoading, errorStatus, handleNextPage, loadMore } = useSimple(
     `/chats/${id}`,
   );
+  const searchParams = useSearchParams();
+  const ticketCode = Number(searchParams.get("ticket_code")) || "";
   const { newMessage, setMessageRecords } = useChat();
-  const [message, setMessage] = useState<string>("");
+  const [message, setMessage] = useState<string>(
+    ticketCode
+      ? `Hello, let's talk about the ticket with the ticket code of ${ticketCode}?`
+      : "",
+  );
   const [messages, setMessages] = useState<MessageType[]>([]);
   const messageRef = useRef<MessageType | null>(null);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const convoRef = useRef<HTMLDivElement>(null);
   const [isButtonUp, setIsButtonUp] = useState<boolean>(false);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
+  const originalTitle = useRef<string>(document.title);
+  const pathname = usePathname();
+  const router = useRouter();
+  const submittedRef = useRef<boolean>(false);
 
   useEffect(() => {
     setMessageRecords((prev) =>
       prev.filter((item) => item.login_id !== Number(id)),
     );
   }, [id]);
+
+  useEffect(() => {
+    if (!ticketCode || submittedRef.current) return;
+
+    submittedRef.current = true;
+
+    textAreaRef.current?.focus();
+
+    handleSubmit({ preventDefault: () => {} } as any);
+
+    router.replace(pathname);
+  }, [ticketCode, router, pathname]);
 
   useEffect(() => {
     const handleScroll = (e: any) => {
@@ -71,13 +103,16 @@ function ChatsPage() {
           !prev.some((prevMessage) => message.id === prevMessage.id),
       ),
     ]);
+
+    document.title = `${originalTitle.current} | ${data?.user?.full_name}`;
   }, [data]);
 
   useEffect(() => {
     if (
       !newMessage ||
       messageRef.current?.id === newMessage?.id ||
-      newMessage?.sender_id !== Number(id)
+      newMessage?.sender_id !== Number(id) ||
+      newMessage?.sender_id === newMessage?.receiver_id
     )
       return;
 
@@ -90,7 +125,6 @@ function ChatsPage() {
     e: FormEvent<HTMLFormElement | HTMLTextAreaElement>,
   ) => {
     e.preventDefault();
-    setMessage((prev) => prev.trim());
     setIsSubmitting(true);
     try {
       const response = await api.post(`/chats`, {
@@ -111,7 +145,7 @@ function ChatsPage() {
   };
 
   const handleOnKeyUp = (e: KeyboardEvent<HTMLTextAreaElement>) => {
-    if (!e.shiftKey && e.key === "Enter" && message.trim()) {
+    if (!e.shiftKey && e.key === "Enter" && message.trim() && !isSubmitting) {
       handleSubmit(e);
     }
   };
@@ -121,21 +155,9 @@ function ChatsPage() {
   return (
     <div className="flex flex-col h-full">
       {errorStatus === 404 ? (
-        <div className="flex-1 flex flex-col items-center justify-center text-center px-8">
-          <div className="w-20 h-20 rounded-3xl bg-linear-to-br from-violet-500/20 to-indigo-500/20 border border-violet-500/20 flex items-center justify-center mb-6">
-            <svg
-              className="w-10 h-10 text-violet-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="1.5"
-                d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-              />
-            </svg>
+        <div className="flex flex-col items-center justify-center text-center px-8 h-[calc(100vh-60px)]">
+          <div className="w-20 h-20 rounded-3xl bg-chat-background border border-violet-500/20 flex items-center justify-center mb-6">
+            <MessageCircleOff />
           </div>
           <p className="dark:text-white/60 font-semibold text-lg">
             No conversation found
@@ -167,9 +189,9 @@ function ChatsPage() {
             </div>
           </div>
           <Separator className="bg-background/5" />
-          <div className="relative h-[calc(100vh-230px)]">
+          <div className="flex h-full overflow-hidden relative">
             <div
-              className="space-y-4 flex flex-col-reverse px-6 py-4 overflow-y-auto h-full"
+              className="space-y-4 flex flex-col-reverse px-6 py-4 overflow-y-auto h-full w-full"
               ref={convoRef}
             >
               {messages?.length > 0 ? (
@@ -178,7 +200,7 @@ function ChatsPage() {
                     <div key={message?.id}>
                       {message?.sender_id === user?.login_id ? (
                         <div className="flex justify-end items-end gap-2">
-                          <div className="max-w-xs lg:max-w-sm">
+                          <div className="max-w-4/5">
                             <div
                               className="px-4 py-2.5 rounded-2xl rounded-br-sm text-sm break-all whitespace-break-spaces leading-relaxed bg-chat-background dark:text-white shadow-lg shadow-chat-background/50"
                               dangerouslySetInnerHTML={{
@@ -200,7 +222,7 @@ function ChatsPage() {
                               {nameShortHand(data?.user?.full_name)}
                             </AvatarFallback>
                           </Avatar>
-                          <div className="max-w-xs lg:max-w-sm">
+                          <div className="max-w-4/5">
                             <div
                               className="px-4 py-2.5 rounded-2xl rounded-bl-sm text-sm break-all whitespace-break-spaces bg-chat-receiver-background leading-relaxed dark:text-white border border-white/10 backdrop-blur-sm shadow-lg shadow-chat-receiver-background/50"
                               dangerouslySetInnerHTML={{
@@ -228,20 +250,8 @@ function ChatsPage() {
                 </>
               ) : (
                 <div className="flex flex-col items-center justify-center py-20 text-center">
-                  <div className="w-16 h-16 rounded-3xl bg-linear-to-br from-violet-500/20 to-indigo-500/20 border border-violet-500/20 flex items-center justify-center mb-4">
-                    <svg
-                      className="w-8 h-8 text-violet-400"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="1.5"
-                        d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-                      />
-                    </svg>
+                  <div className="w-16 h-16 rounded-3xl bg-chat-background border border-violet-500/20 flex items-center justify-center mb-4">
+                    <MessageCircleX />
                   </div>
                   <p className="dark:text-white/40 text-sm font-medium">
                     No messages yet
@@ -252,6 +262,7 @@ function ChatsPage() {
                 </div>
               )}
             </div>
+
             <Button
               type="button"
               variant={"link"}
@@ -273,10 +284,10 @@ function ChatsPage() {
                   placeholder="Type a message..."
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
-                  className="flex-1 bg-transparent text-sm dark:text-white placeholder-white/20 focus:outline-none resize-none max-h-50"
+                  className="flex-1 bg-transparent text-sm dark:text-white placeholder-white/20 focus:outline-none resize-none max-h-50 break-all"
                   onKeyUp={handleOnKeyUp}
                   onKeyDown={(e) =>
-                    e.key === "Enter" && !message.trim() && e.preventDefault()
+                    e.key === "Enter" && !e.shiftKey && e.preventDefault()
                   }
                   ref={textAreaRef}
                 />
@@ -286,19 +297,7 @@ function ChatsPage() {
                 disabled={!message.trim() || isSubmitting || isLoading}
                 className="self-end w-11 h-11 rounded-2xl bg-chat-background flex items-center justify-center shadow-lg shadow-violet-500/25 transition-all hover:-translate-y-0.5 active:translate-y-0 shrink-0"
               >
-                <svg
-                  className="w-4 h-4 dark:text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
-                  />
-                </svg>
+                <SendHorizonal />
               </Button>
             </form>
           </div>

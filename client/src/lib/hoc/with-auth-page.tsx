@@ -1,36 +1,27 @@
 import Unauthorized from "@/app/unauthorized";
 import PreLoader from "@/components/loaders/pre-loader";
 import PasswordReset from "@/components/password-reset";
-import { ROLE } from "@/constants/roles";
+import { CAN_ACCESS_NO_AUDIT } from "@/constants/roles";
 import { useAuth } from "@/context/auth-context";
-import { redirect, usePathname } from "next/navigation";
+import { redirect } from "next/navigation";
 import Swal from "sweetalert2";
 
 export default function withAuthPage(
   WrappedComponent: any,
-  isProtected = false,
-  isAudit = false,
+  roleCanAccess = CAN_ACCESS_NO_AUDIT,
 ) {
   function AppWrappedComponent(props: any) {
     const { isAuthenticated, user, isLoading } = useAuth();
     const isAlreadyAuthenticated = isAuthenticated || user;
-    const pathName = usePathname();
-    const isChatPage = pathName.startsWith("/chats");
     const noAccess =
-      isProtected &&
-      ![ROLE.ADMIN, ROLE.AUTOMATION_ADMIN, ROLE.AUTOMATION_MANAGER].includes(
-        user?.user_role?.role_name,
-      ) &&
+      !roleCanAccess.includes(user?.user_role?.role_name) &&
       isAlreadyAuthenticated;
-    const isAuditUser = user?.user_role?.role_name === ROLE.AUDIT;
-    const excludeAudit =
-      isAlreadyAuthenticated && isAudit !== isAuditUser && !isChatPage;
 
     if (isLoading) {
       return <PreLoader />;
     }
 
-    if (noAccess || excludeAudit) {
+    if (noAccess) {
       return <Unauthorized />;
     }
 

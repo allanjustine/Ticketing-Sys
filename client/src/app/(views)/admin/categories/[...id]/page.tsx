@@ -20,6 +20,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { TooltipArrow } from "@radix-ui/react-tooltip";
+import { ADMIN_ACCESS } from "@/constants/roles";
 
 type idParamstype = {
   id: string[];
@@ -83,7 +84,10 @@ function SubCategories() {
               </TooltipContent>
             </Tooltip>
             <Gauge size={18} />
-            <span className="text-xs md:text-lg truncate">Sub Categories of {`"${data?.category_name ?? "Unknown Category"}"`}</span>
+            <span className="text-xs md:text-lg truncate">
+              Sub Categories of{" "}
+              {`"${data?.category_name ?? "Unknown Category"}"`}
+            </span>
           </CardTitle>
           <div className="flex items-center gap-2">
             <SearchInput onChange={handleSearchTerm(1000)} />
@@ -117,4 +121,4 @@ function SubCategories() {
   );
 }
 
-export default withAuthPage(SubCategories, true);
+export default withAuthPage(SubCategories, ADMIN_ACCESS);

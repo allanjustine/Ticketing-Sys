@@ -13,6 +13,7 @@ import { useMemo } from "react";
 import { SelectItem } from "@/components/ui/select";
 import { DeleteUser } from "../_components/_user-dialogs/delete-user";
 import SearchInput from "@/components/ui/search-input";
+import { ADMIN_ACCESS } from "@/constants/roles";
 interface UserRoleTypes {
   user_role_id: string;
   role_name: string;
@@ -66,8 +67,8 @@ function Users() {
     return branchIsLoading
       ? "isLoading"
       : branchData?.data?.length === 0
-      ? "isEmpty"
-      : branchData?.data;
+        ? "isEmpty"
+        : branchData?.data;
   }, [branchData?.data]);
 
   const userRoleMemo = useMemo(() => {
@@ -126,4 +127,4 @@ function Users() {
   );
 }
 
-export default withAuthPage(Users, true);
+export default withAuthPage(Users, ADMIN_ACCESS);

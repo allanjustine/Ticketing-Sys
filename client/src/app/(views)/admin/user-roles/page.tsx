@@ -12,6 +12,7 @@ import { EditUserRole } from "../_components/_user-roles-dialogs/edit-user-role"
 import { UserRoleDataType } from "../_types/user-roles-types";
 import { DeleteUserRole } from "../_components/_user-roles-dialogs/delete-user-role";
 import SearchInput from "@/components/ui/search-input";
+import { ADMIN_ACCESS } from "@/constants/roles";
 
 function UserRoles() {
   const {
@@ -77,4 +78,4 @@ function UserRoles() {
   );
 }
 
-export default withAuthPage(UserRoles, true);
+export default withAuthPage(UserRoles, ADMIN_ACCESS);

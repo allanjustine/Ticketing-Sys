@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import ButtonLoader from "@/components/ui/button-loader";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
+import { CAN_ACCESS_ALL } from "@/constants/roles";
 import { useAuth } from "@/context/auth-context";
 import { useChat } from "@/context/chat-context";
 import { useSimple } from "@/hooks/use-simple";
@@ -307,4 +308,4 @@ function ChatsPage() {
   );
 }
 
-export default withAuthPage(ChatsPage);
+export default withAuthPage(ChatsPage, CAN_ACCESS_ALL);

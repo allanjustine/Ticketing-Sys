@@ -24,7 +24,7 @@ export default function withoutAuthPage(WrappedComponent: any) {
         },
       });
 
-      redirect(isAudit ? "/audit-dashboard" : "/dashboard");
+      redirect(isAudit ? "/reports" : "/dashboard");
     }
 
     return <WrappedComponent {...props} />;

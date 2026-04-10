@@ -16,11 +16,11 @@ import {
 
 export const SIDEBAR_ITEMS = [
   { title: "Dashboard", url: "/dashboard", icon: Home, isAudit: false },
-  { title: "Dashboard", url: "/audit-dashboard", icon: Home, isAudit: true },
   { title: "Tickets", url: "/tickets", icon: TicketCheck, isAudit: false },
-  { title: "Reports", url: "/reports", icon: Notebook, isAudit: false },
   { title: "Chats", url: "/chats", icon: MessageCircleMore, isAudit: false },
   { title: "Chats", url: "/chats", icon: MessageCircleMore, isAudit: true },
+  { title: "Reports", url: "/reports", icon: Home, isAudit: true },
+  { title: "Reports", url: "/reports", icon: Notebook, isAudit: false },
 ];
 
 export const COLLAPSABLE_SIDEBAR_ITEMS = [

@@ -17,15 +17,18 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://beta-ticketing.smctgroup.ph"),
   title: {
-    default: "SMCT Group of Companies Ticketing | Home",
-    template: "SMCT Group of Companies Ticketing | %s",
+    default: "SMCT Group of Companies Ticketing",
+    template: "SMCT Ticketing | %s",
   },
   description: "The official website for SMCT Group of Companies Ticketing",
   icons: {
     icon: "/favicon.ico",
   },
   openGraph: {
-    title: "SMCT Group of Companies Ticketing | Home",
+    title: {
+      default: "SMCT Group of Companies Ticketing",
+      template: "SMCT Group of Companies Ticketing | %s",
+    },
     description: "The official website for SMCT Group of Companies Ticketing",
     images: [
       {
@@ -44,7 +47,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.style} ${geistMono.style} antialiased max-h-screen scroll-smooth`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased max-h-screen scroll-smooth`}
       >
         <AuthContextProvider>
           <ChatProvider>

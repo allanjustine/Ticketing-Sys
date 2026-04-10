@@ -11,6 +11,7 @@ import SearchInput from "@/components/ui/search-input";
 import { AddSupplier } from "../_components/_supplier-dialogs/add-supplier";
 import { EditSupplier } from "../_components/_supplier-dialogs/edit-supplier";
 import { DeleteSupplier } from "../_components/_supplier-dialogs/delete-supplier";
+import { ADMIN_ACCESS } from "@/constants/roles";
 
 function Suppliers() {
   const {
@@ -75,4 +76,4 @@ function Suppliers() {
   );
 }
 
-export default withAuthPage(Suppliers, true);
+export default withAuthPage(Suppliers, ADMIN_ACCESS);

@@ -8,24 +8,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useState } from "react";
-import { Check, ChevronDown } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
 import SearchInput from "@/components/ui/search-input";
 import { useAuth } from "@/context/auth-context";
+import {
+  MultiSelect,
+  MultiSelectContent,
+  MultiSelectGroup,
+  MultiSelectItem,
+  MultiSelectTrigger,
+  MultiSelectValue,
+} from "@/components/ui/multi-select";
+import { ROLE } from "@/constants/roles";
 
 export default function SelectFilter({
   isLoading,
@@ -34,17 +27,19 @@ export default function SelectFilter({
   filterBy,
   handleSearchTerm,
 }: any) {
-  const [open, setOpen] = useState(false);
-  const { isAdmin } = useAuth();
+  const { isAdmin, user } = useAuth();
+  const isAudit = user?.user_role?.role_name === ROLE.AUDIT;
+  const canView = isAdmin || isAudit;
 
-  const handleOnSelect = (value: string) => () => {
-    handleSelectFilter("branch_code")(value);
-    setOpen(false);
+  const handleMultipleSelect = (values: string[]) => {
+    handleSelectFilter("branch_code")(
+      values?.length > 0 ? values.join(",") : "ALL",
+    );
   };
 
   return (
     <>
-      {isAdmin && (
+      {canView && (
         <div className="flex flex-col gap-2 w-full">
           <Label htmlFor="search">Search</Label>
           <SearchInput
@@ -53,67 +48,39 @@ export default function SelectFilter({
           />
         </div>
       )}
-      <div className={`grid grid-cols-2 lg:grid-cols-4 gap-2`}>
-        <div className="flex flex-col gap-2 w-full">
-          <Label htmlFor="branch_code">Branch Code</Label>
-          <Popover open={open} onOpenChange={setOpen}>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                role="combobox"
-                aria-expanded={open}
-                className="w-full justify-between"
-              >
-                {filterBy?.branch_code === "ALL"
-                  ? "ALL"
-                  : isLoading
-                  ? "Loading..."
-                  : forFilterData?.branches.find(
-                      (item: any) => item.blist_id === filterBy?.branch_code
-                    )?.b_name}
-                <ChevronDown className="opacity-50" />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-full p-0" align="start">
-              <Command>
-                <CommandInput
-                  placeholder="Search branch code..."
-                  className="h-9"
-                />
-                <CommandList>
-                  <CommandEmpty>No branches found.</CommandEmpty>
-                  <CommandGroup>
-                    <CommandItem onSelect={handleOnSelect("ALL")} value="ALL">
-                      ALL
-                    </CommandItem>
-                    {isLoading ? (
-                      <CommandItem disabled>Loading...</CommandItem>
-                    ) : (
-                      forFilterData?.branches.map(
-                        (item: any, index: number) => (
-                          <CommandItem
-                            key={index}
-                            onSelect={handleOnSelect(item.blist_id)}
-                          >
-                            {item.b_name} ({item.b_code})
-                            <Check
-                              className={cn(
-                                "ml-auto",
-                                filterBy?.branch_code === item.blist_id
-                                  ? "opacity-100"
-                                  : "opacity-0"
-                              )}
-                            />
-                          </CommandItem>
-                        )
-                      )
-                    )}
-                  </CommandGroup>
-                </CommandList>
-              </Command>
-            </PopoverContent>
-          </Popover>
-        </div>
+      <div
+        className={`grid ${canView ? "grid-cols-2 lg:grid-cols-4" : "grid-cols-3"} gap-2`}
+      >
+        {canView && (
+          <div className="flex flex-col gap-2 w-full">
+            <Label htmlFor="branch_code">Branch Code</Label>
+            <MultiSelect modal={true} onValuesChange={handleMultipleSelect}>
+              <MultiSelectTrigger className="w-full max-w-[385px] max-h-[200px] overflow-y-auto">
+                <MultiSelectValue placeholder="Select branch codes..." />
+              </MultiSelectTrigger>
+              <MultiSelectContent>
+                <MultiSelectGroup>
+                  {forFilterData?.branches?.length === 0 ? (
+                    <MultiSelectItem value="No branches yet." disabled>
+                      No branches yet.
+                    </MultiSelectItem>
+                  ) : (
+                    forFilterData?.branches?.map(
+                      (branch: any, index: number) => (
+                        <MultiSelectItem
+                          key={index}
+                          value={`${branch.blist_id}`}
+                        >
+                          {`(${branch.b_code}) ${branch.b_name}`}
+                        </MultiSelectItem>
+                      ),
+                    )
+                  )}
+                </MultiSelectGroup>
+              </MultiSelectContent>
+            </MultiSelect>
+          </div>
+        )}
         <div className="flex flex-col gap-2 w-full">
           <Label htmlFor="ticket_category">Ticket Category</Label>
           <Select
@@ -146,7 +113,7 @@ export default function SelectFilter({
                       >
                         {ticket_category.category_name}
                       </SelectItem>
-                    )
+                    ),
                   )
                 )}
               </SelectGroup>
@@ -182,7 +149,7 @@ export default function SelectFilter({
                       <SelectItem key={index} value={branch_type}>
                         {branch_type}
                       </SelectItem>
-                    )
+                    ),
                   )
                 )}
               </SelectGroup>

@@ -13,6 +13,7 @@ import { api } from "@/lib/api";
 import { toast } from "sonner";
 import { useState } from "react";
 import EditAutomationDialog from "../_components/_automation-dialogs/edit-automation";
+import { ADMIN_ACCESS } from "@/constants/roles";
 
 function Automations() {
   const {
@@ -148,4 +149,4 @@ function Automations() {
   );
 }
 
-export default withAuthPage(Automations, true);
+export default withAuthPage(Automations, ADMIN_ACCESS);

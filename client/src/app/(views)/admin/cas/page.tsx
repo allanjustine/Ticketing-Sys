@@ -13,6 +13,7 @@ import { useState } from "react";
 import Swal from "sweetalert2";
 import { api } from "@/lib/api";
 import { toast } from "sonner";
+import { ADMIN_ACCESS } from "@/constants/roles";
 
 function Cas() {
   const {
@@ -148,4 +149,4 @@ function Cas() {
   );
 }
 
-export default withAuthPage(Cas, true);
+export default withAuthPage(Cas, ADMIN_ACCESS);

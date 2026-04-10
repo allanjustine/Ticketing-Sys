@@ -36,7 +36,7 @@ export default function Unauthorized() {
           </div>
           <div className="space-y-4">
             <Link
-              href={isAudit ? "/audit-dashboard" : "/dashboard"}
+              href={isAudit ? "/reports" : "/dashboard"}
               className="block w-full px-4 py-3 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white font-medium rounded-lg text-center transition duration-200"
             >
               Return to Dashboard

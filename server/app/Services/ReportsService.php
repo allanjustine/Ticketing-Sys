@@ -123,12 +123,12 @@ class ReportsService
                         ->orWhereBetween('date_completed', [Carbon::parse($edited_transaction_end_date)->endOfDay(), Carbon::parse($edited_transaction_start_date)->startOfDay()])
                 )
             )
-            ->when($branchCode !== "ALL", fn($query) => $query->where('branch_id', $branchCode))
+            ->when($branchCode !== "ALL", fn($query) => $query->whereIn('branch_id', explode(",", $branchCode)))
             ->when($ticketCategory !== "ALL", fn($query) => $query->whereHas('ticketDetail', fn($subQuery) => $subQuery->where('ticket_category_id', $ticketCategory)))
             ->when($branchCategory !== "ALL", fn($query) => $query->whereHas('branch', fn($subQuery) => $subQuery->where('category', $branchCategory)))
             ->whereHas('ticketDetail', fn($query) => $query->whereNotNull('date_completed')
                 ->where('date_completed', '!=', ''))
-            ->when(!$user->isAdmin() || !$user->isAutomationAdmin() || !$user->isAutomationManager(), function ($query) use ($userRole, $assignedBranchCas, $assignedAreaManagers, $accountingHeadCodes, $user) {
+            ->when(!$user->isAdmin() || !$user->isAutomationAdmin() || !$user->isAutomationManager() || !$user->isAudit(), function ($query) use ($userRole, $assignedBranchCas, $assignedAreaManagers, $accountingHeadCodes, $user) {
                 $query->where(function ($subQuery) use ($userRole, $assignedBranchCas, $assignedAreaManagers, $accountingHeadCodes, $user) {
                     $userBranchIds = explode(',', $user->blist_id);
 
@@ -321,12 +321,12 @@ class ReportsService
                         ->orWhereBetween('date_completed', [Carbon::parse($edited_transaction_end_date)->endOfDay(), Carbon::parse($edited_transaction_start_date)->startOfDay()])
                 )
             )
-            ->when($branchCode !== "ALL", fn($query) => $query->where('branch_id', $branchCode))
+            ->when($branchCode !== "ALL", fn($query) => $query->whereIn('branch_id', explode(",", $branchCode)))
             ->when($ticketCategory !== "ALL", fn($query) => $query->whereHas('ticketDetail', fn($subQuery) => $subQuery->where('ticket_category_id', $ticketCategory)))
             ->when($branchCategory !== "ALL", fn($query) => $query->whereHas('branch', fn($subQuery) => $subQuery->where('category', $branchCategory)))
             ->whereHas('ticketDetail', fn($query) => $query->whereNotNull('date_completed')
                 ->where('date_completed', '!=', ''))
-            ->when(!$user->isAdmin() || !$user->isAutomationAdmin() || !$user->isAutomationManager(), function ($query) use ($userRole, $assignedBranchCas, $assignedAreaManagers, $accountingHeadCodes, $user) {
+            ->when(!$user->isAdmin() || !$user->isAutomationAdmin() || !$user->isAutomationManager() || !$user->isAudit(), function ($query) use ($userRole, $assignedBranchCas, $assignedAreaManagers, $accountingHeadCodes, $user) {
                 $query->where(function ($subQuery) use ($userRole, $assignedBranchCas, $assignedAreaManagers, $accountingHeadCodes, $user) {
                     $userBranchIds = explode(',', $user->blist_id);
                     switch ($userRole->role_name) {

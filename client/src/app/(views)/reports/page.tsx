@@ -13,7 +13,7 @@ import DateFilter from "./_components/date-filter";
 import SelectFilter from "./_components/select-filter";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import formattedDate from "@/utils/format-date";
 import { formatDate } from "date-fns";
@@ -25,6 +25,8 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { CAN_ACCESS_ALL } from "@/constants/roles";
+import Swal from "sweetalert2";
 
 function Reports() {
   const [isLoadingToExport, setIsLoadingToExport] = useState<boolean>(false);
@@ -55,6 +57,10 @@ function Reports() {
     url: "/for-filter-datas",
   });
   const [isHide, setIsHide] = useState<boolean>(false);
+
+  useEffect(() => {
+    Swal.close();
+  }, []);
 
   const REPORTS_COLUMNS_ACTIONS = [
     {
@@ -204,7 +210,7 @@ function Reports() {
                 ? t.sub_category_items
                     ?.map(
                       (sub: any) =>
-                        `\n   - ${sub?.sub_category_name}: ${sub?.sub_category_count}`
+                        `\n   - ${sub?.sub_category_name}: ${sub?.sub_category_count}`,
                     )
                     .join("\n")
                 : "";
@@ -316,26 +322,26 @@ function Reports() {
           filterBy?.edited_transaction_end_date &&
           `Transaction-Date-${formatDate(
             filterBy?.edited_transaction_start_date,
-            "MMMM-dd-yyyy"
+            "MMMM-dd-yyyy",
           )}-To-${formatDate(
             filterBy?.edited_transaction_end_date,
-            "MMMM-dd-yyyy"
+            "MMMM-dd-yyyy",
           )}-`
         }${
           filterBy?.created_start_date &&
           filterBy?.created_end_date &&
           `Created-Date-${formatDate(
             filterBy?.created_start_date,
-            "MMMM-dd-yyyy"
+            "MMMM-dd-yyyy",
           )}-To-${formatDate(filterBy?.created_end_date, "MMMM-dd-yyyy")}-`
         }${
           filterBy?.edited_start_date &&
           filterBy?.edited_end_date &&
           `Edited-Date-${formatDate(
             filterBy?.edited_start_date,
-            "MMMM-dd-yyyy"
+            "MMMM-dd-yyyy",
           )}-To-${formatDate(filterBy?.edited_end_date, "MMMM-dd-yyyy")}-`
-        }Ticketing-Report.xlsx`
+        }Ticketing-Report.xlsx`,
       );
       toast.success("Succes", {
         description: "Report has been exported successfully",
@@ -478,4 +484,4 @@ function Reports() {
   );
 }
 
-export default withAuthPage(Reports);
+export default withAuthPage(Reports, CAN_ACCESS_ALL);

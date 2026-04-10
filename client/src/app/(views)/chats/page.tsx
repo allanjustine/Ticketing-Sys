@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import SearchInput from "@/components/ui/search-input";
 import { SEARCH_FILTER } from "@/constants/filter-by";
+import { CAN_ACCESS_ALL, ROLE } from "@/constants/roles";
 import { useChat } from "@/context/chat-context";
 import useFetch from "@/hooks/use-fetch";
 import withAuthPage from "@/lib/hoc/with-auth-page";
@@ -52,6 +53,7 @@ function ChatsPage() {
       selector: (row: any) =>
         messageRecords.find((record) => record.login_id === row.login_id)
           ?.last_message ?? row?.last_message,
+      width: "250px",
     },
     {
       name: "Action",
@@ -100,4 +102,4 @@ function ChatsPage() {
   );
 }
 
-export default withAuthPage(ChatsPage);
+export default withAuthPage(ChatsPage, CAN_ACCESS_ALL);

@@ -112,6 +112,11 @@ class UserLogin extends Authenticatable
         return $this->userRole->role_name === UserRoles::AUTOMATION;
     }
 
+    public function isAudit()
+    {
+        return $this->userRole->role_name === UserRoles::AUDIT;
+    }
+
     public function isAutomationManager()
     {
         return $this->userRole->role_name === UserRoles::AUTOMATION_MANAGER;

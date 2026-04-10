@@ -13,6 +13,7 @@ import EditAreaManagerDialog from "../_components/_area-manager-dialogs/edit-are
 import Swal from "sweetalert2";
 import { api } from "@/lib/api";
 import { toast } from "sonner";
+import { ADMIN_ACCESS } from "@/constants/roles";
 
 function AreaManagers() {
   const {
@@ -151,4 +152,4 @@ function AreaManagers() {
   );
 }
 
-export default withAuthPage(AreaManagers, true);
+export default withAuthPage(AreaManagers, ADMIN_ACCESS);

@@ -13,6 +13,7 @@ import { useState } from "react";
 import { BranchDetailDataType } from "../_types/branch-types";
 import { EditBranch } from "../_components/_branch-dialogs/edit-branch";
 import { DeleteBranch } from "../_components/_branch-dialogs/delete-branch";
+import { ADMIN_ACCESS } from "@/constants/roles";
 
 function Branches() {
   const {
@@ -99,4 +100,4 @@ function Branches() {
   );
 }
 
-export default withAuthPage(Branches, true);
+export default withAuthPage(Branches, ADMIN_ACCESS);

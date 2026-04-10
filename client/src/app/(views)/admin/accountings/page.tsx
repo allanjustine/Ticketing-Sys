@@ -19,7 +19,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import EditAccountingDialog from "../_components/_accounting-dialogs/edit-accounting";
-import { ROLE } from "@/constants/roles";
+import { ADMIN_ACCESS, ROLE } from "@/constants/roles";
 
 function Accountings() {
   const {
@@ -238,4 +238,4 @@ function Accountings() {
   );
 }
 
-export default withAuthPage(Accountings, true);
+export default withAuthPage(Accountings, ADMIN_ACCESS);

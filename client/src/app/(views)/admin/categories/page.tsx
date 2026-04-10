@@ -22,6 +22,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { TooltipArrow } from "@radix-ui/react-tooltip";
+import { ADMIN_ACCESS } from "@/constants/roles";
 
 function Categories() {
   const {
@@ -166,4 +167,4 @@ function Categories() {
   );
 }
 
-export default withAuthPage(Categories, true);
+export default withAuthPage(Categories, ADMIN_ACCESS);

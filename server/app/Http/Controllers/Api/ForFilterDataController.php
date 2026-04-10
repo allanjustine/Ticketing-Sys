@@ -11,7 +11,7 @@ class ForFilterDataController extends Controller
 {
     public function index()
     {
-        $branches = BranchList::has('tickets')
+        $branches = BranchList::whereHas('tickets', fn($q) => $q->where('status', 'EDITED'))
             ->orderBy('b_name')
             ->get();
 

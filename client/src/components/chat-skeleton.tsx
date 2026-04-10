@@ -3,7 +3,7 @@ import { Separator } from "./ui/separator";
 
 export function ChatSkeleton() {
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-[calc(100vh-60px)]">
       <div className="flex items-center gap-3 px-6 py-4 border-b shadow-xl shadow-chat-background/15">
         <Skeleton className="w-9 h-9 rounded-full" />
         <div className="flex flex-col gap-1.5">

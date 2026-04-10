@@ -8,7 +8,7 @@ import { SEARCH_FILTER } from "@/constants/filter-by";
 import { useChat } from "@/context/chat-context";
 import useFetch from "@/hooks/use-fetch";
 import withAuthPage from "@/lib/hoc/with-auth-page";
-import { MessageCircle, Users2 } from "lucide-react";
+import { MessageCircleMore, Users2 } from "lucide-react";
 import Link from "next/link";
 import { useEffect } from "react";
 
@@ -60,7 +60,7 @@ function ChatsPage() {
           href={`/chats/${row.login_id}`}
           className="flex gap-1 text-blue-500 hover:text-blue-600"
         >
-          <MessageCircle /> <span>Chat Now</span>
+          <MessageCircleMore /> <span>Chat Now</span>
         </Link>
       ),
       sortable: false,

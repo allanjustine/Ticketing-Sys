@@ -3,7 +3,7 @@ import {
   FileUserIcon,
   Home,
   LayoutDashboard,
-  MessageCircle,
+  MessageCircleMore,
   Notebook,
   ShieldUserIcon,
   TicketCheck,
@@ -19,8 +19,8 @@ export const SIDEBAR_ITEMS = [
   { title: "Dashboard", url: "/audit-dashboard", icon: Home, isAudit: true },
   { title: "Tickets", url: "/tickets", icon: TicketCheck, isAudit: false },
   { title: "Reports", url: "/reports", icon: Notebook, isAudit: false },
-  { title: "Chats", url: "/chats", icon: MessageCircle, isAudit: false },
-  { title: "Chats", url: "/chats", icon: MessageCircle, isAudit: true },
+  { title: "Chats", url: "/chats", icon: MessageCircleMore, isAudit: false },
+  { title: "Chats", url: "/chats", icon: MessageCircleMore, isAudit: true },
 ];
 
 export const COLLAPSABLE_SIDEBAR_ITEMS = [

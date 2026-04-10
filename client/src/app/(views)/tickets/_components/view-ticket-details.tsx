@@ -38,7 +38,7 @@ import {
   FileSpreadsheet,
   Hash,
   Layers,
-  MessageCircle,
+  MessageCircleMore,
   Tag,
   User,
   Users,
@@ -411,7 +411,7 @@ export function ViewTicketDetails({
                   type="button"
                   className="bg-chat-background hover:bg-chat-background/50"
                 >
-                  <MessageCircle /> Chat Now
+                  <MessageCircleMore /> Chat Now
                 </Button>
               </Link>
             )}

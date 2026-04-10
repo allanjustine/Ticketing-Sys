@@ -313,9 +313,14 @@ function Reports() {
         type: "application/octet-stream",
       });
 
+      const totalBranchSelected =
+        filterBy.branch_code === "ALL"
+          ? 0
+          : filterBy.branch_code.split(",").length;
+
       saveAs(
         blob,
-        `${filterBy.ticket_type && `${filterBy.ticket_type}-`}${
+        `${filterBy.branch_code === "ALL" ? "All-Branch-" : `${totalBranchSelected}-Branches-`}${filterBy.ticket_type && `${filterBy.ticket_type}-`}${
           filterBy.search && `${filterBy.search}-`
         }${
           filterBy?.edited_transaction_start_date &&

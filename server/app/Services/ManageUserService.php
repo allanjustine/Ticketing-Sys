@@ -49,7 +49,7 @@ class ManageUserService
 
             $data = [
                 'user_details_id'   => $user->user_details_id,
-                'username'          => Str::lower(Str::slug($request->username, '')),
+                'username'          => Str::lower(Str::slug($request->username, '_')),
                 'user_role_id'      => $request->role,
                 'blist_id'          => implode(',', $request->branch_code)
             ];

@@ -178,7 +178,7 @@ function ChatsPage() {
         <>
           <div className="flex items-center gap-3 px-6 py-4 border-b shadow-xl shadow-chat-background/15">
             <Avatar className="w-9 h-9">
-              <AvatarImage src={Storage(data?.user?.profile_picture)} />
+              <AvatarImage src={Storage(data?.user?.profile_pic)} />
               <AvatarFallback className="text-xs font-bold">
                 {nameShortHand(data?.user?.full_name)}
               </AvatarFallback>
@@ -217,7 +217,7 @@ function ChatsPage() {
                         <div className="flex justify-start items-end gap-2">
                           <Avatar className="w-7 h-7 shrink-0 mb-1">
                             <AvatarImage
-                              src={Storage(data?.user?.profile_picture)}
+                              src={Storage(data?.user?.profile_pic)}
                             />
                             <AvatarFallback className="text-xs font-bold">
                               {nameShortHand(data?.user?.full_name)}

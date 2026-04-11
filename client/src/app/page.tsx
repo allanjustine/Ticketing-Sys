@@ -1,6 +1,7 @@
 "use client";
 
 import Logo from "@/assets/logo.png";
+import PreLoader from "@/components/loaders/pre-loader";
 import { useAuth } from "@/context/auth-context";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
@@ -9,6 +10,8 @@ import Link from "next/link";
 export default function Home() {
   const { isAuthenticated, user, isLoading } = useAuth();
   const isAlreadyAuthenticated = isAuthenticated || user;
+
+  if(isLoading) return <PreLoader />
   
   return (
     <div className={`h-screen w-full bg-no-repeat bg-cover bg-center`}>

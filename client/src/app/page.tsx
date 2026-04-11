@@ -11,8 +11,8 @@ export default function Home() {
   const { isAuthenticated, user, isLoading } = useAuth();
   const isAlreadyAuthenticated = isAuthenticated || user;
 
-  if(isLoading) return <PreLoader />
-  
+  if (isLoading) return <PreLoader />;
+
   return (
     <div className={`h-screen w-full bg-no-repeat bg-cover bg-center`}>
       <div className="grid place-items-center h-full p-10 text-center">

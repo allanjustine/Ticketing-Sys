@@ -3,7 +3,13 @@ import { ReactNode } from "react";
 
 export const metadata: Metadata = {
   title: "Register",
-  description: "The official website for SMCT Group of Companies Ticketing",
+  description:
+    "The official register page for the SMCT Group of Companies Ticketing website.",
+  openGraph: {
+    title: "Register",
+    description:
+      "The official register page for the SMCT Group of Companies Ticketing website.",
+  },
 };
 
 export default function Layout({ children }: { children: ReactNode }) {

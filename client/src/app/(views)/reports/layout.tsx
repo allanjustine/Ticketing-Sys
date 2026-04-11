@@ -2,13 +2,13 @@ import { Metadata } from "next";
 import { ReactNode } from "react";
 
 export const metadata: Metadata = {
-  title: "Login",
+  title: "Reports",
   description:
-    "The official login page for the SMCT Group of Companies Ticketing website.",
+    "The official reports page for the SMCT Group of Companies Ticketing website.",
   openGraph: {
-    title: "Login",
+    title: "Reports",
     description:
-      "The official login page for the SMCT Group of Companies Ticketing website.",
+      "The official reports page for the SMCT Group of Companies Ticketing website.",
   },
 };
 

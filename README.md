@@ -346,4 +346,4 @@ setNewMessage()  →  ChatsPage renders new message instantly
 
 ## License
 
-Internal use only.
+Internal use only...

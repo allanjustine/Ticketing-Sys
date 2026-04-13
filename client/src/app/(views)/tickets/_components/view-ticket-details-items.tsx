@@ -42,7 +42,7 @@ function InfoField({
         </TooltipTrigger>
         <TooltipContent>
           <TooltipArrow />
-          {value}
+          Click to show more...
         </TooltipContent>
       </Tooltip>
       <Dialog open={open} onOpenChange={setOpen}>
@@ -50,7 +50,7 @@ function InfoField({
           <DialogHeader>
             <DialogTitle>{label}</DialogTitle>
           </DialogHeader>
-          <div className="break-all whitespace-break-spaces max-h-[calc(100vh-200px)] overflow-y-auto">
+          <div className="wrap-break-word whitespace-break-spaces max-h-[calc(100vh-200px)] overflow-y-auto">
             {value}
           </div>
           <DialogFooter>
@@ -75,7 +75,7 @@ function NoteCard({ label, content }: { label: string; content: string }) {
       <span className="text-xs font-semibold text-blue-500 uppercase tracking-wide">
         {label}
       </span>
-      <p className="text-sm dark:text-white text-gray-700 break-all whitespace-break-spaces leading-relaxed">
+      <p className="text-sm dark:text-white text-gray-700 wrap-break-word whitespace-break-spaces leading-relaxed">
         {content}
       </p>
     </div>

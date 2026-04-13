@@ -242,6 +242,7 @@ Route::middleware([
                     })
                         ->orWhereLike('description', "%{$request->search}%");
                 })
+                ->latest()
                 ->paginate($request->limit, ['id', 'description', 'causer_id', 'causer_type', 'created_at'])
                 ->through(function ($activity) {
                     return [

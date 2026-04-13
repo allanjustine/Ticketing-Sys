@@ -5,6 +5,7 @@ namespace App\Enums;
 enum UserRoles: string
 {
     case ADMIN = 'Admin';
+    case SUPER_ADMIN = 'Super Admin';
     case AUTOMATION = 'Automation';
     case ACCOUNTING_HEAD = 'Accounting Head';
     case ACCOUNTING_STAFF = 'Accounting Staff';

@@ -1,4 +1,5 @@
 import {
+  ActivityIcon,
   Building,
   FileUserIcon,
   Home,
@@ -33,4 +34,10 @@ export const COLLAPSABLE_SIDEBAR_ITEMS = [
   { title: "CAS", url: "/admin/cas", icon: FileUserIcon },
   { title: "Area Managers", url: "/admin/area-managers", icon: ShieldUserIcon },
   { title: "User Roles", url: "/admin/user-roles", icon: UserLock },
+  {
+    title: "Activities",
+    url: "/super-admin/activities",
+    icon: ActivityIcon,
+    isSuperAdmin: true,
+  },
 ];

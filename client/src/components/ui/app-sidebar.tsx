@@ -61,6 +61,7 @@ export function AppSidebar() {
   const pathname = usePathname();
   const { setIsOpen } = useSettings();
   const isAudit = user?.user_role?.role_name === ROLE.AUDIT;
+  const isSuperAdmin = user?.user_role?.role_name === ROLE.SUPER_ADMIN;
 
   const handleLogout = () => {
     Swal.fire({
@@ -168,7 +169,11 @@ export function AppSidebar() {
                       <SidebarMenuSub>
                         <SidebarMenuSubItem />
                         {COLLAPSABLE_SIDEBAR_ITEMS?.map((item, index) => (
-                          <Link href={item.url} key={index}>
+                          <Link
+                            href={item.url}
+                            key={index}
+                            hidden={item.isSuperAdmin && !isSuperAdmin}
+                          >
                             <Button
                               variant="ghost"
                               className={`${
@@ -188,7 +193,11 @@ export function AppSidebar() {
               ) : (
                 COLLAPSABLE_SIDEBAR_ITEMS?.map((item, index) => (
                   <SidebarMenuItem key={index}>
-                    <SidebarMenuButton asChild tooltip={item.title}>
+                    <SidebarMenuButton
+                      asChild
+                      tooltip={item.title}
+                      hidden={item.isSuperAdmin && !isSuperAdmin}
+                    >
                       <Link
                         href={item.url}
                         className={

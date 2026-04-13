@@ -40,6 +40,7 @@ export default function AuthContextProvider({
     ROLE.ADMIN,
     ROLE.AUTOMATION_ADMIN,
     ROLE.AUTOMATION_MANAGER,
+    ROLE.SUPER_ADMIN,
   ];
 
   useEffect(() => {

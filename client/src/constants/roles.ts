@@ -1,5 +1,6 @@
 export const ROLE = {
   ADMIN: "Admin",
+  SUPER_ADMIN: "Super Admin",
   AUTOMATION: "Automation",
   ACCOUNTING_HEAD: "Accounting Head",
   BRANCH_HEAD: "Branch Head",
@@ -14,7 +15,12 @@ export const ROLE = {
 
 export const { AUDIT, ...NO_AUDIT_ROLE } = ROLE;
 
-export const ADMIN_ACCESS = [ROLE.ADMIN, ROLE.AUTOMATION_ADMIN, ROLE.AUTOMATION_MANAGER];
+export const ADMIN_ACCESS = [
+  ROLE.ADMIN,
+  ROLE.AUTOMATION_ADMIN,
+  ROLE.AUTOMATION_MANAGER,
+  ROLE.SUPER_ADMIN,
+];
 
 export const CAN_ACCESS_ALL = Object.values(ROLE);
 

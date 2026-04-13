@@ -235,7 +235,8 @@ Route::middleware([
                 ->when($request->search, function ($q) use ($request) {
                     $q->whereHas('causer', function ($query) use ($request) {
                         $query->search($request->search);
-                    });
+                    })
+                        ->orWhereLike('description', "%{$request->search}%");
                 })
                 ->paginate($request->limit, ['id', 'description', 'causer_id', 'causer_type', 'created_at'])
                 ->through(function ($activity) {

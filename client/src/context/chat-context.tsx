@@ -16,7 +16,7 @@ import { usePathname } from "next/navigation";
 
 type MessageRecordType = {
   login_id: number;
-  last_message: string;
+  last_message?: string;
   message_count: number;
 };
 
@@ -36,6 +36,13 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   const [newMessage, setNewMessage] = useState<MessageType | null>(null);
   const pathname = usePathname();
   const { user } = useAuth();
+
+  useEffect(() => {
+    if (!user) return;
+
+    setMessageReceivedCount(user.unread_messages_count);
+    setMessageRecords(user.unread_messages);
+  }, [user]);
 
   useEffect(() => {
     if (!echo || !user) return;

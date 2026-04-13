@@ -8,6 +8,7 @@ import { SEARCH_FILTER } from "@/constants/filter-by";
 import { CAN_ACCESS_ALL, ROLE } from "@/constants/roles";
 import { useChat } from "@/context/chat-context";
 import useFetch from "@/hooks/use-fetch";
+import { api } from "@/lib/api";
 import withAuthPage from "@/lib/hoc/with-auth-page";
 import { MessageCircleMore, Users2 } from "lucide-react";
 import Link from "next/link";
@@ -61,6 +62,12 @@ function ChatsPage() {
         <Link
           href={`/chats/${row.login_id}`}
           className="flex gap-1 text-blue-500 hover:text-blue-600"
+          onClick={
+            (messageRecords.find((record) => record.login_id === row.login_id)
+              ?.message_count ?? 0) > 0
+              ? handleFlushUnseenMessages(row.login_id)
+              : undefined
+          }
         >
           <MessageCircleMore /> <span>Chat Now</span>
         </Link>
@@ -68,6 +75,10 @@ function ChatsPage() {
       sortable: false,
     },
   ];
+
+  const handleFlushUnseenMessages = (id: number) => async () => {
+    await api.delete(`unseen-message/${id}/flush`);
+  };
 
   return (
     <div className="flex flex-col gap-3 m-7">

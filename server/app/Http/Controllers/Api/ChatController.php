@@ -6,8 +6,10 @@ use App\Events\ChatEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreMessageRequest;
 use App\Models\UserLogin;
+use App\Models\UserUnreadMessage;
 use App\Services\ChatService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ChatController extends Controller
 {
@@ -74,5 +76,12 @@ class ChatController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function flushUnseenMessage(int $user)
+    {
+        Auth::user()->unreadMessages()->where('login_id', $user)->delete();
+
+        return response()->noContent();
     }
 }

@@ -231,7 +231,11 @@ Route::middleware([
                 abort(403);
             }
 
-            $activities = Activity::with('causer:login_id,user_details_id,user_role_id', 'causer.userDetail:user_details_id,lname,fname,user_email', 'causer.userRole:user_role_id,role_name')
+            $activities = Activity::with([
+                'causer:login_id,user_details_id,user_role_id',
+                'causer.userDetail:user_details_id,lname,fname,user_email',
+                'causer.userRole:user_role_id,role_name'
+            ])
                 ->when($request->search, function ($q) use ($request) {
                     $q->whereHas('causer', function ($query) use ($request) {
                         $query->search($request->search);

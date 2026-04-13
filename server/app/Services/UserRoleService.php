@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\UserRole;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class UserRoleService
@@ -32,6 +33,11 @@ class UserRoleService
                 'role_name'     => Str::title($request->role_name)
             ]);
 
+        activity()
+            ->causedBy(Auth::user())
+            ->performedOn($userRole)
+            ->log("Created a user role");
+
         return $userRole;
     }
 
@@ -49,6 +55,11 @@ class UserRoleService
             'role_name'     => Str::title($request->role_name)
         ]);
 
+        activity()
+            ->causedBy(Auth::user())
+            ->performedOn($userRole)
+            ->log("Updated a user role");
+
         return $userRole;
     }
 
@@ -61,6 +72,11 @@ class UserRoleService
         if ($hasUser) {
             abort(400, 'Cannot delete user role that has users');
         }
+
+        activity()
+            ->causedBy(Auth::user())
+            ->performedOn($userRole)
+            ->log("Deleted a user role");
 
         $userRole->delete();
 

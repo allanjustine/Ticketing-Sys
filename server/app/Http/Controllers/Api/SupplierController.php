@@ -7,6 +7,7 @@ use App\Http\Requests\StoreSupplierRequest;
 use App\Http\Requests\UpdateSupplierRequest;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SupplierController extends Controller
 {
@@ -52,6 +53,11 @@ class SupplierController extends Controller
                 'suppliers'    => $request->suppliers
             ]);
 
+        activity()
+            ->causedBy(Auth::user())
+            ->performedOn($supplier)
+            ->log("Created a supplier");
+
         return response()->json([
             "message"           => "Supplier \"{$supplier->suppliers}\" created successfully",
         ], 201);
@@ -86,6 +92,11 @@ class SupplierController extends Controller
             'suppliers'    => $request->suppliers
         ]);
 
+        activity()
+            ->causedBy(Auth::user())
+            ->performedOn($supplier)
+            ->log("Updated a supplier");
+
         return response()->json([
             "message"           => "Supplier \"{$supplier->suppliers}\" updated successfully",
         ], 200);
@@ -99,6 +110,11 @@ class SupplierController extends Controller
         $supplier = Supplier::findOrFail($id);
 
         $supplier->delete();
+
+        activity()
+            ->causedBy(Auth::user())
+            ->performedOn($supplier)
+            ->log("Deleted a supplier");
 
         return response()->json([
             "message"           => "Supplier \"{$supplier->suppliers}\" deleted successfully",

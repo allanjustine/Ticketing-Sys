@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateBranchRequest;
 use App\Models\BranchDetail;
 use App\Models\BranchList;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class BranchController extends Controller
@@ -155,6 +156,11 @@ class BranchController extends Controller
             return $branch;
         });
 
+        activity()
+            ->causedBy(Auth::user())
+            ->performedOn($data)
+            ->log("Created a branch");
+
         return response()->json([
             'message'   => "Branch \"{$data->b_name}\" created successfully",
         ], 201);
@@ -201,6 +207,11 @@ class BranchController extends Controller
             return $branch;
         });
 
+        activity()
+            ->causedBy(Auth::user())
+            ->performedOn($data)
+            ->log("Updated a branch");
+
         return response()->json([
             'message'   => "Branch \"{$data->b_name}\" updated successfully",
         ], 200);
@@ -211,14 +222,19 @@ class BranchController extends Controller
      */
     public function destroy(string $id)
     {
-        $ticket = BranchList::findOrFail($id);
+        $branch = BranchList::findOrFail($id);
 
-        $ticket->delete();
+        $branch->delete();
 
-        $ticket->branchDetail()->delete();
+        $branch->branchDetail()->delete();
+
+        activity()
+            ->causedBy(Auth::user())
+            ->performedOn($branch)
+            ->log("Deleted a branch");
 
         return response()->json([
-            'message'   => "Branch \"{$ticket->b_name}\" deleted successfully"
+            'message'   => "Branch \"{$branch->b_name}\" deleted successfully"
         ], 200);
     }
 }

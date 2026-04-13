@@ -540,6 +540,11 @@ class TicketController extends Controller
             $user->login_id
         ));
 
+        activity()
+            ->causedBy(Auth::user())
+            ->performedOn($data)
+            ->log("Transferred a ticket");
+
         return response()->json([
             'message'           => "Ticket with ticket code of {$ticketCode} has been transferred to {$data->assignedPerson->full_name} automation successfully",
         ], 200);

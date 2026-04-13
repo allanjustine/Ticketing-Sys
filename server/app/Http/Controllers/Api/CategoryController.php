@@ -131,6 +131,11 @@ class CategoryController extends Controller
                 'category_type'     => $request->category_type
             ]);
 
+        activity()
+            ->causedBy(Auth::user())
+            ->performedOn($category)
+            ->log("Created a category");
+
         return response()->json([
             'message'       => "Category \"{$category->category_name}\" created successfully"
         ], 201);
@@ -182,6 +187,11 @@ class CategoryController extends Controller
             'category_type'     => $request->category_type
         ]);
 
+        activity()
+            ->causedBy(Auth::user())
+            ->performedOn($ticketCategory)
+            ->log("Updated a category");
+
         return response()->json([
             'message'       => "Category \"{$ticketCategory->category_name}\" updated successfully"
         ], 200);
@@ -201,6 +211,11 @@ class CategoryController extends Controller
             "show_hide" => $showHide
         ]);
 
+        activity()
+            ->causedBy(Auth::user())
+            ->performedOn($ticketCategory)
+            ->log("Updated a category show/hide");
+
         return response()->json([
             "message"   => "Category {$ticketCategory->show_hide} successfully"
         ], 200);
@@ -214,6 +229,11 @@ class CategoryController extends Controller
         $ticketCategory = TicketCategory::findOrFail($id);
 
         $ticketCategory->delete();
+
+        activity()
+            ->causedBy(Auth::user())
+            ->performedOn($ticketCategory)
+            ->log("Deleted a category");
 
         return response()->json([
             'message'   => "Category \"{$ticketCategory->category_name}\" deleted successfully"

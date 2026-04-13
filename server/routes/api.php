@@ -31,9 +31,11 @@ use App\Models\BranchList;
 use App\Models\GroupCategory;
 use App\Models\UserLogin;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
+use Spatie\Activitylog\Models\Activity;
 
 // AUTHENTICATED ROUTES
 Route::middleware([
@@ -44,17 +46,20 @@ Route::middleware([
         '/profile',
         fn(Request $request)
         =>
-        $request->user()->load(
-            'userDetail',
-            'userRole',
-            'branch',
-            'assignedCategories.categoryGroupCode',
-            'assignedBranches.branch:blist_id,b_code',
-            'assignedBranchCas.branch:blist_id,b_code',
-            'assignedAreaManagers.branch:blist_id,b_code',
-            'accountingAssignedBranches:blist_id,b_code',
-            'unreadNotifications'
-        )
+        $request->user()
+            ->loadCount('unreadMessages')
+            ->load(
+                'userDetail',
+                'userRole',
+                'branch',
+                'assignedCategories.categoryGroupCode',
+                'assignedBranches.branch:blist_id,b_code',
+                'assignedBranchCas.branch:blist_id,b_code',
+                'assignedAreaManagers.branch:blist_id,b_code',
+                'accountingAssignedBranches:blist_id,b_code',
+                'unreadNotifications',
+                'unreadMessages'
+            )
             ->loadCount('unreadNotifications')
     );
 
@@ -218,6 +223,38 @@ Route::middleware([
     });
 
     Route::resource('chats', ChatController::class)->only(['show', 'store', 'index']);
+    Route::delete('unseen-message/{id}/flush', [ChatController::class, 'flushUnseenMessage']);
+
+    Route::prefix('super-admin')->group(function () {
+        Route::get('activities', function (Request $request) {
+            if (!Auth::user()->isSuperAdmin()) {
+                abort(403);
+            }
+
+            $activities = Activity::with('causer:login_id,user_details_id,user_role_id', 'causer.userDetail:user_details_id,lname,fname,user_email', 'causer.userRole:user_role_id,role_name')
+                ->when($request->search, function ($q) use ($request) {
+                    $q->whereHas('causer', function ($query) use ($request) {
+                        $query->search($request->search);
+                    });
+                })
+                ->paginate($request->per_page, ['id', 'description', 'causer_id', 'causer_type', 'created_at'])
+                ->through(function ($activity) {
+                    return [
+                        'id' => $activity->id,
+                        'description' => $activity->description,
+                        'full_name'   => $activity->causer?->full_name,
+                        'email'       => $activity->causer?->userDetail?->user_email,
+                        'role'        => $activity->causer?->userRole?->role_name,
+                        'created_at'  => $activity->created_at
+                    ];
+                });
+
+            return response()->json([
+                'message' => 'Successfully fetch activities',
+                'data'    => $activities
+            ], 200);
+        });
+    });
 });
 
 // GUEST ROUTES

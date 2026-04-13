@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\BranchList;
 use App\Models\UserLogin;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AccountingBranchSetupController extends Controller
 {
@@ -80,6 +81,11 @@ class AccountingBranchSetupController extends Controller
 
         $branch_counts = $user->accountingAssignedBranches()->count();
 
+        activity()
+            ->causedBy(Auth::user())
+            ->performedOn($user)
+            ->log("Updated a accounting");
+
         return response()->json([
             'message' => "{$branch_counts} branche(s) assigned successfully",
         ], 200);
@@ -95,6 +101,11 @@ class AccountingBranchSetupController extends Controller
         $branch_counts = $user->accountingAssignedBranches()->count();
 
         $user->accountingAssignedBranches()->detach();
+
+        activity()
+            ->causedBy(Auth::user())
+            ->performedOn($user)
+            ->log("Deleted a accounting branch");
 
         return response()->json([
             'message' => "{$branch_counts} branche(s) removed successfully",

@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\BranchList;
 use App\Models\UserLogin;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CasController extends Controller
 {
@@ -90,6 +91,11 @@ class CasController extends Controller
 
         $branch_counts = $user->casAssignedBranches()->count();
 
+        activity()
+            ->causedBy(Auth::user())
+            ->performedOn($user)
+            ->log("Updated a cas branches");
+
         return response()->json([
             'message' => "{$branch_counts} branche(s) assigned successfully",
         ], 200);
@@ -106,6 +112,10 @@ class CasController extends Controller
 
         $user->casAssignedBranches()->detach();
 
+        activity()
+            ->causedBy(Auth::user())
+            ->performedOn($user)
+            ->log("Deleted a cas branches");
 
         return response()->json([
             'message' => "{$branch_counts} branche(s) removed successfully",

@@ -128,7 +128,7 @@ class ReportsService
             ->when($branchCategory !== "ALL", fn($query) => $query->whereHas('branch', fn($subQuery) => $subQuery->where('category', $branchCategory)))
             ->whereHas('ticketDetail', fn($query) => $query->whereNotNull('date_completed')
                 ->where('date_completed', '!=', ''))
-            ->when(!$user->isAdmin() || !$user->isAutomationAdmin() || !$user->isAutomationManager() || !$user->isAudit(), function ($query) use ($userRole, $assignedBranchCas, $assignedAreaManagers, $accountingHeadCodes, $user) {
+            ->when(!$user->isSuperAdmin() || !$user->isAdmin() || !$user->isAutomationAdmin() || !$user->isAutomationManager() || !$user->isAudit(), function ($query) use ($userRole, $assignedBranchCas, $assignedAreaManagers, $accountingHeadCodes, $user) {
                 $query->where(function ($subQuery) use ($userRole, $assignedBranchCas, $assignedAreaManagers, $accountingHeadCodes, $user) {
                     $userBranchIds = explode(',', $user->blist_id);
 
@@ -326,7 +326,7 @@ class ReportsService
             ->when($branchCategory !== "ALL", fn($query) => $query->whereHas('branch', fn($subQuery) => $subQuery->where('category', $branchCategory)))
             ->whereHas('ticketDetail', fn($query) => $query->whereNotNull('date_completed')
                 ->where('date_completed', '!=', ''))
-            ->when(!$user->isAdmin() || !$user->isAutomationAdmin() || !$user->isAutomationManager() || !$user->isAudit(), function ($query) use ($userRole, $assignedBranchCas, $assignedAreaManagers, $accountingHeadCodes, $user) {
+            ->when(!$user->isSuperAdmin() || !$user->isAdmin() || !$user->isAutomationAdmin() || !$user->isAutomationManager() || !$user->isAudit(), function ($query) use ($userRole, $assignedBranchCas, $assignedAreaManagers, $accountingHeadCodes, $user) {
                 $query->where(function ($subQuery) use ($userRole, $assignedBranchCas, $assignedAreaManagers, $accountingHeadCodes, $user) {
                     $userBranchIds = explode(',', $user->blist_id);
                     switch ($userRole->role_name) {
@@ -401,6 +401,11 @@ class ReportsService
             ];
         })
             ->values();
+
+        activity()
+            ->causedBy(Auth::user())
+            ->performedOn($tickets)
+            ->log("Exported a ticket");
 
         return [
             'totals'    => $grouped,

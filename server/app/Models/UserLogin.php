@@ -107,6 +107,11 @@ class UserLogin extends Authenticatable
         return $this->userRole->role_name === UserRoles::ADMIN;
     }
 
+    public function isSuperAdmin()
+    {
+        return $this->userRole->role_name === UserRoles::SUPER_ADMIN;
+    }
+
     public function isAutomation()
     {
         return $this->userRole->role_name === UserRoles::AUTOMATION;
@@ -290,5 +295,10 @@ class UserLogin extends Authenticatable
     {
         return $this->hasMany(Message::class, 'receiver_id', 'login_id')
             ->where('sender_id', Auth::id());
+    }
+
+    public function unreadMessages()
+    {
+        return $this->hasMany(UserUnreadMessage::class, 'user_id', 'login_id');
     }
 }

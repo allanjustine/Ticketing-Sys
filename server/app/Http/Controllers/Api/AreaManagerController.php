@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\BranchList;
 use App\Models\UserLogin;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AreaManagerController extends Controller
 {
@@ -89,6 +90,11 @@ class AreaManagerController extends Controller
 
         $branch_counts = $user->areaManagerAssignedBranches()->count();
 
+        activity()
+            ->causedBy(Auth::user())
+            ->performedOn($user)
+            ->log("Updated a area manager branches");
+
         return response()->json([
             'message' => "{$branch_counts} branche(s) assigned successfully",
         ], 200);
@@ -105,6 +111,10 @@ class AreaManagerController extends Controller
 
         $user->areaManagerAssignedBranches()->detach();
 
+        activity()
+            ->causedBy(Auth::user())
+            ->performedOn($user)
+            ->log("Deleted a area manager branches");
 
         return response()->json([
             'message' => "{$branch_counts} branche(s) removed successfully",

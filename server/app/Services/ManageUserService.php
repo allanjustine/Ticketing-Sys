@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\UserDetail;
 use App\Models\UserLogin;
 use App\Notifications\UserUpdatedNotification;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -31,6 +32,11 @@ class ManageUserService
 
             return $user;
         });
+
+        activity()
+            ->causedBy(Auth::user())
+            ->performedOn($userCreated)
+            ->log("Added a user");
 
         return $userCreated;
     }
@@ -70,6 +76,11 @@ class ManageUserService
 
         $userData->notify(new UserUpdatedNotification($userData));
 
+        activity()
+            ->causedBy(Auth::user())
+            ->performedOn($userUpdated)
+            ->log("Updated a user");
+
         return $userUpdated;
     }
 
@@ -80,6 +91,11 @@ class ManageUserService
         $user->userLogin()->delete();
         $user?->userLoginCode()->delete();
         $user->delete();
+
+        activity()
+            ->causedBy(Auth::user())
+            ->performedOn($user)
+            ->log("Deleted a user");
 
         return $user;
     }

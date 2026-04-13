@@ -418,6 +418,11 @@ class TicketService
             ->where('data->ticket_code', $ticketDetail->ticket->ticket_code)
             ->delete();
 
+        activity()
+            ->causedBy(Auth::user())
+            ->performedOn($ticketDetail->ticket)
+            ->log("Deleted a ticket");
+
         return $ticketDetail;
     }
 
@@ -639,6 +644,11 @@ class TicketService
             $ticket->pendingUser->login_id
         ));
 
+        activity()
+            ->causedBy(Auth::user())
+            ->performedOn($ticket)
+            ->log("Returned a ticket to automation on reports");
+
         return $ticket;
     }
 
@@ -649,6 +659,11 @@ class TicketService
         $ticket->update([
             'isCounted'         => $ticket->isCounted === 1 ? 0 : 1
         ]);
+
+        activity()
+            ->causedBy(Auth::user())
+            ->performedOn($ticket)
+            ->log("Marked a ticket to counted or not counted on reports");
 
         return $ticket;
     }
@@ -664,6 +679,11 @@ class TicketService
         ]);
 
         $new_note = $ticket->ticketDetail->td_note_bh;
+
+        activity()
+            ->causedBy(Auth::user())
+            ->performedOn($ticket)
+            ->log("Edited a note ticket on reports");
 
         return [
             $old_note,

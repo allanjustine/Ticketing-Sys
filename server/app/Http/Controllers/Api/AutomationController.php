@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\BranchList;
 use App\Models\UserLogin;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AutomationController extends Controller
 {
@@ -112,6 +113,11 @@ class AutomationController extends Controller
 
         $branch_counts = $user->automationAssignedBranches()->count();
 
+        activity()
+            ->causedBy(Auth::user())
+            ->performedOn($user)
+            ->log("Updated a automation");
+
         return response()->json([
             'message' => "{$branch_counts} branche(s) assigned successfully",
         ], 200);
@@ -127,6 +133,11 @@ class AutomationController extends Controller
         $branch_counts = $user->automationAssignedBranches()->count();
 
         $user->automationAssignedBranches()->detach();
+
+        activity()
+            ->causedBy(Auth::user())
+            ->performedOn($user)
+            ->log("Deleted a automation branches");
 
         return response()->json([
             'message' => "{$branch_counts} branche(s) removed successfully",

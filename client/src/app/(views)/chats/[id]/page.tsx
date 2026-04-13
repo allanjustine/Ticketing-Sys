@@ -203,7 +203,7 @@ function ChatsPage() {
                         <div className="flex justify-end items-end gap-2">
                           <div className="max-w-4/5">
                             <div
-                              className="px-4 py-2.5 rounded-2xl rounded-br-sm text-sm break-all whitespace-break-spaces leading-relaxed bg-chat-background dark:text-white shadow-lg shadow-chat-background/50"
+                              className="px-4 py-2.5 rounded-2xl rounded-br-sm text-sm wrap-break-word whitespace-break-spaces leading-relaxed bg-chat-background dark:text-white shadow-lg shadow-chat-background/50"
                               dangerouslySetInnerHTML={{
                                 __html: message?.body,
                               }}
@@ -225,7 +225,7 @@ function ChatsPage() {
                           </Avatar>
                           <div className="max-w-4/5">
                             <div
-                              className="px-4 py-2.5 rounded-2xl rounded-bl-sm text-sm break-all whitespace-break-spaces bg-chat-receiver-background leading-relaxed dark:text-white border border-white/10 backdrop-blur-sm shadow-lg shadow-chat-receiver-background/50"
+                              className="px-4 py-2.5 rounded-2xl rounded-bl-sm text-sm wrap-break-word whitespace-break-spaces bg-chat-receiver-background leading-relaxed dark:text-white border border-white/10 backdrop-blur-sm shadow-lg shadow-chat-receiver-background/50"
                               dangerouslySetInnerHTML={{
                                 __html: message?.body,
                               }}
@@ -285,7 +285,7 @@ function ChatsPage() {
                   placeholder="Type a message..."
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
-                  className="flex-1 bg-transparent text-sm dark:text-white placeholder-white/20 focus:outline-none resize-none max-h-50 break-all"
+                  className="flex-1 bg-transparent text-sm dark:text-white placeholder-white/20 focus:outline-none resize-none max-h-50 wrap-break-word"
                   onKeyUp={handleOnKeyUp}
                   onKeyDown={(e) =>
                     e.key === "Enter" && !e.shiftKey && e.preventDefault()

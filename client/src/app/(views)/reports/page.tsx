@@ -352,8 +352,14 @@ function Reports() {
         description: "Report has been exported successfully",
         position: "bottom-center",
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
+      if (error.reponse.status === 500) {
+        toast.error("Ops! Something went wrong in exporting", {
+          description: error.reponse.data.message,
+          position: "bottom-center",
+        });
+      }
     } finally {
       setIsLoadingToExport(false);
     }

@@ -174,7 +174,7 @@ class TicketService
             ->first();
 
         if (!$assignedBranchHead) {
-            return abort(400, 'No branch head assigned to your branch. Please contact your administrator.');
+            abort(400, 'No branch head assigned to your branch. Please contact your administrator.');
         }
 
         $assignedAccountingStaff = UserLogin::query()

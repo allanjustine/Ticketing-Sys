@@ -26,7 +26,7 @@ import withAuthPage from "@/lib/hoc/with-auth-page";
 import { TICKETS_FILTER } from "@/constants/filter-by";
 import { CreateTicket } from "./_components/create-ticket";
 import { useAuth } from "@/context/auth-context";
-import { canCreateTicket } from "@/constants/can-create-ticket";
+import { canCreateTicket } from "@/utils/permissions";
 import SearchInput from "@/components/ui/search-input";
 import { useEffect, useState } from "react";
 import echo from "@/lib/echo";

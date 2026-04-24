@@ -92,7 +92,7 @@ export default function useFetch({
           last_page: response.data.data.last_page,
         }));
         setPaginationLinks(
-          response.data.data.links.map((link: any) => ({
+          response?.data?.data?.links?.map((link: any) => ({
             label: link.label,
             page: link.page,
             active: link.active,

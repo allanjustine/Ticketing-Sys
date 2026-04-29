@@ -51,7 +51,7 @@ class ChatService
                     ->where('receiver_id', Auth::id());
             })
             ->latest()
-            ->simplePaginate(50);
+            ->simplePaginate(20);
 
         return [
             'data'            => $messages,

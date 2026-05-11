@@ -523,6 +523,7 @@ function ChatsPage() {
                     e.key === "Enter" && !e.shiftKey && e.preventDefault()
                   }
                   ref={textAreaRef}
+                  autoFocus
                 />
               </div>
               <Button

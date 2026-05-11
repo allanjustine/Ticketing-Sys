@@ -132,8 +132,6 @@ function ChatsPage() {
 
     submittedRef.current = true;
 
-    textAreaRef.current?.focus();
-
     handleSubmit({ preventDefault: () => {} } as any);
 
     router.replace(pathname);

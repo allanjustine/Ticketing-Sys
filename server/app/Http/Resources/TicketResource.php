@@ -88,6 +88,9 @@ class TicketResource extends JsonResource
             'edited_by'                   => !$this?->editedBy ? null : [
                 'full_name'               => $this->editedBy->full_name,
             ],
+            'last_approver'               => !$this?->lastApprover ? null : [
+                'full_name'               => $this->lastApprover->full_name,
+            ],
         ];
     }
 }

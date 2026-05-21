@@ -746,6 +746,7 @@ class TicketService
                         'td_note'    => $request->td_note,
                     ];
                 }
+
                 $ticketApprovedData['displayTicket'] = $ticketDetail->ticket->assignedPerson?->login_id;
             }
 

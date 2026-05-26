@@ -5,7 +5,6 @@ use App\Http\Controllers\Api\AccountingController;
 use App\Http\Controllers\Api\AreaManagerController;
 use App\Http\Controllers\Api\AutomationController;
 use App\Http\Controllers\Api\BranchController;
-use App\Http\Controllers\Api\BranchListController;
 use App\Http\Controllers\Api\CasController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ChatController;

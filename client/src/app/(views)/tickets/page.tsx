@@ -28,7 +28,7 @@ import { CreateTicket } from "./_components/create-ticket";
 import { useAuth } from "@/context/auth-context";
 import { canCreateTicket } from "@/utils/permissions";
 import SearchInput from "@/components/ui/search-input";
-import { useEffect, useRef, useState } from "react";
+import { Activity, useEffect, useRef, useState } from "react";
 import echo from "@/lib/echo";
 import { EditTicket } from "./_components/edit-ticket";
 import { DeleteTicket } from "./_components/delete-ticket";
@@ -644,62 +644,64 @@ function Tickets() {
                 value={filterBy.defaultSearchValue}
               />
             </div>
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="automation" className="px-1">
-                Filter by automation
-              </Label>
-              {isLoadingAutomationPendings ? (
-                <Skeleton className="w-full h-9 rounded-md" />
-              ) : (
-                <Select
-                  onValueChange={handleSelectFilter("automation")}
-                  value={filterBy.automation}
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Filter by automation" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectItem value="Filter by automation" disabled>
-                        Filter by automation
-                      </SelectItem>
-                      <SelectItem value="ALL">ALL</SelectItem>
-                      {automationPendings.length > 0 ? (
-                        automationPendings.map(
-                          (automation: {
-                            login_id: number;
-                            full_name: string;
-                            pending_tickets_count: number;
-                          }) => (
-                            <SelectItem
-                              value={String(automation.login_id)}
-                              key={automation.login_id}
-                              className="cursor-pointer"
-                            >
-                              <div className="flex flex-col">
-                                <p className="font-bold italic">
-                                  {automation.full_name}
-                                </p>
-                                <span className="opacity-60">
-                                  Total pending tickets:{" "}
-                                  <span className="text-blue-500 font-bold">
-                                    {automation.pending_tickets_count}
-                                  </span>
-                                </span>
-                              </div>
-                            </SelectItem>
-                          ),
-                        )
-                      ) : (
-                        <SelectItem value="No automation found" disabled>
-                          No automation found
+            <Activity mode={isAdmin ? "visible" : "hidden"}>
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="automation" className="px-1">
+                  Filter by automation
+                </Label>
+                {isLoadingAutomationPendings ? (
+                  <Skeleton className="w-full h-9 rounded-md" />
+                ) : (
+                  <Select
+                    onValueChange={handleSelectFilter("automation")}
+                    value={filterBy.automation}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Filter by automation" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem value="Filter by automation" disabled>
+                          Filter by automation
                         </SelectItem>
-                      )}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              )}
-            </div>
+                        <SelectItem value="ALL">ALL</SelectItem>
+                        {automationPendings.length > 0 ? (
+                          automationPendings.map(
+                            (automation: {
+                              login_id: number;
+                              full_name: string;
+                              pending_tickets_count: number;
+                            }) => (
+                              <SelectItem
+                                value={String(automation.login_id)}
+                                key={automation.login_id}
+                                className="cursor-pointer"
+                              >
+                                <div className="flex flex-col">
+                                  <p className="font-bold italic">
+                                    {automation.full_name}
+                                  </p>
+                                  <span className="opacity-60">
+                                    Total pending tickets:{" "}
+                                    <span className="text-blue-500 font-bold">
+                                      {automation.pending_tickets_count}
+                                    </span>
+                                  </span>
+                                </div>
+                              </SelectItem>
+                            ),
+                          )
+                        ) : (
+                          <SelectItem value="No automation found" disabled>
+                            No automation found
+                          </SelectItem>
+                        )}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                )}
+              </div>
+            </Activity>
           </div>
           <Button
             type="button"

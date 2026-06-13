@@ -38,6 +38,7 @@ class ChatService
                 ];
             });
     }
+
     public function getMessages($chat)
     {
         $messages = Message::query()

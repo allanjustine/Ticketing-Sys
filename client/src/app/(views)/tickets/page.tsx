@@ -731,7 +731,7 @@ function Tickets() {
               <div>
                 <ButtonLoader
                   type="button"
-                  className="bg-yellow-500 hover:bg-yellow-600"
+                  className="bg-yellow-500 hover:bg-yellow-600 text-white"
                   isLoading={isRefreshing}
                   onClick={handleRefresh}
                 >

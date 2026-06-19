@@ -188,7 +188,7 @@ export function CreatePost({ fetchData }: { fetchData: () => Promise<void> }) {
             type="button"
             onClick={handlePost}
             disabled={isLoading}
-            className="bg-blue-500 hover:bg-blue-600 w-full"
+            className="bg-blue-500 hover:bg-blue-600 w-full text-white"
           >
             {isLoading ? <Loader2 className="animate-spin" /> : "Post"}
           </Button>

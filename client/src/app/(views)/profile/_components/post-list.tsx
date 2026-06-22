@@ -16,6 +16,7 @@ import IsEdited from "./is-edited";
 import { EditPost } from "./post-dialogs/edit-post";
 import { DeletePost } from "./post-dialogs/delete-post";
 import { ROLE } from "@/constants/roles";
+import Link from "next/link";
 
 interface User {
   login_id: number;
@@ -118,7 +119,7 @@ export default function PostList({
 
   return (
     <>
-      <Card className="hover:border-gray-300 hover:shadow-lg">
+      <Card className="hover:border-gray-300 hover:dark:border-gray-600 hover:shadow-lg">
         <CardHeader className="pb-3">
           <div className="flex justify-between">
             <div className="flex items-center space-x-2">
@@ -171,12 +172,14 @@ export default function PostList({
               <span key={index}>
                 {word?.split(" ")?.map((w, idx) =>
                   w.startsWith("#") ? (
-                    <span
+                    <Link
+                      // href={`/posts/hashtag/${w.slice(1)}`}
+                      href={`#`}
                       className="text-blue-400 hover:underline cursor-pointer"
                       key={idx}
                     >
                       {`${w} `}
-                    </span>
+                    </Link>
                   ) : (
                     <span key={idx}>{`${w} `}</span>
                   ),

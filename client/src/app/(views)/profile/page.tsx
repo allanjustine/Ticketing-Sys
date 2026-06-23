@@ -36,7 +36,8 @@ function Profile() {
     cursor,
     fetchData,
     handleCursor,
-  } = useFetchCursor({ url: "/posts" });
+    scrollToTopRef,
+  } = useFetchCursor({ url: "/owned-posts" });
 
   const ROLES_CARD = {
     [ROLE.AREA_MANAGER]: (
@@ -90,7 +91,7 @@ function Profile() {
           <CardHeader className="pb-4">
             <div className="flex justify-between items-start">
               <div className="flex gap-2">
-                <Avatar className="h-24 w-24 border-4 border-white">
+                <Avatar className="h-24 w-24 border-4 border-blue-300">
                   <AvatarImage
                     src={Storage(user?.user_detail?.profile_pic)}
                     alt={user.full_name}
@@ -190,7 +191,7 @@ function Profile() {
             <CardDisplay />
           </div>
 
-          <div className="lg:col-span-2 w-full space-y-3">
+          <div className="lg:col-span-2 w-full space-y-3" ref={scrollToTopRef}>
             <CreatePost fetchData={fetchData} />
             {cursor?.prev_cursor && (
               <div className="flex justify-center">

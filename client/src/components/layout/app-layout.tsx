@@ -38,6 +38,7 @@ const AppLayout = ({ children }: { children: ReactNode }) => {
     pathname === "/"
       ? ["Home"]
       : pathname.replace(/-/g, " ").split("/").slice(1);
+
   const isAuthUser = (userId: number) => {
     return authUser?.login_id === userId;
   };

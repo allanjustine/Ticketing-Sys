@@ -171,7 +171,7 @@ class TicketService
                 =>
                 $query->whereNot('status', TicketStatus::EDITED)
             )
-            ->orderBy('ticket_id', 'desc')
+            ->orderBy('updated_at', 'desc')
             ->paginate($take);
     }
 

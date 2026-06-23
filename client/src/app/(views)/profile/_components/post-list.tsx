@@ -164,7 +164,7 @@ export default function PostList({
         <CardContent className="pb-3">
           <p
             ref={textRef}
-            className={`whitespace-break-spaces break-all ${
+            className={`whitespace-break-spaces wrap-break-word ${
               isExpanded[post?.id] ? "" : "line-clamp-4"
             }`}
           >

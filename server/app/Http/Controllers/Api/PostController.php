@@ -106,4 +106,22 @@ class PostController extends Controller
             'message' => "Post \"{$post->category}\" deleted successfully",
         ], 200);
     }
+
+    public function ownedPosts()
+    {
+        $posts = Post::query()
+            ->with([
+                'user.userDetail',
+                'userLikes'
+            ])
+            ->whereBelongsTo(Auth::user(), 'user')
+            ->withCount('comments')
+            ->orderByDesc('created_at')
+            ->cursorPaginate(20);
+
+        return response()->json([
+            'message' => 'Posts fetched successfully',
+            'data'    => $posts
+        ], 200);
+    }
 }

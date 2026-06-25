@@ -19,9 +19,12 @@ class PostController extends Controller
         $posts = Post::query()
             ->with([
                 'user.userDetail',
+                'latestComment.user.userDetail:user_details_id,profile_pic,fname,lname'
+            ])
+            ->withCount([
+                'comments',
                 'userLikes'
             ])
-            ->withCount('comments')
             ->orderByDesc('created_at')
             ->cursorPaginate(20);
 
@@ -90,6 +93,13 @@ class PostController extends Controller
 
         return response()->json([
             'message' => "Post \"{$post->category}\" updated successfully",
+            'post'    => $post->load([
+                'user.userDetail',
+                'latestComment.user.userDetail:user_details_id,profile_pic,fname,lname'
+            ])->loadCount([
+                'comments',
+                'userLikes'
+            ])
         ], 200);
     }
 
@@ -112,10 +122,12 @@ class PostController extends Controller
         $posts = Post::query()
             ->with([
                 'user.userDetail',
+                'latestComment.user.userDetail:user_details_id,profile_pic,fname,lname'
+            ])->withCount([
+                'comments',
                 'userLikes'
             ])
             ->whereBelongsTo(Auth::user(), 'user')
-            ->withCount('comments')
             ->orderByDesc('created_at')
             ->cursorPaginate(20);
 

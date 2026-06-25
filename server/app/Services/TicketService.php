@@ -490,8 +490,8 @@ class TicketService
             function () use ($request, $id, $assignedBranchHead, $assignedAutomation, $user) {
                 $ticketDetail = TicketDetail::findOrFail($id);
 
-                if ($ticketDetail->ticket->status !== TicketStatus::EDITED && !$this->user->isSuperAdmin() && $ticketDetail->ticket->lastApprover) {
-                    abort(400, 'You can not delete this ticket because it has been already approved.');
+                if ($ticketDetail->ticket->status === TicketStatus::EDITED && !$this->user->isSuperAdmin() && $ticketDetail->ticket->lastApprover) {
+                    abort(400, 'You can not update this ticket because it has been already approved.');
                 }
 
                 if ($ticketDetail->ticket->status === TicketStatus::EDITED) {
@@ -594,7 +594,7 @@ class TicketService
     {
         $ticketDetail = TicketDetail::findOrFail($id);
 
-        if ($ticketDetail->ticket->status !== TicketStatus::EDITED && !$this->user->isSuperAdmin() && $ticketDetail->ticket->lastApprover) {
+        if ($ticketDetail->ticket->status === TicketStatus::EDITED && !$this->user->isSuperAdmin() && $ticketDetail->ticket->lastApprover) {
             abort(400, 'You can not delete this ticket because it has been already approved.');
         }
 

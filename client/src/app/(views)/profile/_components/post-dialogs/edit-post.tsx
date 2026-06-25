@@ -14,23 +14,20 @@ import { api } from "@/lib/api";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import SelectableFeelings from "./selectable-feelings";
-
-interface Post {
-  id: number;
-  content: string;
-  category: string;
-}
+import { Post } from "../post-list";
 
 export function EditPost({
   open,
   setOpen,
   data,
   fetchData,
+  setSelectedPost,
 }: {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
-  data: Post;
+  data: Post | null;
   fetchData: () => Promise<void>;
+  setSelectedPost: Dispatch<SetStateAction<Post | null>>;
 }) {
   const [formInput, setFormInput] =
     useState<PostFormInputType>(POST_FORM_ITEMS);
@@ -62,6 +59,7 @@ export function EditPost({
         });
         setErrors(null);
         setOpen(false);
+        setSelectedPost(response.data.post);
         fetchData();
       }
     } catch (error: any) {

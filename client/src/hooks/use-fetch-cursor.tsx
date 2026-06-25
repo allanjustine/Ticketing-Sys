@@ -14,7 +14,7 @@ const CURSOR_ITEMS = {
   active_cursor: null,
 };
 
-interface CursorType {
+export interface CursorType {
   prev_cursor: string | null;
   next_cursor: string | null;
   active_cursor: string | null;

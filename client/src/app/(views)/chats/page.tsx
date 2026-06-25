@@ -161,7 +161,9 @@ function ChatsPage() {
                           <p
                             className={`text-xs truncate ${unread > 0 ? "text-foreground font-medium" : "text-muted-foreground"}`}
                           >
-                            {lastMessage}
+                            <span
+                              dangerouslySetInnerHTML={{ __html: lastMessage }}
+                            />
                           </p>
                         )}
                         <span className="text-xs opacity-60">
